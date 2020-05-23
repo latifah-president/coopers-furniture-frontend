@@ -86,7 +86,11 @@ const AddProduct = props => {
                   title: title,
                   description: description,
                   price: price,
-                  image_url: url
+                  image_url: url,
+                  category: category,
+                  quantity: quantity,
+                  item_number: item_number,
+                  supplier: supplier
                 };
                 dispatch(addProduct(productObj));
                 // props.history.push("/")

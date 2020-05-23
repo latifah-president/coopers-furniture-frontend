@@ -11,10 +11,9 @@ const initialState = {
     state: null,
     zip: null,
     phone: null,
-    cart: {
-        id: null,
-        qty: null,
-    },
+    admin: null,
+    cart: [],
+    total: 0.00,
     loading: false,
     loggedIn: false,
     error: null
@@ -42,11 +41,12 @@ export default (state = initialState, actions) => {
                 state: actions.payload[0].state,
                 zip: actions.payload[0].zip,
                 phone: actions.payload[0].phone,
-                cart: {
+                admin: actions.payload[0].admin,
+                cart: [
                     ...state.cart,
-                    id: actions.payload[1].id,
-                    qty:  actions.payload[1].quantity
-                }
+                    actions.payload[1]
+                ],
+                total: actions.payload[3]
             }
             case authTypes.AUTH_FAIL:
                 return {
