@@ -69,7 +69,7 @@ export default (state = initialState, actions) => {
                 return {
                     ...state,
                     loading: false,
-                    error: actions.payload
+                    error: true
                 }
             default:
             return state;

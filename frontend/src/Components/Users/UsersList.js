@@ -1,9 +1,8 @@
 import React, {useEffect} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import { Grid, GridList, GridListTile } from "@material-ui/core";
-import ProductCard from "./ProductCard";
 import { makeStyles } from "@material-ui/core/styles";
-import { getProducts } from "../../Store/Actions/products";
+import { getUsers } from "../../Store/Actions/admin";
 import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,13 +16,11 @@ const useStyles = makeStyles((theme) => ({
     gridList: {
       alignItems: "center",
       width: "90%",
-      height: "100vh",
       // flexWrap: 'wrap',
       // width: 500,
-      border: "1px solid orange",
-      [theme.breakpoints.down('sm')]: {
-        width: "100%",
-      }
+      // [theme.breakpoints.down('md')]: {
+      //   width: "100%",
+      // }
     },
     icon: {
       color: "rgba(255, 255, 255, 0.54)",
@@ -33,20 +30,17 @@ const useStyles = makeStyles((theme) => ({
       width: "10%",
       justifyContent: "space-between",
       maxWidth: 270,
-      minWidth: 270,
-      border: "1px solid black",
-
     },
   }));
 
 const ProducstList = (props) => {
     const dispatch = useDispatch();
-    const products = useSelector(state => state.product.products);
+    const users = useSelector(state => state.admin.users);
     const classes = useStyles();
-    // console.log("products: ", products)
+    console.log("users: ", users)
 
     useEffect(() => {
-        dispatch(getProducts())
+        dispatch(getUsers())
         
         return () => {
             console.log("unsubscribe ");
@@ -73,7 +67,8 @@ const ProducstList = (props) => {
 
     return (
         <Grid>
-            <GridList
+customers list
+            {/* <GridList
                 cols={getGridListCols()}
                 cellHeight={380}
                 className={classes.gridList}>
@@ -84,7 +79,7 @@ const ProducstList = (props) => {
                         ></ProductCard>
                     </GridListTile>
                 ))}
-      </GridList>
+      </GridList> */}
         </Grid>
     )
 };

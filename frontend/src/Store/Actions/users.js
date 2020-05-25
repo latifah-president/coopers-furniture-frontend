@@ -1,12 +1,13 @@
 import {authTypes} from "./actionTypes";
 import axios from "./../../axiosinstance";
 
-export const initAuth = (email, uid, idToken) => dispatch => {
+export const initAuth = (email, uid, idToken, idTokenResults) => dispatch => {
     dispatch ({
         type: authTypes.AUTH_START
     })
     if (uid) {
         axios.defaults.headers.common["Authorization"] = idToken;
+        axios.defaults.headers.common["IdTokenResults"] = idTokenResults;
         axios.get(`/user/${uid}`)
         .then(res => {
             if (res.status === 200) {

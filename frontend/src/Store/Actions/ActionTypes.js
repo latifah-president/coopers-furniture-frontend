@@ -39,8 +39,13 @@ export const productsTypes = {
 };
 
 export const adminTypes = {
-    ADD_ADMIN: 'ADD_ADMIN',
+    ADD_ADMIN_START: 'ADD_ADMIN_START',
+    ADD_ADMIN_SUCCESS: 'ADD_ADMIN_SUCCESS',
+    ADD_ADMIN_FAIL: 'ADD_ADMIN_FAIL',
 
+    GET_USERS_START: "GET_USERS_START",
+    GET_USERS_SUCCESS: "GET_USERS_SUCCESS",
+    GET_USERS_FAIL: "GET_USERS_FAIL",
 };
 
 export const userTypes = {

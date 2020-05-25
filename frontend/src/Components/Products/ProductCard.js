@@ -9,7 +9,13 @@ const useStyles = makeStyles((theme) => ({
         // height: "auto",
       maxHeight: 450,
       margin: "0 auto",
+      minHeight: 450,
     //   border: "1px solid #808080"
+    [theme.breakpoints.down('sm')]: {
+      width: "100%",
+      height: "300px",
+      border: "1px solid green"
+    }
     },
     media: {
       width: "100%",

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {auth} from "./../../firebaseConfig";
 import {withRouter} from "react-router-dom";
 import {useDispatch} from "react-redux"
 import {storage} from "./../../firebaseConfig";
@@ -15,7 +16,10 @@ const useStyles = makeStyles(theme => ({
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        border: "1px solid green",
+        width: "50%",
+        border: "1px solid orange",
+        marginTop: "2rem",
+        paddingTop: "2rem"
     },
     textFieldWide: {
         marginLeft: theme.spacing(1),
@@ -34,6 +38,16 @@ const useStyles = makeStyles(theme => ({
     
         // }
     },
+    fileInput: {
+      border: "1px solid black"
+    },
+    form: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      border: "1px solid purple"
+    }
 }))
 const AddProduct = props => {
     const classes = useStyles();
@@ -53,7 +67,7 @@ const AddProduct = props => {
 
     const uploadImage = event => {
         event.preventDefault();
-        let currentProductName = "jewelry-image-" + Date.now();
+        let currentProductName = "product-image-" + Date.now();
         let metaData = {contentType: "image/jpeg"}
         let uploadImage = storage.ref(`images/${currentProductName}`).put(file, metaData);
     
@@ -80,8 +94,6 @@ const AddProduct = props => {
               .child(currentProductName)
               .getDownloadURL()
               .then(url => {
-                console.log(url);
-                console.log(image_url)
                 const productObj = {
                   title: title,
                   description: description,
@@ -93,7 +105,11 @@ const AddProduct = props => {
                   supplier: supplier
                 };
                 dispatch(addProduct(productObj));
-                // props.history.push("/")
+                props.history.push("/")
+                console.log(url);
+                console.log(image_url)
+                
+               
               });
           }
         );
@@ -115,7 +131,7 @@ const AddProduct = props => {
       console.log("preview", previewImg)
     return (
         <Grid className={classes.root}>
-            <form>
+            <form className={classes.form}>
                 <TextField
                     className={classes.textFieldWide}
                     id="title"
@@ -148,17 +164,7 @@ const AddProduct = props => {
                     onChange={e => setPrice(e.target.value)}
                 /> 
            
-                 <Input
-                    id="image-upload"
-                    accept="image/*"
-                    name="image"
-                    type="file"
-                    onChange={e => fileHandler(e)}
-                    value={image_url}
-                    margin="normal"
-                    ref={photoInp}
-                    label="image upload"
-                />
+               
                  <TextField
                     className={classes.textFieldWide}
                     id="category"
@@ -198,7 +204,19 @@ const AddProduct = props => {
                     variant="outlined"
                     value={supplier}
                     onChange={e => setSupplier(e.target.value)}
-                />          
+                />  
+                  <Input
+                    className={classes.fileInput}
+                    id="image-upload"
+                    accept="image/*"
+                    name="image"
+                    type="file"
+                    onChange={e => fileHandler(e)}
+                    value={image_url}
+                    margin="normal"
+                    ref={photoInp}
+                    label="image upload"
+                />        
             </form>
             <Button className={classes.btn} type="submit" variant="contained" onClick={uploadImage}>Submit</Button>
         </Grid>
