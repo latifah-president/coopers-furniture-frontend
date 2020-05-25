@@ -56,11 +56,9 @@ let adminRoutes = (
   return (
     <main>
       <Nav/>
-    
-        <main className="wrapper">
-        
-        <CategoryNav/>
+      <CategoryNav/>
 
+        <main className="wrapper">
         <Switch>
           <Route exact path='/' component={HomePage} />
           <Route exact path='/profile/:firebase_id/orders' component={ProfilePage} />

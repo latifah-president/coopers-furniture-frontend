@@ -9,18 +9,17 @@ import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 const useStyles = makeStyles((theme) => ({
     root: {
       display: "flex",
-  
       justifyContent: "center",
       height: "auto",
       flexGrow: 1,
     },
     gridList: {
       alignItems: "center",
-      width: "90%",
+      width: "100%",
       height: "100vh",
       // flexWrap: 'wrap',
       // width: 500,
-      border: "1px solid orange",
+      border: "2px solid green",
       [theme.breakpoints.down('sm')]: {
         width: "100%",
       }
@@ -30,12 +29,11 @@ const useStyles = makeStyles((theme) => ({
     },
     gridListTile: {
       margin: "1rem auto",
-      width: "10%",
+      width: "100%",
       justifyContent: "space-between",
       maxWidth: 270,
       minWidth: 270,
-      border: "1px solid black",
-
+      border: "2px solid black",
     },
   }));
 
@@ -75,7 +73,7 @@ const ProducstList = (props) => {
         <Grid>
             <GridList
                 cols={getGridListCols()}
-                cellHeight={380}
+                cellHeight={400}
                 className={classes.gridList}>
                 {products.map((product, key) => (
                     <GridListTile className={classes.gridListTile} key={product.id}>

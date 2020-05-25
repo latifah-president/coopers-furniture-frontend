@@ -3,17 +3,14 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { Grid } from "@material-ui/core";
-
+import {useSelector} from "react-redux";
 const useStyles = makeStyles((theme) => ({
     root: {
         // height: "auto",
-      maxHeight: 450,
       margin: "0 auto",
-      minHeight: 450,
     //   border: "1px solid #808080"
     [theme.breakpoints.down('sm')]: {
       width: "100%",
-      height: "300px",
       border: "1px solid green"
     }
     },
@@ -52,11 +49,17 @@ const useStyles = makeStyles((theme) => ({
         border: "1px solid red",
         fontFamily: "Helvetica, Arial, sans-serif",
         marginTop: "1rem",
+    },
+    btnWrapper: {
+      border: "1px solid red",
+      display: "flex",
+      width: "100%"
     }
   }));
 
 const ProductCard = (props) => {
     const classes = useStyles();
+    const admin = useSelector(state => state.user.admin);
     console.log(props, "props")
     return(    
     <Grid variant="outlined" className={classes.root} container direction="column" alignItems="center">
@@ -64,7 +67,15 @@ const ProductCard = (props) => {
         <Typography variant="overline"  component="h5" className={classes.title}>
             {props.product.title}
         </Typography>
-        <Button className={classes.button} size="small"> <Typography variant="overline" display="block"> Edit</Typography> </Button>
+        <Typography variant="overline"  component="h5" className={classes.title}>
+            ${props.product.price}
+        </Typography>
+        <Grid className={classes.btnWrapper}>
+          <Button className={classes.button} size="small"> <Typography variant="overline" display="block"> Delete</Typography> </Button>
+          <Button className={classes.button} size="small"> <Typography variant="overline" display="block"> Edit</Typography> </Button>
+        </Grid>
+        
+
     </Grid>
 )
 };

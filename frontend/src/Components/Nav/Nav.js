@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     // border: "1px solid orange",
+    height: "60px"
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -46,15 +47,15 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "transparent",
     boxShadow: "none",
     marginTop: "3rem",
-
+    zIndex: 100,
   },
   toolBar: {
     display: "flex",
     alignItems: "center",
     // border: "1px solid blue",
-    justifyContent: "space-between",
-    paddingLeft: theme.spacing(3),
-    paddingRight: theme.spacing(3),
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    position: "static",
   },
   icons: {
     // border: "1px solid red",    
@@ -71,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
   },
   icon: {
     color: "#374F71",
-    fontSize: "2rem"
+    fontSize: "1.8rem"
   }, 
   link: {
     color: "white",
@@ -116,7 +117,9 @@ iconBtn: {
   width: "90%"
 },
 iconText: {
-  fontSize: ".7rem"
+  fontSize: ".8rem",
+  textDecoration: "none",
+  color: "#374F71"
 },
 iconWrapper: {
   // border: "1px solid green",
@@ -125,6 +128,7 @@ iconWrapper: {
   justifyContent: "space-around",
   marginTop: "2rem",
   width: "30%",
+  zIndex: 200,
   [theme.breakpoints.down('sm')]: { 
     display: 'none',
   },
@@ -160,8 +164,8 @@ topNav: {
   height: "60px",
   marginBottom: "1rem",
   alignItems: "center",
-  padding: "0 .5rem"
-  
+  padding: "0 .5rem",
+  position: "fixed"
 },
 mobileMenu: {
   color: "black",
@@ -181,7 +185,7 @@ caption: {
   textAlign: "right",
   width: "100%",
   color: "white",
-  marginLeft: "3rem",
+  marginLeft: "3.2rem",
   // border: "1px solid blue",
   [theme.breakpoints.down('sm')]: { 
     marginLeft: "2.3rem",
@@ -203,6 +207,9 @@ deliveryIcon: {
   marginRight: "2rem",
   color: "white",
   fontSize: "2rem"
+},
+active: {
+  color: "orange"
 }
 }));
 
@@ -214,7 +221,7 @@ const NavBar = (props) => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const dispatch = useDispatch();
-  
+
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null)
   };
@@ -256,7 +263,7 @@ const NavBar = (props) => {
       <MenuItem> {loggedIn ?
         <IconButton aria-label={admin ? "Orders" : "Cart"} color="inherit">
           { admin ? <Aux> <Badge badgeContent={11}  color="secondary"> <LocalShipping /></Badge> <Typography className={classes.menuItemContent}>Orders</Typography> </Aux> :  
-          <Badge> <ShoppingCartIcon />  <Typography className={classes.menuItemContent}>Cart</Typography></Badge> }
+          <Badge badgeContent={1}> <ShoppingCartIcon />  <Typography className={classes.menuItemContent}>Cart</Typography></Badge> }
         </IconButton> : <Typography>Login</Typography> }
       </MenuItem>
     </NavLink>
@@ -308,16 +315,16 @@ const NavBar = (props) => {
           </div> 
         </Grid>
     <div className={classes.root}>
-      <AppBar className={classes.nav} position="fixed">
+      <AppBar className={classes.nav}>
         <Toolbar className={classes.toolBar}>
           <Grid item  className={loggedIn ? classes.iconWrapper : classes.hide}>
-            <NavLink  to={`/profile/${firebase_id}/orders`}>
-              <IconButton aria-label="profile" className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
-            <Typography variant="button" lassName={classes.iconText}>
+            <NavLink className={classes.iconText} activeClassName={classes.active}  to={`/profile/${firebase_id}/orders`}>
+              <IconButton aria-label="account" className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
+            <Typography variant="button" >
                 Account
               </Typography>
             </NavLink>
-            <NavLink  to={`/`}>
+            <NavLink className={classes.iconText} to={admin && loggedIn ? `/profile/${firebase_id}/orders` : `/cart`}>
             <IconButton
                 aria-label="cart"
                 className={classes.iconBtn}
@@ -325,15 +332,13 @@ const NavBar = (props) => {
                 // aria-haspopup="true"
                 // onClick={handleProfileMenuOpen}
             >
-              <ShoppingCartIcon  className={classes.icon}/>
-             
+              <Badge badgeContent={1} color="secondary">
+                {admin ? <LocalShipping className={classes.icon}/> :  <ShoppingCartIcon  className={classes.icon}/>}
+              </Badge> 
             </IconButton>
-            <Typography variant="button" lassName={classes.iconText}>
-                Cart
-              </Typography>
+            <Typography variant="button"> {admin ? "Orders" :  "Cart"} </Typography>
             </NavLink>
-           
-            <NavLink  to={`/`}>
+            <NavLink className={classes.iconText} to={`/`}>
             <IconButton
                 aria-label="logout"
                 className={classes.iconBtn}
@@ -342,9 +347,8 @@ const NavBar = (props) => {
                 // onClick={handleProfileMenuOpen}
             >
               <ExitToAppIcon  className={classes.icon}/>
-             
             </IconButton>
-            <Typography variant="button" lassName={classes.iconText}>
+            <Typography variant="button">
                 LogOut
               </Typography>
             </NavLink>
@@ -354,10 +358,8 @@ const NavBar = (props) => {
             <Button className={classes.btn}  color="inherit" onClick={() => props.history.push("/signin")}>Login</Button>
             <Button className={classes.btn} onClick={logout}>Log Out </Button>
           </Grid> 
-                
         </Toolbar>
       </AppBar>
-      {/* {renderMenu} */}
       {renderMobileMenu}
     </div>
     <div className={classes.log}>

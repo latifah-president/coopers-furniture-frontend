@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme) => ({
     //   border: "3px solid purple",
       display: "flex",
       justifyContent: "space-around",
+      position: "fixed",
+      zIndex: 1,
+      backgroundColor: "white",
     },
     category: {
         color: "black",
