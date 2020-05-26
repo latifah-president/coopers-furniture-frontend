@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     [theme.breakpoints.down("sm")]: {
       width: "100%",
-      border: "10px solid purple"
+      // border: "10px solid purple"
     },
     // display: "flex",
 

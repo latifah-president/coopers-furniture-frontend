@@ -22,6 +22,11 @@ import LocalShipping from '@material-ui/icons/LocalShipping';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Grid  from "@material-ui/core/Grid";
 import {logOut} from '../../Store/Actions/users';
+import MobileNav from "./MobileNav";
+import CssBaseline from '@material-ui/core/CssBaseline';
+import MenuIcon from '@material-ui/icons/Menu';
+import clsx from 'clsx';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -165,15 +170,19 @@ topNav: {
   marginBottom: "1rem",
   alignItems: "center",
   padding: "0 .5rem",
-  position: "fixed"
+  position: "fixed",
+  zIndex: 100,
 },
 mobileMenu: {
   color: "black",
   width: "90%",
+  paddding: "3"
   // border: "1px solid red",
 },
-menuItemContent: {
-  marginLeft: "1rem"
+menuItem: {
+  padding: 0,
+  width: "100%",
+  border: "1px solid red"
 },
 deliveryCaption: {
   textAlign: "left",
@@ -185,7 +194,7 @@ caption: {
   textAlign: "right",
   width: "100%",
   color: "white",
-  marginLeft: "3.2rem",
+  marginLeft: "1.5rem",
   // border: "1px solid blue",
   [theme.breakpoints.down('sm')]: { 
     marginLeft: "2.3rem",
@@ -210,6 +219,29 @@ deliveryIcon: {
 },
 active: {
   color: "orange"
+},
+dropdown: {
+  position: 'absolute',
+  top: 60,
+  right: 16,
+  // left: 0,
+  zIndex: 1,
+  padding: theme.spacing(1),
+  backgroundColor: theme.palette.background.paper,
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "space-around",
+  alignItems: "center",
+  width: "38%",
+  // border: "1px solid red"
+},
+menuLink: {
+  color: "#374F71",
+  textDecoration: "none",
+  border: "1px solid green"
+},
+li: {
+  textDecoration: "none",
 }
 }));
 
@@ -220,6 +252,8 @@ const NavBar = (props) => {
   const firebase_id = useSelector(state => state.user.firebase_id);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const [open, setOpen] = React.useState(false);
+
   const dispatch = useDispatch();
 
   const handleMobileMenuClose = () => {
@@ -230,54 +264,61 @@ const NavBar = (props) => {
     setMobileMoreAnchorEl(event.currentTarget)
   };
  
+  const handleClick = () => {
+    setOpen((prev) => !prev);
+  };
+
+  const handleClickAway = () => {
+    setOpen(false);
+  };
   const logout = () => {
     auth.signOut()
     dispatch(logOut())
     props.history.push("/");
   };
- 
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+  const profileSignUp = () => {
+    {loggedIn ? props.history.push(`/profile/${firebase_id}/orders`) : props.history.push(`/register`) }
+    
+  }
+  const loginCart = () => {
+    {loggedIn? props.history.push(`/profile/${firebase_id}/cart`) : props.history.push(`/register`) }
+
+  }
   const mobileMenuId = 'profile-mobile';
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={mobileMenuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-      className={classes.mobileMenu}
-    >
-      <NavLink className={classes.mobileLink} to={`/profile/${firebase_id}/orders/`}>
-      <MenuItem> {loggedIn ? 
-        <IconButton aria-label="Account" color="inherit">
-        <Badge color="inherit">
-          <AccountCircle/>
-          <Typography className={classes.menuItemContent}>Account</Typography>
-        </Badge>
-      </IconButton> :
-      <Typography>Create Account</Typography> }
-    </MenuItem >
-    </NavLink>
-    <NavLink className={classes.mobileLink} to={`/profile/${firebase_id}/orders`}>
-      <MenuItem> {loggedIn ?
+  // const renderMobileMenu = (
+ 
+
+        {/* <MenuItem className={classes.mobileLink} onClick={profileSignUp}> {loggedIn ? 
+          <IconButton aria-label="Account" color="inherit">
+          <Badge color="inherit" style={{border: "1px solid red"}}>
+            <AccountCircle/>
+            <Typography className={classes.menuItemContent}>ACCOUNT</Typography>
+          </Badge>
+        </IconButton> :
+        <Typography>CREATE ACCOUNT</Typography> }
+      </MenuItem >
+
+      <MenuItem onClick={loginCart}> {loggedIn ?
         <IconButton aria-label={admin ? "Orders" : "Cart"} color="inherit">
           { admin ? <Aux> <Badge badgeContent={11}  color="secondary"> <LocalShipping /></Badge> <Typography className={classes.menuItemContent}>Orders</Typography> </Aux> :  
-          <Badge badgeContent={1}> <ShoppingCartIcon />  <Typography className={classes.menuItemContent}>Cart</Typography></Badge> }
-        </IconButton> : <Typography>Login</Typography> }
+          <Badge badgeContent={1}> <ShoppingCartIcon />  <Typography className={classes.menuItemContent}>CART</Typography></Badge> }
+        </IconButton> : <Typography>LOGIN</Typography> }
       </MenuItem>
-    </NavLink>
+
       <MenuItem className={classes.mobileLink}> {loggedIn ? 
         <IconButton aria-label="Logout" color="inherit" onClick={logout}>
         <Badge>
           <ExitToAppIcon/>
-          <Typography className={classes.menuItemContent}>Logout</Typography>
+          <Typography className={classes.menuItemContent}>LOGOUT</Typography>
         </Badge>
       </IconButton> :
-      <Typography>Create Account</Typography> }
-    </MenuItem >
-    </Menu>
-  );
+      <Typography>CONTACT</Typography> }
+    </MenuItem > */}
+
+  //);
   return (
     <Aux>
       <Grid className={classes.topNav}>
@@ -295,23 +336,65 @@ const NavBar = (props) => {
         <Grid item className={classes.title}>
           <NavLink to='/'className={classes.link} >
             <Typography className={classes.home} variant="h5"> Cooper's Home Furniture </Typography>
-            <Typography  className={classes.caption} variant="caption"> POWERED BY A.R.C. </Typography>
+            <Typography  className={classes.caption} variant="caption"> POWERED BY A.R.C. LIMITED </Typography>
           </NavLink>
         </Grid>
         <Grid item className={classes.deliver}>
           <LocalShipping className={classes.deliveryIcon}/>
-          <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, AND SAN ANTONIO</Typography>
+          <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, WACO, AND HUSTON</Typography>
         </Grid>
           <div className={classes.sectionMobile}>
-            <IconButton
-              aria-label="show more"
+            {/* <IconButton
+              aria-label="menu"
               aria-controls={mobileMenuId}
               aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
+              onClick={handleClick}
               color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
+            > */}
+              {/* <MoreIcon onClick={handleClick}/> */}
+            {/* </IconButton> */}
+            <ClickAwayListener
+            onClickAway={handleClickAway}
+            id={mobileMenuId}
+            aria-label="cart"
+            aria-labelledby
+      // anchorEl={mobileMoreAnchorEl}
+      // anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      
+      // keepMounted
+      // transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      // open={isMobileMenuOpen}
+      // onClose={handleMobileMenuClose}
+      // className={classes.mobileMenu}
+    >
+
+<div>
+        <IconButton type="button" onClick={handleClick}>
+          <MoreIcon/>
+        </IconButton>
+        {open ? (
+          
+      <nav className={classes.dropdown} style={{border: "1px solid red"}}>
+   
+    <ul className={classes.menuItem}>
+      <li className={classes.menuLink}><NavLink  to={loggedIn ? `/profile/orders${firebase_id}/orders` : `/register`} href={loginCart}>
+            <Typography>{loggedIn ? `ACCOUNT` : `CREATE ACCOUNT`}</Typography>
+          </NavLink></li>
+        <li>
+          <NavLink className={classes.menuLink} to={loggedIn ? `/profile/orders${firebase_id}/cart` : `/singin`} href={loginCart}>
+            <Typography>{loggedIn ? `CART` : `LOGIN`}</Typography>
+          </NavLink>
+        </li>
+        <li>
+          <NavLink className={classes.menuLink} to='/contact'>
+            <Typography>CONTACT</Typography>
+          </NavLink>
+        </li>
+    </ul>
+</nav>
+        ) : null}
+      </div>
+      </ClickAwayListener>
           </div> 
         </Grid>
     <div className={classes.root}>
@@ -353,14 +436,15 @@ const NavBar = (props) => {
               </Typography>
             </NavLink>
           </Grid>   
-          <Grid className={loggedIn ? classes.hide : classes.mobileMenu} item xs={"auto"}>
+          {/* <Grid className={loggedIn ? classes.hide : classes.mobileMenu} item xs={"auto"}>
             <Button className={classes.btn} color="inherit" onClick={() => props.history.push("/register")}>Register</Button>
             <Button className={classes.btn}  color="inherit" onClick={() => props.history.push("/signin")}>Login</Button>
             <Button className={classes.btn} onClick={logout}>Log Out </Button>
-          </Grid> 
+          </Grid>  */}
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
+      {/* {renderMobileMenu} */}
+
     </div>
     <div className={classes.log}>
 

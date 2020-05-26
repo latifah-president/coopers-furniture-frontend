@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
-      border: "1px solid purple"
+      // border: "1px solid purple"
     }
 }))
 const AddProduct = props => {

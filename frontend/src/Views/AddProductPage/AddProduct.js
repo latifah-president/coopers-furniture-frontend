@@ -41,7 +41,7 @@ const AddProduct = () => {
    
     return (
         <Grid className={classes.root} >
-            <Typography  className={classes.title} variant="h1" component="h3" gutterBottom>Add A Product</Typography>
+            {/* <Typography  className={classes.title} variant="h1" component="h3" gutterBottom>Add A Product</Typography> */}
             <AddProductForm/>
         </Grid>
     )
