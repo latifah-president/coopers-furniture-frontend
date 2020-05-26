@@ -1,4 +1,4 @@
-import { authTypes } from "./../Actions/actionTypes";
+import { authTypes } from "./../Actions/ActionTypes";
 
 const initialState = {
     // user: [],

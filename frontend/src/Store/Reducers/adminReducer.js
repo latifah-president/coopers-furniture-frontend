@@ -1,4 +1,4 @@
-import { adminTypes } from "./../Actions/actionTypes";
+import { adminTypes } from "./../Actions/ActionTypes";
 
 const initialState = {
     user: [],

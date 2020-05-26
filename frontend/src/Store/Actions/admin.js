@@ -1,4 +1,4 @@
-import {adminTypes} from "./actionTypes";
+import {adminTypes} from "./ActionTypes";
 import axios from "./../../axiosinstance";
 
 export const registerAdmin = (userObj) =>  (dispatch) => {

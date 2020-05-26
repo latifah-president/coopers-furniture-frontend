@@ -1,4 +1,4 @@
-import {productsTypes} from "./actionTypes";
+import {productsTypes} from "./ActionTypes";
 import axios from "./../../axiosinstance";
 
 export const addProduct = (productObj) => (dispatch) => {

@@ -1,4 +1,4 @@
-import {authTypes} from "./actionTypes";
+import {authTypes} from "./ActionTypes";
 import axios from "./../../axiosinstance";
 
 export const initAuth = (email, uid, idToken, idTokenResults) => dispatch => {
