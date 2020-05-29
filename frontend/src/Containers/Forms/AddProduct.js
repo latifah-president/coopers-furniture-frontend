@@ -59,6 +59,7 @@ const AddProduct = props => {
     const [category, setCategory] = useState("");
     const [quantity, setQuantity] = useState(0);
     const [item_number, setItemNumber] = useState(0);
+    const [item_name, setItemName] = useState("");
     const [supplier, setSupplier] = useState("");
     const [file, setFile] = useState(null);
     const [previewImg, setPreviewImg] = useState("");
@@ -169,7 +170,7 @@ const AddProduct = props => {
                     className={classes.textFieldWide}
                     id="category"
                     type="text"
-                    label="category"
+                    label="Category"
                     margin="dense"
                     variant="outlined"
                     value={category}
@@ -179,7 +180,7 @@ const AddProduct = props => {
                     className={classes.textFieldWide}
                     id="quantity"
                     type="text"
-                    label="quantity"
+                    label="Quantity"
                     margin="dense"
                     variant="outlined"
                     value={quantity}
@@ -189,17 +190,27 @@ const AddProduct = props => {
                     className={classes.textFieldWide}
                     id="itemNumber"
                     type="text"
-                    label="item number"
+                    label="Item Number"
                     margin="dense"
                     variant="outlined"
                     value={item_number}
                     onChange={e => setItemNumber(e.target.value)}
                 /> 
+                   <TextField
+                    className={classes.textFieldWide}
+                    id="itemNumber"
+                    type="text"
+                    label="Item Name"
+                    margin="dense"
+                    variant="outlined"
+                    value={item_name}
+                    onChange={e => setItemName(e.target.value)}
+                /> 
                  <TextField
                     className={classes.textFieldWide}
                     id="supplier"
                     type="text"
-                    label="supplier"
+                    label="Supplier"
                     margin="dense"
                     variant="outlined"
                     value={supplier}
@@ -215,7 +226,7 @@ const AddProduct = props => {
                     value={image_url}
                     margin="normal"
                     ref={photoInp}
-                    label="image upload"
+                    label="Image Upload"
                 />        
             </form>
             <Button className={classes.btn} type="submit" variant="contained" onClick={uploadImage}>Submit</Button>

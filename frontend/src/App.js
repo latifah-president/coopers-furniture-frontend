@@ -12,7 +12,7 @@ import SignIn from './Containers/Forms/SignIn';
 import AdminSignUpPage from "./Containers/Forms/AdminSignUp";
 import UnauthorizedPage from "./Views/ErrorPage/Unauthorized";
 import CustomersPage from "./Views/CustomersPage/Customers";
-import CategoryPage from "./Views/CategoryPage/Category";
+import CategoryPage from "./Views/ProductsPage/Products";
 import {initAuth} from "./Store/Actions/users";
 import { getProducts } from "./Store/Actions/products";
 import './App.css';
@@ -56,7 +56,7 @@ let adminRoutes = (
   return (
     <main>
       <Nav/>
-      <CategoryNav/>
+      {/* <CategoryNav/> */}
 
         <main className="wrapper">
         <Switch>

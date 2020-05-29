@@ -1,90 +1,93 @@
-import React from "react";
-import {NavLink} from "react-router-dom";
+import React, {useState} from "react";
+import {useDispatch} from "react-redux";
+import {withRouter} from "react-router-dom";
 import Aux from "./../../HOC/Aux";
 import {useSelector} from "react-redux"
 import { Grid } from "@material-ui/core";
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Link from '@material-ui/core/Link';
+import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Portal from '@material-ui/core/Portal';
+import Button from '@material-ui/core/Button';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
+import {getProductsBy} from "./../../Store/Actions/products";
 
 const useStyles = makeStyles((theme) => ({
+  dropdown: {
+    position: 'fixed',
+    width: 200,
+    top: "18.7%",
+    left: '0%',
+    // transform: 'translate(-50%, -50%)',
+    border: '1px solid',
+    padding: theme.spacing(1),
+    backgroundColor: theme.palette.background.paper,
+    zIndex: 100,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+  },
+  btn: {
+    color: "white",
+    fontSize: "1.3rem"
+  },
+  icon: {
+    fontSize: "2rem",
+    color: "#F2CC7E",
+  }
+}));
 
-    root: {
-      flexGrow: 1,
-    //   border: "3px solid purple",
-      display: "flex",
-      justifyContent: "space-around",
-      position: "fixed",
-      zIndex: 1,
-      backgroundColor: "white",
-    },
-    category: {
-        color: "black",
-        fontSize: "1.22rem",
-        textTransform: "uppercase",
-        textDecoration: "none",
-        color: "white",
-
-    },
-    catNav: {
-        display: "flex",
-        justifyContent: "space-around",
-        width: "100%",
-        // border: "1px solid red",
-        minHeight: "40px",
-        margin: "2rem 0",
-        backgroundColor: "#374F71",
-    },
-    toolBar: {
-      display: "flex",
-      // border: "1px solid blue",
-      justifyContent: "space-between",
-      paddingLeft: theme.spacing(3),
-      paddingRight: theme.spacing(3),
-    },
-  hide: {
-    display: "none",
-  }, 
-logo: {
-    backgroundColor: "orange",
-    height: "260px",
-    borderRadius: "50%",
-    width: "15%",
-    textAlign: "center",
-    margin: "2rem auto 0 auto",
-    border: "1px solid pink",
-},
-active: {
-    borderBottom: "lightgray",
-}
-  }));
-const CategoryNav = () => {
+const CategoryNav = (props) => {
     const categories = useSelector(state => state.product.products);
+    const [open, setOpen] = useState(false);
     const classes = useStyles();
+    const dispatch = useDispatch();
+
+    const handleClick = () => {
+      setOpen((prev) => !prev);
+    };
+  
+    const handleClickAway = () => {
+      setOpen(false);
+    };
+
+    const getByCategory = (col, filter) => {
+      dispatch(getProductsBy(col, filter))
+    };
 
     return (
-           
-        <Grid container className={classes.root}>
-             <Grid className={classes.logo}></Grid>
-            {/* <AppBar  > */}
-                <Toolbar className={classes.catNav}>
-                    {categories.map((category, key) => (
-                        console.log(key),
-                            <NavLink
-                            key={category.id}
-                            className={classes.category}
-                            to={`/category/:${category.category}`}
-                            activeClassName={classes.active}
-                          >
-                            {category.category}
-                          </NavLink>
-                    ))}
-            
-                </Toolbar>
-            {/* </AppBar> */}
-        </Grid>
+      <ClickAwayListener onClickAway={handleClickAway}>
+      <div >
+        <Button className={classes.btn} type="button" onClick={handleClick}>
+          DEPARTMENTS
+          <ArrowDropDownIcon className={classes.icon}/>
+        </Button>
+        {open ? (
+          <Portal>
+            <div className={classes.dropdown}>
+              <List component="nav" aria-label="Departments Menu">
+              {categories.map((category, key) => (
+                console.log(key),
+                <ListItem button onClick={() => props.history.push(`/products/?col=category&filter=${category.category}`)}>
+                  <ListItemText key={category.id} primary={category.category} />
+                </ListItem>
+              ))} 
+              </List>         
+            </div>
+          </Portal>
+        ) : null}
+      </div>
+    </ClickAwayListener>
     )
 };
 
-export default CategoryNav;
+export default withRouter(CategoryNav);
+
+

@@ -15,6 +15,7 @@ import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import LoginIcon from '@material-ui/icons/LockOpen';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import TwitterIcon from '@material-ui/icons/Twitter';
@@ -27,31 +28,23 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-
+import Dropdown from "./CategoryNav";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    position: "fixed",
+  
     // border: "1px solid orange",
-    height: "60px"
+    // height: "60px"
   },
   menuButton: {
     marginRight: theme.spacing(2),
   },
-  title: {
-    flexGrow: 1,
-    color: "white",
-    // border: "4px solid red",
-    display: "flex",
-    justifyContent: "flex-end",
-    [theme.breakpoints.down('sm')]: { 
-      justifyContent: "flex-start",
-    },
-    maxWidth: "500px",
-  },
+
   nav: {
     backgroundColor: "transparent",
     boxShadow: "none",
-    marginTop: "3rem",
+    // marginTop: "3rem",
     zIndex: 100,
   },
   toolBar: {
@@ -131,23 +124,14 @@ iconWrapper: {
   display: "flex",
   alignSelf: "center",
   justifyContent: "space-around",
-  marginTop: "2rem",
+
   width: "30%",
   zIndex: 200,
   [theme.breakpoints.down('sm')]: { 
     display: 'none',
   },
 },
-home: {
-  color: "white",
-  // border: "2px solid pink",
-  width: "100%",
-  fontSize: "1.3rem",
-  [theme.breakpoints.down('sm')]: { 
-    fontSize: "1rem"
-  }
 
-},
 socialMedia: {
   [theme.breakpoints.down('sm')]: { 
     display: "none",
@@ -162,16 +146,16 @@ socialIcon: {
 },
 topNav: {
   display: "flex",
-  justifyContent: "space-between",
-  backgroundColor: "#03C9B7",
+  // justifyContent: "space-between",
+  backgroundColor: "#366E82",
   width: "100%",
   // border: "1px solid red",
-  height: "60px",
-  marginBottom: "1rem",
+  // height: "60px",
+  // marginBottom: "1rem",
   alignItems: "center",
   padding: "0 .5rem",
   position: "fixed",
-  zIndex: 100,
+  // zIndex: 100,
 },
 mobileMenu: {
   color: "black",
@@ -190,18 +174,7 @@ deliveryCaption: {
   color: "white",
   // border: "1px solid red"
 },
-caption: {
-  textAlign: "right",
-  width: "100%",
-  color: "white",
-  marginLeft: "1.5rem",
-  // border: "1px solid blue",
-  [theme.breakpoints.down('sm')]: { 
-    marginLeft: "2.3rem",
-    textAlign: "center",
-    fontSize: ".7rem"
-  },
-},
+
 deliver: {
   display: "flex",
   justifyContent: "center",
@@ -214,7 +187,7 @@ deliver: {
 },
 deliveryIcon: {
   marginRight: "2rem",
-  color: "white",
+  color: "#F2CC7E",
   fontSize: "2rem"
 },
 active: {
@@ -242,6 +215,62 @@ menuLink: {
 },
 li: {
   textDecoration: "none",
+},
+link: {
+  color: "white",
+  textDecoration: "none",
+  // border: " 1px solid red",
+  
+},
+home: {
+  color: "#0C1D33",
+  // border: "2px solid pink",
+  width: "100%",
+  fontSize: "2rem",
+  letterSpacing: 4,
+  [theme.breakpoints.down('sm')]: { 
+    fontSize: "1rem"
+  }
+
+},
+caption: {
+  textAlign: "right",
+  width: "100%",
+  color: "#0C1D33",
+  // border: "1px solid blue",
+  [theme.breakpoints.down('sm')]: { 
+    marginLeft: "2.3rem",
+    textAlign: "center",
+    fontSize: ".7rem"
+  },
+},
+title: {
+  flexGrow: 1,
+  color: "black",
+  // border: "4px solid red",
+  display: "flex",
+  alignItems: "center",
+  paddingLeft: "1rem",
+  height: 100,
+  width: "100%",
+  marginTop: "2rem",
+  backgroundColor: "#EFEAE1",
+  justifyContent: "space-between",
+  [theme.breakpoints.down('sm')]: { 
+    justifyContent: "flex-start",
+  },
+  // maxWidth: "500px",
+},
+catNav: {
+  display: "flex",
+  justifyContent: "space-between",
+  backgroundColor: "#366E82",
+  width: "100%",
+  // border: "1px solid red",
+  height: "32px",
+  alignItems: "center",
+  padding: "0 .5rem",
+ 
 }
 }));
 
@@ -260,9 +289,7 @@ const NavBar = (props) => {
     setMobileMoreAnchorEl(null)
   };
 
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget)
-  };
+  
  
   const handleClick = () => {
     setOpen((prev) => !prev);
@@ -276,9 +303,7 @@ const NavBar = (props) => {
     dispatch(logOut())
     props.history.push("/");
   };
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+ 
   const profileSignUp = () => {
     {loggedIn ? props.history.push(`/profile/${firebase_id}/orders`) : props.history.push(`/register`) }
     
@@ -287,169 +312,92 @@ const NavBar = (props) => {
     {loggedIn? props.history.push(`/profile/${firebase_id}/cart`) : props.history.push(`/register`) }
 
   }
-  const mobileMenuId = 'profile-mobile';
-  // const renderMobileMenu = (
- 
-
-        {/* <MenuItem className={classes.mobileLink} onClick={profileSignUp}> {loggedIn ? 
-          <IconButton aria-label="Account" color="inherit">
-          <Badge color="inherit" style={{border: "1px solid red"}}>
-            <AccountCircle/>
-            <Typography className={classes.menuItemContent}>ACCOUNT</Typography>
-          </Badge>
-        </IconButton> :
-        <Typography>CREATE ACCOUNT</Typography> }
-      </MenuItem >
-
-      <MenuItem onClick={loginCart}> {loggedIn ?
-        <IconButton aria-label={admin ? "Orders" : "Cart"} color="inherit">
-          { admin ? <Aux> <Badge badgeContent={11}  color="secondary"> <LocalShipping /></Badge> <Typography className={classes.menuItemContent}>Orders</Typography> </Aux> :  
-          <Badge badgeContent={1}> <ShoppingCartIcon />  <Typography className={classes.menuItemContent}>CART</Typography></Badge> }
-        </IconButton> : <Typography>LOGIN</Typography> }
-      </MenuItem>
-
-      <MenuItem className={classes.mobileLink}> {loggedIn ? 
-        <IconButton aria-label="Logout" color="inherit" onClick={logout}>
-        <Badge>
-          <ExitToAppIcon/>
-          <Typography className={classes.menuItemContent}>LOGOUT</Typography>
-        </Badge>
-      </IconButton> :
-      <Typography>CONTACT</Typography> }
-    </MenuItem > */}
-
-  //);
   return (
-    <Aux>
-      <Grid className={classes.topNav}>
-        <Grid item className={classes.socialMedia}>
-          <IconButton aria-label="Facebook">
-            <FacebookIcon  className={classes.socialIcon}/>
-          </IconButton>
-          <IconButton aria-label="Instagram">
-            <InstagramIcon className={classes.socialIcon}/>
-          </IconButton>
-          <IconButton aria-label="Twitter">
-            <TwitterIcon  className={classes.socialIcon}/>
-          </IconButton>
+    <AppBar container className={classes.root}>
+        <Grid className={classes.topNav}>
+          <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, WACO, AND HOUSTON</Typography>
+          <LocalShipping className={classes.deliveryIcon}/>
+          <div className={classes.sectionMobile}> 
+            <ClickAwayListener
+              onClickAway={handleClickAway}
+              id="menu"
+              aria-label="menu"
+              aria-labelledby
+              anchorEl={mobileMoreAnchorEl}
+              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+              keepMounted
+              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+              open={isMobileMenuOpen}
+              onClose={handleMobileMenuClose}
+              className={classes.mobileMenu} 
+           > 
+            <div>
+              <IconButton type="button" onClick={handleClick}>
+                <MoreIcon/>
+              </IconButton>
+                {open ? (
+                  <nav className={classes.dropdown} style={{border: "1px solid red"}}>
+
+                  <ul className={classes.menuItem}>
+                  <li className={classes.menuLink}><NavLink  to={loggedIn ? `/profile/orders${firebase_id}/orders` : `/register`} href={loginCart}>
+                      <Typography>{loggedIn ? `ACCOUNT` : `CREATE ACCOUNT`}</Typography>
+                    </NavLink></li>
+                  <li>
+                    <NavLink className={classes.menuLink} to={loggedIn ? `/profile/orders${firebase_id}/cart` : `/singin`} href={loginCart}>
+                      <Typography>{loggedIn ? `CART` : `LOGIN`}</Typography>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink className={classes.menuLink} to='/contact'>
+                      <Typography>CONTACT</Typography>
+                    </NavLink>
+                  </li>
+                  </ul>
+                  </nav>
+                ) : null}
+            </div>
+            </ClickAwayListener>
+          </div> 
         </Grid>
         <Grid item className={classes.title}>
           <NavLink to='/'className={classes.link} >
             <Typography className={classes.home} variant="h5"> Cooper's Home Furniture </Typography>
             <Typography  className={classes.caption} variant="caption"> POWERED BY A.R.C. LIMITED </Typography>
           </NavLink>
-        </Grid>
-        <Grid item className={classes.deliver}>
-          <LocalShipping className={classes.deliveryIcon}/>
-          <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, WACO, AND HUSTON</Typography>
-        </Grid>
-          <div className={classes.sectionMobile}>
-            {/* <IconButton
-              aria-label="menu"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleClick}
-              color="inherit"
-            > */}
-              {/* <MoreIcon onClick={handleClick}/> */}
-            {/* </IconButton> */}
-            <ClickAwayListener
-            onClickAway={handleClickAway}
-            id={mobileMenuId}
-            aria-label="cart"
-            aria-labelledby
-      // anchorEl={mobileMoreAnchorEl}
-      // anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      
-      // keepMounted
-      // transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      // open={isMobileMenuOpen}
-      // onClose={handleMobileMenuClose}
-      // className={classes.mobileMenu}
+          <Grid item  className={classes.iconWrapper}>
+    <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={loggedIn ? `/profile/${firebase_id}/orders` : `/register`}>
+      <IconButton aria-label="account" className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
+    <Typography variant="button" >
+        {loggedIn ? "ACCOUNT" : "CREATE ACCOUNT"}
+      </Typography>
+    </NavLink>
+    <NavLink className={classes.iconText} to={admin && loggedIn ? `/profile/${firebase_id}/orders` : `/cart`}>
+    <IconButton
+        aria-label="cart"
+        className={classes.iconBtn}
     >
-
-<div>
-        <IconButton type="button" onClick={handleClick}>
-          <MoreIcon/>
-        </IconButton>
-        {open ? (
-          
-      <nav className={classes.dropdown} style={{border: "1px solid red"}}>
-   
-    <ul className={classes.menuItem}>
-      <li className={classes.menuLink}><NavLink  to={loggedIn ? `/profile/orders${firebase_id}/orders` : `/register`} href={loginCart}>
-            <Typography>{loggedIn ? `ACCOUNT` : `CREATE ACCOUNT`}</Typography>
-          </NavLink></li>
-        <li>
-          <NavLink className={classes.menuLink} to={loggedIn ? `/profile/orders${firebase_id}/cart` : `/singin`} href={loginCart}>
-            <Typography>{loggedIn ? `CART` : `LOGIN`}</Typography>
-          </NavLink>
-        </li>
-        <li>
-          <NavLink className={classes.menuLink} to='/contact'>
-            <Typography>CONTACT</Typography>
-          </NavLink>
-        </li>
-    </ul>
-</nav>
-        ) : null}
-      </div>
-      </ClickAwayListener>
-          </div> 
+      <Badge badgeContent={1} color="secondary">
+        {admin ? <LocalShipping className={classes.icon}/> :  <ShoppingCartIcon  className={classes.icon}/>}
+      </Badge> 
+    </IconButton>
+    <Typography variant="button"> {admin ? "Orders" :  "Cart"} </Typography>
+    </NavLink>
+    <NavLink className={classes.iconText} to={`/`}>
+      <IconButton
+          aria-label="logout"
+          className={classes.iconBtn}
+          onClick={logout}
+      >
+        {loggedIn ? <ExitToAppIcon  className={classes.icon}/> : <LoginIcon className={classes.icon}/>}
+      </IconButton>
+      <Typography variant="button"> {loggedIn ? "LOGOUT" : "LOGIN"} </Typography>
+    </NavLink>
+  </Grid>
         </Grid>
-    <div className={classes.root}>
-      <AppBar className={classes.nav}>
-        <Toolbar className={classes.toolBar}>
-          <Grid item  className={loggedIn ? classes.iconWrapper : classes.hide}>
-            <NavLink className={classes.iconText} activeClassName={classes.active}  to={`/profile/${firebase_id}/orders`}>
-              <IconButton aria-label="account" className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
-            <Typography variant="button" >
-                Account
-              </Typography>
-            </NavLink>
-            <NavLink className={classes.iconText} to={admin && loggedIn ? `/profile/${firebase_id}/orders` : `/cart`}>
-            <IconButton
-                aria-label="cart"
-                className={classes.iconBtn}
-                // aria-controls={menuId}
-                // aria-haspopup="true"
-                // onClick={handleProfileMenuOpen}
-            >
-              <Badge badgeContent={1} color="secondary">
-                {admin ? <LocalShipping className={classes.icon}/> :  <ShoppingCartIcon  className={classes.icon}/>}
-              </Badge> 
-            </IconButton>
-            <Typography variant="button"> {admin ? "Orders" :  "Cart"} </Typography>
-            </NavLink>
-            <NavLink className={classes.iconText} to={`/`}>
-            <IconButton
-                aria-label="logout"
-                className={classes.iconBtn}
-                // aria-controls={menuId}
-                // aria-haspopup="true"
-                // onClick={handleProfileMenuOpen}
-            >
-              <ExitToAppIcon  className={classes.icon}/>
-            </IconButton>
-            <Typography variant="button">
-                LogOut
-              </Typography>
-            </NavLink>
-          </Grid>   
-          {/* <Grid className={loggedIn ? classes.hide : classes.mobileMenu} item xs={"auto"}>
-            <Button className={classes.btn} color="inherit" onClick={() => props.history.push("/register")}>Register</Button>
-            <Button className={classes.btn}  color="inherit" onClick={() => props.history.push("/signin")}>Login</Button>
-            <Button className={classes.btn} onClick={logout}>Log Out </Button>
-          </Grid>  */}
-        </Toolbar>
-      </AppBar>
-      {/* {renderMobileMenu} */}
-
-    </div>
-    <div className={classes.log}>
-
-    </div>
-    </Aux>
+        <Grid className={classes.catNav}>
+            <Dropdown/>
+        </Grid>
+    </AppBar>
   )
 };
 

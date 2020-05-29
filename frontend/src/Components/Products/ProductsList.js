@@ -1,4 +1,5 @@
 import React, {useEffect} from "react";
+import {withRouter} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import { Grid, GridList, GridListTile } from "@material-ui/core";
 import ProductCard from "./ProductCard";
@@ -41,11 +42,9 @@ const ProducstList = (props) => {
     const dispatch = useDispatch();
     const products = useSelector(state => state.product.products);
     const classes = useStyles();
-    // console.log("products: ", products)
-
+    console.log("props", props)
     useEffect(() => {
-        dispatch(getProducts())
-        
+        dispatch(getProducts())  
         return () => {
             console.log("unsubscribe ");
           };
@@ -87,4 +86,4 @@ const ProducstList = (props) => {
     )
 };
 
-export default withWidth()(ProducstList);
+export default withRouter(withWidth()(ProducstList));
