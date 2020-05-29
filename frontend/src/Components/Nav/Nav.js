@@ -1,34 +1,23 @@
 import React, {useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
-import Button from "@material-ui/core/Button";
 import { withRouter, NavLink } from "react-router-dom";
 import { auth} from '../../firebaseConfig';
-import Aux from "./../../HOC/Aux";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { makeStyles } from '@material-ui/core/styles';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import LoginIcon from '@material-ui/icons/LockOpen';
-import FacebookIcon from '@material-ui/icons/Facebook';
-import InstagramIcon from '@material-ui/icons/Instagram';
-import TwitterIcon from '@material-ui/icons/Twitter';
 import LocalShipping from '@material-ui/icons/LocalShipping';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Grid  from "@material-ui/core/Grid";
 import {logOut} from '../../Store/Actions/users';
-import MobileNav from "./MobileNav";
-import CssBaseline from '@material-ui/core/CssBaseline';
-import MenuIcon from '@material-ui/icons/Menu';
-import clsx from 'clsx';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Dropdown from "./CategoryNav";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -52,7 +41,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     // border: "1px solid blue",
     justifyContent: "flex-end",
-    alignItems: "flex-end",
     position: "static",
   },
   icons: {
@@ -72,12 +60,6 @@ const useStyles = makeStyles((theme) => ({
     color: "#374F71",
     fontSize: "1.8rem"
   }, 
-  link: {
-    color: "white",
-    textDecoration: "none",
-    // border: " 1px solid red",
-    
-  },
   btn: {
     color: "white",
     marginLeft: theme.spacing(2),
@@ -91,10 +73,6 @@ mobileLink: {
   textDecoration: "none",
   color: "#374F71",
   border: "1px solid transparent"
-},
-activeMobileLink: {
-  color: "orange",
-  border: "1px solid #374F71"
 },
 sectionMobile: {
   display: 'flex',
@@ -124,14 +102,12 @@ iconWrapper: {
   display: "flex",
   alignSelf: "center",
   justifyContent: "space-around",
-
   width: "30%",
   zIndex: 200,
   [theme.breakpoints.down('sm')]: { 
     display: 'none',
   },
 },
-
 socialMedia: {
   [theme.breakpoints.down('sm')]: { 
     display: "none",
@@ -146,16 +122,14 @@ socialIcon: {
 },
 topNav: {
   display: "flex",
-  // justifyContent: "space-between",
   backgroundColor: "#366E82",
   width: "100%",
-  // border: "1px solid red",
-  // height: "60px",
-  // marginBottom: "1rem",
   alignItems: "center",
   padding: "0 .5rem",
   position: "fixed",
-  // zIndex: 100,
+  [theme.breakpoints.down('sm')]: { 
+    justifyContent: "flex-end"
+  },
 },
 mobileMenu: {
   color: "black",
@@ -166,29 +140,24 @@ mobileMenu: {
 menuItem: {
   padding: 0,
   width: "100%",
-  border: "1px solid red"
+  // border: "1px solid red"
 },
 deliveryCaption: {
   textAlign: "left",
   width: "50%",
   color: "white",
-  // border: "1px solid red"
-},
-
-deliver: {
-  display: "flex",
-  justifyContent: "center",
-  width: "35%",
-  alignItems: "center",
-  // border: "1px solid white"
   [theme.breakpoints.down('sm')]: { 
     display: 'none',
   },
+  // border: "1px solid red"
 },
 deliveryIcon: {
   marginRight: "2rem",
   color: "#F2CC7E",
-  fontSize: "2rem"
+  fontSize: "2rem",
+  [theme.breakpoints.down('sm')]: { 
+    display: 'none',
+  },
 },
 active: {
   color: "orange"
@@ -229,7 +198,7 @@ home: {
   fontSize: "2rem",
   letterSpacing: 4,
   [theme.breakpoints.down('sm')]: { 
-    fontSize: "1rem"
+    fontSize: "1rem",
   }
 
 },
@@ -257,7 +226,7 @@ title: {
   backgroundColor: "#EFEAE1",
   justifyContent: "space-between",
   [theme.breakpoints.down('sm')]: { 
-    justifyContent: "flex-start",
+    justifyContent: "center",
   },
   // maxWidth: "500px",
 },
@@ -279,18 +248,10 @@ const NavBar = (props) => {
   const loggedIn = useSelector(state => state.user.loggedIn);
   const admin = useSelector(state => state.user.admin);
   const firebase_id = useSelector(state => state.user.firebase_id);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
 
   const dispatch = useDispatch();
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null)
-  };
-
-  
- 
   const handleClick = () => {
     setOpen((prev) => !prev);
   };
@@ -309,30 +270,21 @@ const NavBar = (props) => {
     
   }
   const loginCart = () => {
-    {loggedIn? props.history.push(`/profile/${firebase_id}/cart`) : props.history.push(`/register`) }
-
+    {loggedIn? props.history.push(`/profile/${firebase_id}/cart`) : props.history.push(`/signin`) }
   }
+
   return (
-    <AppBar container className={classes.root}>
+    <AppBar className={classes.root}>
         <Grid className={classes.topNav}>
           <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, WACO, AND HOUSTON</Typography>
           <LocalShipping className={classes.deliveryIcon}/>
           <div className={classes.sectionMobile}> 
             <ClickAwayListener
               onClickAway={handleClickAway}
-              id="menu"
-              aria-label="menu"
-              aria-labelledby
-              anchorEl={mobileMoreAnchorEl}
-              anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-              keepMounted
-              transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-              open={isMobileMenuOpen}
-              onClose={handleMobileMenuClose}
               className={classes.mobileMenu} 
            > 
             <div>
-              <IconButton type="button" onClick={handleClick}>
+              <IconButton style={{color: "#F2CC7E"}} type="button" onClick={handleClick}>
                 <MoreIcon/>
               </IconButton>
                 {open ? (

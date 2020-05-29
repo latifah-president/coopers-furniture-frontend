@@ -1,12 +1,6 @@
 import React, {useState} from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {withRouter} from "react-router-dom";
-import Aux from "./../../HOC/Aux";
-import {useSelector} from "react-redux"
-import { Grid } from "@material-ui/core";
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Link from '@material-ui/core/Link';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -26,13 +20,18 @@ const useStyles = makeStyles((theme) => ({
     top: "18.7%",
     left: '0%',
     // transform: 'translate(-50%, -50%)',
-    border: '1px solid',
+    border: '1px solid #0C1D33',
     padding: theme.spacing(1),
     backgroundColor: theme.palette.background.paper,
     zIndex: 100,
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
+    textTransform: "uppercase",
+    [theme.breakpoints.down('sm')]: { 
+      top: "18.7%",
+    left: '5%',
+    }
   },
   btn: {
     color: "white",
@@ -75,8 +74,8 @@ const CategoryNav = (props) => {
               <List component="nav" aria-label="Departments Menu">
               {categories.map((category, key) => (
                 console.log(key),
-                <ListItem button onClick={() => props.history.push(`/products/?col=category&filter=${category.category}`)}>
-                  <ListItemText key={category.id} primary={category.category} />
+                <ListItem key={category.id} button onClick={() => props.history.push(`/products/?col=category&filter=${category.category}`)}>
+                  <ListItemText primary={category.category} />
                 </ListItem>
               ))} 
               </List>         
