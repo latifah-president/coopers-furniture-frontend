@@ -2,12 +2,14 @@ import { productsTypes } from '../Actions/ActionTypes';
 
 const initialState = {
     products: [],
+    id: null,
     error: false,
     errorMsg: null,
     loading: false
 }
 
 export default (state = initialState, actions) => {
+    console.log(state.id)
     switch (actions.type) {
         case productsTypes.ADD_PRODUCT_START:
             return {
@@ -36,6 +38,7 @@ export default (state = initialState, actions) => {
                 ...state,
                 loading: false,
                 products: actions.payload,
+                id: actions.payload.id
             }
         case productsTypes.GET_PRODUCT_FAIL:
             return {

@@ -4,7 +4,6 @@ import { withRouter, NavLink } from "react-router-dom";
 import { auth} from '../../firebaseConfig';
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import Badge from '@material-ui/core/Badge';
 import IconButton from '@material-ui/core/IconButton';
@@ -17,70 +16,39 @@ import Grid  from "@material-ui/core/Grid";
 import {logOut} from '../../Store/Actions/users';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Dropdown from "./CategoryNav";
-
+import Divider from '@material-ui/core/Divider';
+import Portal from '@material-ui/core/Portal';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     position: "fixed",
-  
+    top: 0,
+    width: "100%",
+    zIndex: 2,
     // border: "1px solid orange",
-    // height: "60px"
   },
   menuButton: {
     marginRight: theme.spacing(2),
-  },
-
-  nav: {
-    backgroundColor: "transparent",
-    boxShadow: "none",
-    // marginTop: "3rem",
-    zIndex: 100,
-  },
-  toolBar: {
-    display: "flex",
-    alignItems: "center",
-    // border: "1px solid blue",
-    justifyContent: "flex-end",
-    position: "static",
   },
   icons: {
     // border: "1px solid red",    
     justifyContent: "center",
     alignItems: "center",
-    // [theme.breakpoints.down('sm')]: {
-    //   border: "2px solid red",
-    //   flexBasis: "0"
-    // }
     [theme.breakpoints.down('sm')]: {
       display: 'none',
-      // border: " 1px solid red"
     },
   },
   icon: {
     color: "#374F71",
     fontSize: "1.8rem"
   }, 
-  btn: {
-    color: "white",
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
-    
-},
-hide: {
-  display: "none",
-}, 
-mobileLink: {
-  textDecoration: "none",
-  color: "#374F71",
-  border: "1px solid transparent"
-},
 sectionMobile: {
   display: 'flex',
   color: "white",
+  // border: "1px solid red",
   [theme.breakpoints.up('md')]: { 
     display: 'none',
   },
-  // border: "1px solid black"
 },
 iconBtn: {
   // border: "1px solid orange",
@@ -103,7 +71,6 @@ iconWrapper: {
   alignSelf: "center",
   justifyContent: "space-around",
   width: "30%",
-  zIndex: 200,
   [theme.breakpoints.down('sm')]: { 
     display: 'none',
   },
@@ -127,20 +94,17 @@ topNav: {
   alignItems: "center",
   padding: "0 .5rem",
   position: "fixed",
+  zIndex: 1,
   [theme.breakpoints.down('sm')]: { 
-    justifyContent: "flex-end"
+    justifyContent: "flex-end",
+
   },
 },
 mobileMenu: {
   color: "black",
   width: "90%",
-  paddding: "3"
+  paddding: "3",
   // border: "1px solid red",
-},
-menuItem: {
-  padding: 0,
-  width: "100%",
-  // border: "1px solid red"
 },
 deliveryCaption: {
   textAlign: "left",
@@ -163,24 +127,24 @@ active: {
   color: "orange"
 },
 dropdown: {
-  position: 'absolute',
-  top: 60,
-  right: 16,
-  // left: 0,
-  zIndex: 1,
+  position: 'fixed',
+  maxWidth: 360,
+  width: 300,
+  top: "5.5%",
+  right: '.5%',
+  border: '1px solid #0C1D33',
   padding: theme.spacing(1),
   backgroundColor: theme.palette.background.paper,
+ zIndex: 3,
   display: "flex",
   flexDirection: "column",
-  justifyContent: "space-around",
-  alignItems: "center",
-  width: "38%",
-  // border: "1px solid red"
+  justifyContent: "space-between",
+  textTransform: "uppercase",
 },
 menuLink: {
   color: "#374F71",
   textDecoration: "none",
-  border: "1px solid green"
+  // border: "1px solid green"
 },
 li: {
   textDecoration: "none",
@@ -189,7 +153,6 @@ link: {
   color: "white",
   textDecoration: "none",
   // border: " 1px solid red",
-  
 },
 home: {
   color: "#0C1D33",
@@ -228,7 +191,6 @@ title: {
   [theme.breakpoints.down('sm')]: { 
     justifyContent: "center",
   },
-  // maxWidth: "500px",
 },
 catNav: {
   display: "flex",
@@ -240,6 +202,26 @@ catNav: {
   alignItems: "center",
   padding: "0 .5rem",
  
+},
+listItem: {
+  width: "100%",
+  height: "150px",
+  // border: "1px solid red",
+  padding: 0,
+  display: "flex",
+  justifyContent: "space-around",
+  alignItems: "center",
+  flexDirection: "column"
+},
+listItemText: {
+  width: "100%",
+  // border: "1px solid green",
+  listStyle: "none"
+},
+divider: {
+  width: "100%", 
+  color: "#EA4D1F",
+  // marginTop: "1rem", 
 }
 }));
 
@@ -274,7 +256,7 @@ const NavBar = (props) => {
   }
 
   return (
-    <AppBar className={classes.root}>
+  <div className={classes.root}>
         <Grid className={classes.topNav}>
           <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, WACO, AND HOUSTON</Typography>
           <LocalShipping className={classes.deliveryIcon}/>
@@ -283,29 +265,39 @@ const NavBar = (props) => {
               onClickAway={handleClickAway}
               className={classes.mobileMenu} 
            > 
-            <div>
+            <div >
               <IconButton style={{color: "#F2CC7E"}} type="button" onClick={handleClick}>
                 <MoreIcon/>
               </IconButton>
                 {open ? (
-                  <nav className={classes.dropdown} style={{border: "1px solid red"}}>
+                    <Portal>
+                      <div className={classes.dropdown}>
 
-                  <ul className={classes.menuItem}>
-                  <li className={classes.menuLink}><NavLink  to={loggedIn ? `/profile/orders${firebase_id}/orders` : `/register`} href={loginCart}>
+                  <nav aria-label="Menu" >
+
+                  <ul className={classes.listItem}>
+                  <li className={classes.listItemText}>
+                    <NavLink className={classes.menuLink} to={loggedIn ? `/profile/orders${firebase_id}/orders` : `/register`} href={loginCart}>
                       <Typography>{loggedIn ? `ACCOUNT` : `CREATE ACCOUNT`}</Typography>
                     </NavLink></li>
-                  <li>
+                    <Divider  className={classes.divider}/>
+                  <li className={classes.listItemText}>
                     <NavLink className={classes.menuLink} to={loggedIn ? `/profile/orders${firebase_id}/cart` : `/singin`} href={loginCart}>
                       <Typography>{loggedIn ? `CART` : `LOGIN`}</Typography>
                     </NavLink>
                   </li>
-                  <li>
+                  <Divider  className={classes.divider}/>
+
+                  <li className={classes.listItemText}>
                     <NavLink className={classes.menuLink} to='/contact'>
                       <Typography>CONTACT</Typography>
                     </NavLink>
                   </li>
+                  <Divider  className={classes.divider}/>
                   </ul>
                   </nav>
+                  </div>
+                  </Portal>
                 ) : null}
             </div>
             </ClickAwayListener>
@@ -349,7 +341,7 @@ const NavBar = (props) => {
         <Grid className={classes.catNav}>
             <Dropdown/>
         </Grid>
-    </AppBar>
+    </div>
   )
 };
 

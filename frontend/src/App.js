@@ -12,7 +12,7 @@ import SignIn from './Containers/Forms/SignIn';
 import AdminSignUpPage from "./Containers/Forms/AdminSignUp";
 import UnauthorizedPage from "./Views/ErrorPage/Unauthorized";
 import CustomersPage from "./Views/CustomersPage/Customers";
-import CategoryPage from "./Views/ProductsPage/Products";
+import ProductsPage from "./Views/ProductsPage/Products";
 import {initAuth} from "./Store/Actions/users";
 import { getProducts } from "./Store/Actions/products";
 import './App.css';
@@ -22,6 +22,7 @@ function App(props) {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(getProducts())
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         const { email, uid } = user;
@@ -41,7 +42,6 @@ function App(props) {
           });
       }
     });
-    dispatch(getProducts())
     return () => {
       console.log("unsubscribe ");
     };
@@ -61,6 +61,7 @@ let adminRoutes = (
         <main className="wrapper">
         <Switch>
           <Route exact path='/' component={HomePage} />
+          <Route exact path='/products' component={ProductsPage} />
           <Route exact path='/profile/:firebase_id/orders' component={ProfilePage} />
           <Route exact path='/register' component={Form}/>
           <Route exact path="/signin" component={SignIn}/>
