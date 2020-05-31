@@ -106,7 +106,8 @@ stepHeader: {
   color: "#366E82",
   borderBottom: "3px solid #EA4D1F",
   width: "80%",
-  margin: "0 auto"
+  margin: "0 auto",
+  minHeight: 60
 },
 stepText: {
   textTransform: "none",
@@ -142,7 +143,7 @@ section: {
 },
 hotItem: {
   // border: "1px solid purple",
-  width: "100%",
+  width: "25%",
   height: "auto",
   // maxWidth: "25%",
   display: "flex",

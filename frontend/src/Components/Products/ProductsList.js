@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
       height: "100vh",
       // flexWrap: 'wrap',
       // width: 500,
-      border: "2px solid green",
+      // border: "2px solid green",
       [theme.breakpoints.down('sm')]: {
         width: "100%",
       }
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: "space-between",
       maxWidth: 270,
       minWidth: 270,
-      border: "2px solid black",
+      // border: "2px solid black",
     },
   }));
 

@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from "react";
 import {useSelector, useDispatch} from "react-redux";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -31,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
   },
   btn: {
     color: "white",
-    fontSize: "1.3rem"
+    fontSize: "1.3rem",
+    textDecoration: "none"
   },
   icon: {
     fontSize: "2rem",
@@ -86,6 +87,7 @@ console.log("products", products)
           DEPARTMENTS
           <ArrowDropDownIcon className={classes.icon}/>
         </Button>
+        <Link className={classes.btn} to="/products">SHOP ALL PRODUCTS</Link>
         {open ? (
           <Portal>
             <div className={classes.dropdown}>

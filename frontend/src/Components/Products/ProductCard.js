@@ -6,12 +6,11 @@ import { Grid } from "@material-ui/core";
 import {useSelector} from "react-redux";
 const useStyles = makeStyles((theme) => ({
     root: {
-        // height: "auto",
       margin: "0 auto",
     //   border: "1px solid #808080"
     [theme.breakpoints.down('sm')]: {
       width: "100%",
-      border: "1px solid green"
+      // border: "1px solid green"
     }
     },
     media: {
@@ -46,12 +45,12 @@ const useStyles = makeStyles((theme) => ({
         border: "none",
     },
     title: {
-        border: "1px solid red",
+        // border: "1px solid red",
         fontFamily: "Helvetica, Arial, sans-serif",
         marginTop: "1rem",
     },
     btnWrapper: {
-      border: "1px solid red",
+      // border: "1px solid red",
       display: "flex",
       width: "100%"
     }
@@ -70,10 +69,13 @@ const ProductCard = (props) => {
         <Typography variant="overline"  component="h5" className={classes.title}>
             ${props.product.price}
         </Typography>
-        <Grid className={classes.btnWrapper}>
-          <Button className={classes.button} size="small"> <Typography variant="overline" display="block"> Delete</Typography> </Button>
-          <Button className={classes.button} size="small"> <Typography variant="overline" display="block"> Edit</Typography> </Button>
-        </Grid>
+       
+          {admin ?   <Grid className={classes.btnWrapper}> <Button className={classes.button} size="small"> <Typography variant="overline" display="block"> Delete</Typography> </Button>
+          <Button className={classes.button} size="small"> <Typography variant="overline" display="block"> Edit</Typography> </Button> </Grid>: null}
+         
+{admin ? null :        <Grid className={classes.btnWrapper}>    <Button className={classes.button} size="small"> <Typography variant="overline" display="block"> add to cart</Typography> </Button> </Grid>
+}
+        
         
 
     </Grid>
