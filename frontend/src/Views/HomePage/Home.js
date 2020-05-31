@@ -1,7 +1,10 @@
-import React from "react";
+import React, {useEffect} from "react";
+import {Link, withRouter} from "react-router-dom";
+import {useSelector, useDispatch} from "react-redux";
 import { Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Carousel from "./../../Components/Home/Carousel";
+import { getProducts } from "./../../Store/Actions/products";
 // Material UI breakpoints
 // value         |0px     600px    960px    1280px   1920px
 // key           |xs      sm       md       lg       xl
@@ -16,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   main: {
-    border: "1px solid red",
+    // border: "1px solid red",
     margin: "2rem 0",
     textAlign: "center",
     display: "flex",
@@ -64,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
     height: "10px",
   },
   steps: {
-    // border: "1px solid white",
+    // border: "1px solid orange",
     display: "flex",
     width: "100%",
     justifyContent: "space-around",
@@ -113,7 +116,6 @@ stepText: {
 },
 listItem: {
   width: "100%",
-
   // border: "1px solid red",
   padding: 0
 },
@@ -126,20 +128,87 @@ divider: {
   width: "100%", 
   color: "#EA4D1F",
   // marginTop: "1rem", 
+},
+section: {
+  // color: "#366E82",
+  width: "100%",
+  margin: "2rem 0",
+  textTransform: "uppercase",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "flex-start",
+  flexDirection: "column",
+  paddingTop: "2rem",
+},
+hotItem: {
+  // border: "1px solid purple",
+  width: "100%",
+  height: "auto",
+  // maxWidth: "25%",
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  [theme.breakpoints.down('sm')]: {
+    width: "100%"
+  },
+},
+image: {
+  width: "50%",
+  // border: "1px solid yellow",
+
+},
+hotItemSection: {
+  // border: "1px solid orange",
+  display: "flex",
+  width: "100%",
+  justifyContent: "space-around",
+  margin: "2rem 0",
+  [theme.breakpoints.down('sm')]: {
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+},
+title: {
+  margin: "1rem 0"
+},
+link: {
+  textDecoration: "none",
+  color: "#0C1D33"
+},
+hotItemTitle: {
+  paddingLeft: "1rem",
+  [theme.breakpoints.down('sm')]: {
+    alignSelf: "center"
+  },
 }
 }));
-const Home = () => {
+const Home = (props) => {
   const classes = useStyles();
+  const products = useSelector(state => state.product.products);
+  console.log("home products", products);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    {props.match.path === "/" ?  dispatch(getProducts())
+    :  console.log("not home")}
+
+    return () => {
+      console.log("unsubscribe")
+    }
+  },[dispatch, props.match.path]);
+
     return (
         <Grid className={classes.root}>
           <Carousel/>
-          <Grid className={classes.main}>
+          <Grid container className={classes.main}>
             <Typography className={classes.heading} component="h1" variant="h1">Welcome to Cooper's Home Furniture</Typography>
             <Typography className={classes.paragraph} component="p" variant="p">
               We pride ourselves on  providing fast, affordable and reliable furniture across Central Texas.
               We believe that leasing furniture should be a thing of the past. Our financing option are hassle free, and owning your furniture outright is easy with us.  Currently we service the following areas, the Greater Austin area, Huston, Killeen, and Waco with plans to expand into more cities  in the up coming months. 
             </Typography>
-            <Grid className={classes.howItWorks}>
+
+            <Grid item className={classes.howItWorks}>
               <Typography component="h2" variant="h2">How We Work</Typography>
               <Grid className={classes.steps}>
                 <Grid className={classes.step}>
@@ -171,9 +240,24 @@ const Home = () => {
                 </Grid>
               </Grid>
             </Grid>
+
+            <Grid item className={classes.section}>
+              <Typography className={classes.hotItemTitle} component="h2" variant="h2">hot deals</Typography>
+              <Grid className={classes.hotItemSection}>
+                {products.slice(0, 3).map((product, key) => (
+                  //  <Link className={classes.link} to={`/product/?col=id&filter=${produ.id}`}>
+                    <Grid className={classes.hotItem} >
+                      <img className={classes.image} src={product.image_url} alt={product.title}/>
+                      <Typography variant="button" display="block" className={classes.title}>{product.title}</Typography>
+                    </Grid>
+                // </Link> 
+                ))}
+                
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
     )
 };
 
-export default Home;
+export default withRouter(Home);

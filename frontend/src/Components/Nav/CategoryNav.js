@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {useSelector} from "react-redux";
+import React, {useState, useEffect} from "react";
+import {useSelector, useDispatch} from "react-redux";
 import {withRouter} from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,6 +8,7 @@ import Portal from '@material-ui/core/Portal';
 import Button from '@material-ui/core/Button';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Divider from '@material-ui/core/Divider';
+import { getProducts } from "./../../Store/Actions/products";
 
 const useStyles = makeStyles((theme) => ({
   dropdown: {
@@ -45,7 +46,8 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     // border: "1px solid green",
     listStyle: "none",
-    color: "#374F71"
+    color: "#374F71",
+    cursor: "pointer",
   },
   divider: {
     width: "100%", 
@@ -54,11 +56,21 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const categories = ["Living Room", "Dining Room", "Bedrooms", "Bunkbeds", "Mattresses"]
+
 const CategoryNav = (props) => {
     const products = useSelector(state => state.product.products);
     const [open, setOpen] = useState(false);
     const classes = useStyles();
-    
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+      dispatch(getProducts())
+      return () => {
+        console.log("unsubscribe")
+      }
+    },[dispatch])
+
     const handleClick = () => {
       setOpen((prev) => !prev);
     };
@@ -66,7 +78,7 @@ const CategoryNav = (props) => {
     const handleClickAway = () => {
       setOpen(false);
     };
-
+console.log("products", products)
     return (
       <ClickAwayListener onClickAway={handleClickAway}>
       <div >
@@ -78,9 +90,9 @@ const CategoryNav = (props) => {
           <Portal>
             <div className={classes.dropdown}>
               <nav  aria-label="Departments Menu">
-              {products.map((product, key) => (
-                <ul  className={classes.listItem} key={key} button onClick={() => props.history.push(`/products/?col=category&filter=${products.category}`)}>
-                  <li className={classes.listItemText}><Typography >{product.category}</Typography></li>
+              {categories.map((category, key) => (
+                <ul  className={classes.listItem} key={key} button onClick={() => props.history.push(`/product/?col=category&filter=${category}`)}>
+                  <li className={classes.listItemText}><Typography >{category}</Typography></li>
                   <Divider  className={classes.divider}/>
                 </ul>
               ))} 

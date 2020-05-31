@@ -75,18 +75,6 @@ iconWrapper: {
     display: 'none',
   },
 },
-socialMedia: {
-  [theme.breakpoints.down('sm')]: { 
-    display: "none",
-  },
-},
-socialIcon: {
-  color: "white",
-  fontSize: "2rem",
-  [theme.breakpoints.down('sm')]: { 
-    fontSize: "1.5rem",
-  },
-},
 topNav: {
   display: "flex",
   backgroundColor: "#366E82",
@@ -108,20 +96,14 @@ mobileMenu: {
 },
 deliveryCaption: {
   textAlign: "left",
-  width: "50%",
+  width: "100%",
   color: "white",
-  [theme.breakpoints.down('sm')]: { 
-    display: 'none',
-  },
   // border: "1px solid red"
 },
 deliveryIcon: {
   marginRight: "2rem",
   color: "#F2CC7E",
   fontSize: "2rem",
-  [theme.breakpoints.down('sm')]: { 
-    display: 'none',
-  },
 },
 active: {
   color: "orange"
@@ -221,8 +203,34 @@ listItemText: {
 divider: {
   width: "100%", 
   color: "#EA4D1F",
-  // marginTop: "1rem", 
-}
+},
+
+'@keyframes blinker': {
+  from: {opacity: 1},
+  to: {opacity: 0}
+},
+"@keyframes drive": {
+  from: {
+    transform: "translate(0em,0)"
+  },
+  to: {
+    transform: "translate(100em,0)"
+  }
+},
+delivery: {
+  // border: "1px solid red",
+  width: "38%",
+  display: "flex",
+  alignItems: "center",
+  animationName: '$drive',
+  animationDuration: '12s',
+  animationTimingFunction: 'linear',
+  animationIterationCount:'infinite',
+  [theme.breakpoints.down('sm')]: { 
+    animation: "none",
+    width: "100%"
+  },
+},
 }));
 
 const NavBar = (props) => {
@@ -231,8 +239,6 @@ const NavBar = (props) => {
   const admin = useSelector(state => state.user.admin);
   const firebase_id = useSelector(state => state.user.firebase_id);
   const [open, setOpen] = useState(false);
-
-  const dispatch = useDispatch();
 
   const handleClick = () => {
     setOpen((prev) => !prev);
@@ -243,7 +249,8 @@ const NavBar = (props) => {
   };
   const logout = () => {
     auth.signOut()
-    dispatch(logOut())
+    console.log("click")
+    // dispatch(logOut())
     props.history.push("/");
   };
  
@@ -254,12 +261,17 @@ const NavBar = (props) => {
   const loginCart = () => {
     {loggedIn? props.history.push(`/profile/${firebase_id}/cart`) : props.history.push(`/signin`) }
   }
+  const login = () => {
+    {loggedIn ? logOut() : props.history.push(`/signin`) }
+  }
 
   return (
   <div className={classes.root}>
         <Grid className={classes.topNav}>
+          <Grid className={classes.delivery}>
           <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, WACO, AND HOUSTON</Typography>
           <LocalShipping className={classes.deliveryIcon}/>
+          </Grid>
           <div className={classes.sectionMobile}> 
             <ClickAwayListener
               onClickAway={handleClickAway}
@@ -272,30 +284,28 @@ const NavBar = (props) => {
                 {open ? (
                     <Portal>
                       <div className={classes.dropdown}>
+                       <nav aria-label="Menu" >
+                        <ul className={classes.listItem}>
+                          <li className={classes.listItemText}>
+                            <NavLink className={classes.menuLink} to={loggedIn ? `/profile/orders${firebase_id}/orders` : `/register`} href={loginCart}>
+                              <Typography>{loggedIn ? `ACCOUNT` : `CREATE ACCOUNT`}</Typography>
+                            </NavLink></li>
+                            <Divider  className={classes.divider}/>
+                          <li className={classes.listItemText}>
+                            <NavLink className={classes.menuLink} to={loggedIn ? `/profile/orders${firebase_id}/cart` : `/singin`} href={loginCart}>
+                              <Typography>{loggedIn ? `CART` : `LOGIN`}</Typography>
+                            </NavLink>
+                          </li>
+                          <Divider  className={classes.divider}/>
 
-                  <nav aria-label="Menu" >
-
-                  <ul className={classes.listItem}>
-                  <li className={classes.listItemText}>
-                    <NavLink className={classes.menuLink} to={loggedIn ? `/profile/orders${firebase_id}/orders` : `/register`} href={loginCart}>
-                      <Typography>{loggedIn ? `ACCOUNT` : `CREATE ACCOUNT`}</Typography>
-                    </NavLink></li>
-                    <Divider  className={classes.divider}/>
-                  <li className={classes.listItemText}>
-                    <NavLink className={classes.menuLink} to={loggedIn ? `/profile/orders${firebase_id}/cart` : `/singin`} href={loginCart}>
-                      <Typography>{loggedIn ? `CART` : `LOGIN`}</Typography>
-                    </NavLink>
-                  </li>
-                  <Divider  className={classes.divider}/>
-
-                  <li className={classes.listItemText}>
-                    <NavLink className={classes.menuLink} to='/contact'>
-                      <Typography>CONTACT</Typography>
-                    </NavLink>
-                  </li>
-                  <Divider  className={classes.divider}/>
-                  </ul>
-                  </nav>
+                          <li className={classes.listItemText}>
+                            <NavLink className={classes.menuLink} to='/contact'>
+                              <Typography>CONTACT</Typography>
+                            </NavLink>
+                          </li>
+                          <Divider  className={classes.divider}/>
+                        </ul>
+                      </nav>
                   </div>
                   </Portal>
                 ) : null}
@@ -309,34 +319,48 @@ const NavBar = (props) => {
             <Typography  className={classes.caption} variant="caption"> POWERED BY A.R.C. LIMITED </Typography>
           </NavLink>
           <Grid item  className={classes.iconWrapper}>
-    <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={loggedIn ? `/profile/${firebase_id}/orders` : `/register`}>
-      <IconButton aria-label="account" className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
-    <Typography variant="button" >
-        {loggedIn ? "ACCOUNT" : "CREATE ACCOUNT"}
-      </Typography>
-    </NavLink>
-    <NavLink className={classes.iconText} to={admin && loggedIn ? `/profile/${firebase_id}/orders` : `/cart`}>
-    <IconButton
-        aria-label="cart"
-        className={classes.iconBtn}
-    >
-      <Badge badgeContent={1} color="secondary">
-        {admin ? <LocalShipping className={classes.icon}/> :  <ShoppingCartIcon  className={classes.icon}/>}
-      </Badge> 
-    </IconButton>
-    <Typography variant="button"> {admin ? "Orders" :  "Cart"} </Typography>
-    </NavLink>
-    <NavLink className={classes.iconText} to={`/`}>
-      <IconButton
-          aria-label="logout"
-          className={classes.iconBtn}
-          onClick={logout}
-      >
-        {loggedIn ? <ExitToAppIcon  className={classes.icon}/> : <LoginIcon className={classes.icon}/>}
-      </IconButton>
-      <Typography variant="button"> {loggedIn ? "LOGOUT" : "LOGIN"} </Typography>
-    </NavLink>
-  </Grid>
+            <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={loggedIn ? `/profile/${firebase_id}/orders` : `/register`}>
+              <IconButton aria-label="account" className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
+              <Typography variant="button" >
+                {loggedIn ? "ACCOUNT" : "CREATE ACCOUNT"}
+              </Typography>
+            </NavLink>
+            <NavLink className={classes.iconText} to={admin && loggedIn ? `/profile/${firebase_id}/orders` : `/cart`}>
+            <IconButton
+                aria-label="cart"
+                className={classes.iconBtn}
+            >
+              <Badge badgeContent={1} color="secondary">
+                {admin ? <LocalShipping className={classes.icon}/> :  <ShoppingCartIcon  className={classes.icon}/>}
+              </Badge> 
+            </IconButton>
+            <Typography variant="button"> {admin ? "Orders" :  "Cart"} </Typography>
+            </NavLink>
+            {loggedIn ? 
+             <IconButton
+                 aria-label={loggedIn ? "LOGOUT" : "LOGIN"}
+                 className={classes.iconBtn}
+               
+             >
+               <ExitToAppIcon  onClick={logout} className={classes.icon}/> 
+               <Typography variant="button"> {loggedIn ? "LOGOUT" : "LOGIN"} </Typography>
+
+             </IconButton>
+
+         :
+           <NavLink className={classes.iconText} to={`/`}>
+   <IconButton
+                 aria-label={loggedIn ? "LOGOUT" : "LOGIN"}
+                 className={classes.iconBtn}
+               
+             >
+           <LoginIcon  onClick={login} className={classes.icon}/>
+           </IconButton>
+           <Typography variant="button"> {loggedIn ? "LOGOUT" : "LOGIN"} </Typography>
+
+           </NavLink>
+          }
+          </Grid>
         </Grid>
         <Grid className={classes.catNav}>
             <Dropdown/>

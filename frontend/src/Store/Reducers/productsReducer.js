@@ -2,7 +2,6 @@ import { productsTypes } from '../Actions/ActionTypes';
 
 const initialState = {
     products: [],
-    id: null,
     error: false,
     errorMsg: null,
     loading: false
@@ -38,7 +37,6 @@ export default (state = initialState, actions) => {
                 ...state,
                 loading: false,
                 products: actions.payload,
-                id: actions.payload.id
             }
         case productsTypes.GET_PRODUCT_FAIL:
             return {
@@ -56,7 +54,7 @@ export default (state = initialState, actions) => {
                 return {
                     ...state,
                     loading: false,
-                    products: actions.payload,
+                    products: actions.payload[0],
                 }
             case productsTypes.GET_PRODUCT_BY_FAIL:
                 return {
