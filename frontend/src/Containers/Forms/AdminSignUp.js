@@ -96,45 +96,78 @@ const useStyles = makeStyles(theme => ({
     const classes = useStyles();
     const dispatch = useDispatch();
 
-   const signUpWithEmailAndPassword = () => {
-    if (!email || !password) {
-      setError(true)
-      setErrorMsg("Please enter email and password")
-    }
-    auth
-        .createUserWithEmailAndPassword(email, password)
-        .then(({ user }) => {
-          if (user) {
-            if (user.email) {
+    const signUpWithEmailAndPassword = () => {
+      if (!email || !password) {
+        setError(true)
+        setErrorMsg("Please enter email and password")
+      }
+      auth
+          .createUserWithEmailAndPassword(email, password)
+          .then(({ user }) => {
+            if (user) {
+              console.log("incoming user", user);
+              if (user.email) {
                 const { email, uid } = user;
-                auth.currentUser.getIdTokenResult().then ( (idToken) => {
-                  if (!!idToken.claims.admin) {
-                    setError(true)
-                    setErrorMsg("This user is already an admin")
-                  } else {
-                    console.log("User:", user)
-                    const userObj = {
-                      email,
-                      firebase_id: user.uid,
-                      first_name: first_name,
-                      last_name: last_name,
-                      };
-                      dispatch(registerAdmin(userObj))
-                      props.history.push(`/profile/${userObj.firebase_id}/orders`)
-                  }
-                })
-            } else {
-              setError(true);
-              setErrorMsg("A user was not added")
+                console.log("emailuser", user);
+                const userObj = {
+                  email,
+                  firebase_id: uid,
+                  first_name: first_name,
+                  last_name: last_name,
+                  // admin: true
+                  };
+                  console.log("userObj", userObj)
+                  dispatch(registerAdmin(userObj))
+                    props.history.push(`/profile/${userObj.firebase_id}/orders`)
+              }
             }
-          }
-        })
-        .catch(err => {
-          console.log("Error Authenticating User:", err)
-          setError(true)
-          setErrorMsg(err.message)
-        })
-  };
+          })
+          .catch(err => {
+            console.log("Error Authenticating User:", err)
+            setError(true)
+            setErrorMsg(err.message)
+          })
+    };
+  //  const signUpWithEmailAndPassword = () => {
+  //   if (!email || !password) {
+  //     setError(true)
+  //     setErrorMsg("Please enter email and password")
+  //   }
+  //   auth
+  //       .createUserWithEmailAndPassword(email, password)
+  //       .then(({ user }) => {
+  //         if (user) {
+  //           if (user.email) {
+  //               const { email, uid } = user;
+  //               auth.currentUser.getIdTokenResult().then ( (idToken) => {
+  //                 if (!!idToken.claims.admin) {
+  //                   setError(true)
+  //                   setErrorMsg("This user is already an admin")
+  //                 } else {
+  //                   console.log("User:", user)
+  //                   const userObj = {
+  //                     email,
+  //                     firebase_id: user.uid,
+  //                     first_name: first_name,
+  //                     last_name: last_name,
+
+  //                     };
+  //                     dispatch(registerAdmin(userObj))
+  //                     props.history.push(`/profile/${userObj.firebase_id}/orders`)
+  //                 }
+  //               })
+  //           } else {
+  //             setError(true);
+  //             setErrorMsg("A user was not added")
+  //           }
+  //         }
+  //       })
+  //       .catch(err => {
+  //         console.log("Error Authenticating User:", err)
+  //         setError(true)
+  //         setErrorMsg(err.message)
+  //       })
+  // };
 
       return (
         <Grid container item xs={12} className={classes.wrapper}>

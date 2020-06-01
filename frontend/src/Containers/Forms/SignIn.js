@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {withRouter} from "react-router-dom"
-import {useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {auth} from '../../firebaseConfig';
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
@@ -8,6 +8,7 @@ import FormControl from "@material-ui/core/FormControl";
 import Grid from '@material-ui/core/Grid';
 import TextField from "@material-ui/core/TextField";
 import { purpleColor } from '../../GlobalStyles/styles';
+import { logIn } from '../../Store/Actions/users';
 
 const useStyles = makeStyles(theme => ({
     wrapper: {
@@ -91,16 +92,21 @@ const SignIn = (props) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
-    const firebase_id = useSelector(state => state.user.firebase_id);
     const classes = useStyles();
-    console.log("props from sing in: ", props)
+    const dispatch = useDispatch()
     const signInWithEmail = () => {
         if (!email || !password) {
             setError(true)
             setErrorMsg("Field Required")
         }
-        auth.signInWithEmailAndPassword(email, password).then(res => {
-            props.history.push(`/profile/${firebase_id}/orders`)
+        auth.signInWithEmailAndPassword(email, password).then(({user}) => {
+          if (user) {
+            dispatch(logIn(user))
+            props.history.push(`/profile/${user.uid}/orders`)
+          } else {
+            console.log("error no user")
+          }
+            
         })
         .catch (err => {
             setError(true)
@@ -112,15 +118,14 @@ const SignIn = (props) => {
         <Grid>
             <form className={classes.form} >    
                 <FormControl className={classes.formControl}>
-                    <label htmlFor="email">Email</label>
                     <TextField
                         error={error}
-                        for="email"
                         fullWidth
                         required
                         className={classes.textFieldWide}
                         id="email"
                         placeholder="Email"
+                        label="Email"
                         margin="dense"
                         variant="outlined"
                         type="email"
@@ -128,15 +133,14 @@ const SignIn = (props) => {
                         helperText={errorMsg}
                         onChange={e => setEmail(e.target.value)}
                         />
-                     <label htmlFor="password">Password</label>
 
                     <TextField
                         error={error}
-                        for="password"
                         required
                         className={classes.textFieldWide}
                         id="password"
                         placeholder="Password"
+                        label="Password"
                         type="password"
                         margin="dense"
                         variant="outlined"

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Route, Switch, NavLink} from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 // import ProfileNav from '../../Components/Nav/ProfileNav';
@@ -8,11 +8,13 @@ import CustomersPage from "./../CustomersPage/Customers";
 import AddProductPage from "./../AddProductPage/AddProduct";
 import UnauthorizedPage from "./../ErrorPage/Unauthorized";
 import Settings from "./Settings";
-import {useSelector} from "react-redux";
+import StoreManagerPage from "./../StoreManagerPage/AdminConsole";
+import {useSelector, useDispatch} from "react-redux";
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import { getById } from '../../Store/Actions/users';
 
 
 
@@ -20,7 +22,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
     border: "2px solid red",
-    marginTop: "4rem",
+    // marginTop: "4rem",
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
@@ -99,10 +101,13 @@ const Profile = (props) => {
   const admin = useSelector(state => state.user.admin);
   const hash = props.location.hash[1]
   const hashToNum = parseInt(hash)
-  console.log("hash", hash)
-
+  console.log("is admin", admin)
+  const dispatch = useDispatch();
   const [value, setValue] = useState(0);
 
+  useEffect(() => {
+    dispatch(getById(firebase_id))
+  })
 
   const handleChange = (event, newValue) => {
    
@@ -118,35 +123,38 @@ const Profile = (props) => {
     )
     return (
       <Grid className={classes.root}>
-    
-          <div className={classes.tabWrapper} >
-      <AppBar className={classes.profileNav} position="fixed">
-        <Tabs className={classes.tabs} value={value} onChange={handleChange} aria-label="profile tabs" variant="scrollable" scrollButtons="auto">
-          {/* <Tab label="Home" {...a11yProps(0)} /> */}
-          <Tab label="Orders" {...a11yProps(0)} />
-          <Tab label={admin ? "Customers" : "Address"} {...a11yProps(1)} />
-          <Tab label={admin ? "Add Product" : "Payment Methods"} {...a11yProps(2)} />
-          <Tab label="Account Settings" {...a11yProps(3)} />
+    {admin ? <StoreManagerPage/>
+   :
+   <div className={classes.tabWrapper} >
+   <AppBar className={classes.profileNav} position="fixed">
+     <Tabs className={classes.tabs} value={value} onChange={handleChange} aria-label="profile tabs" variant="scrollable" scrollButtons="auto">
+       {/* <Tab label="Home" {...a11yProps(0)} /> */}
+       <Tab label="Orders" {...a11yProps(0)} />
+       <Tab label={admin ? "Customers" : "Address"} {...a11yProps(1)} />
+       <Tab label={admin ? "Add Product" : "Payment Methods"} {...a11yProps(2)} />
+       <Tab label="Account Settings" {...a11yProps(3)} />
 
-        </Tabs>
-      </AppBar>
-      {/* <TabPanel value={value} index={0}>
-        Item One
-      </TabPanel> */}
-      <TabPanel value={value} index={0} id="orders">
-        Orders
-      </TabPanel>
-      <TabPanel value={value} index={1} id={admin ? "Customers" : "Address"}>
-      {admin ? <CustomersPage/> : "Address"}
-      </TabPanel>
+     </Tabs>
+   </AppBar>
+   {/* <TabPanel value={value} index={0}>
+     Item One
+   </TabPanel> */}
+   <TabPanel value={value} index={0} id="orders">
+     Orders
+   </TabPanel>
+   <TabPanel value={value} index={1} id={admin ? "Customers" : "Address"}>
+   {admin ? <CustomersPage/> : "Address"}
+   </TabPanel>
 
-      <TabPanel value={value} index={2} id={admin ? "add products" : "Payment Methods"}>
-      {admin ? <AddProductPage/> : "Payment Methods"} 
-      </TabPanel>
-      <TabPanel value={value} index={3} id="account settings">
-        Account Settings
-      </TabPanel>
-    </div>
+   <TabPanel value={value} index={2} id={admin ? "add products" : "Payment Methods"}>
+   {admin ? <AddProductPage/> : "Payment Methods"} 
+   </TabPanel>
+   <TabPanel value={value} index={3} id="account settings">
+     Account Settings
+   </TabPanel>
+ </div>
+  }
+          
     
       </Grid> 
     )

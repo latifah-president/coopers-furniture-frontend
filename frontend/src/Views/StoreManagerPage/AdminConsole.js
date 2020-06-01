@@ -43,7 +43,8 @@ const AdminConsole = () => {
     const classes = useStyles()
     return (
         <div className={classes.root}>
-        <CssBaseline />
+        {/* <CssBaseline /> */}
+        <div>Store Manager</div>
         </div>
     )
 };

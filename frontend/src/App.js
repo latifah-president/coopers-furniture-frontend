@@ -23,33 +23,39 @@ function App(props) {
   const [home, setHome] = useState(null)
   const loggedIn = useSelector(state => state.user.loggedIn)
   const dispatch = useDispatch();
-
+console.log("logged in", loggedIn)
   useEffect(() => {
-    {props.match.path === "/product" ? setHome(false) : dispatch(getProducts())}
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        const { email, uid } = user;
-        console.log(user)
-          firebase.auth()
-          .currentUser.getIdToken()
-          .then((idToken) => {
-            if(idToken) {
-              dispatch(initAuth(email, uid, idToken));
-              // setAdmin(true);
-            } else {
-              console.log("no token")
-              // setAdmin(false)
-            }
-          })
-          .catch((err) => {
-            console.log(err.message);
-          });
-      }
-    });
+    // {props.match.path === "/products" ? setHome(false) : dispatch(getProducts())}
+
+      // if (loggedIn) {
+        firebase.auth().onAuthStateChanged((user) => {
+          if (user) {
+            const { email, uid } = user;
+            console.log(user)
+              firebase.auth()
+              .currentUser.getIdToken()
+              .then((idToken) => {
+                if(idToken) {
+                  dispatch(initAuth(email, uid, idToken));
+                  // setAdmin(true);
+                } else {
+                  console.log("no token")
+                  // setAdmin(false)
+                }
+              })
+              .catch((err) => {
+                console.log(err.message);
+              });
+          }
+        })
+       //}
+     
+    
+  
     return () => {
       console.log("unsubscribe ");
     };
-  }, [ dispatch, loggedIn]);
+  }, [dispatch]);
 
 let adminRoutes = (
   <Switch>

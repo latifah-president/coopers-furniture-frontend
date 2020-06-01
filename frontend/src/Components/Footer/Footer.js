@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
       bottom: 0,
       width: "100%",
       zIndex: 2,
-      border: "1px solid orange",
+      // border: "1px solid orange",
       height: 42,
       backgroundColor: "#366E82",
       display: "flex",

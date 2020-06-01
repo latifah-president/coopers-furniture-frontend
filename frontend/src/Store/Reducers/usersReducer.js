@@ -1,4 +1,5 @@
 import { authTypes } from "./../Actions/ActionTypes";
+import { userTypes } from "./../Actions/ActionTypes";
 
 const initialState = {
     // user: [],
@@ -16,7 +17,8 @@ const initialState = {
     total: 0.00,
     loading: false,
     loggedIn: false,
-    error: null
+    error: null,
+    authenticated: false,
 };
 
 export default (state = initialState, actions) => {
@@ -31,7 +33,7 @@ export default (state = initialState, actions) => {
             return {
                 ...state,
                 loading: false,
-                loggedIn: true,
+                authenticated: true,
                 firebase_id: actions.payload[0].firebase_id,
                 email: actions.payload[0].email,
                 first_name: actions.payload[0].first_name,
@@ -59,18 +61,67 @@ export default (state = initialState, actions) => {
                     ...state,
                     loading: true
                 }
-            case authTypes.LOGIN_SUCCESS:
+            case authTypes.LOGOUT_SUCCESS:
                 return {
                     ...state,
                     loading: false,
-                    loggedIn: false,
+                    loggedIn: actions.payload,
                 }
             case authTypes.LOGOUT_FAIL:
                 return {
                     ...state,
                     loading: false,
-                    error: true
+                    error: actions.payload
                 }
+                case authTypes.LOGIN_START:
+                    return {
+                        ...state,
+                        loading: true
+                    }
+                case authTypes.LOGIN_SUCCESS:
+                    return {
+                        ...state,
+                        loading: false,
+                        loggedIn: actions.payload,
+                    }
+                case authTypes.LOGIN_FAIL:
+                    return {
+                        ...state,
+                        loading: false,
+                        error: actions.payload
+                    }
+                    case userTypes.GET_USER_START:
+                        return {
+                            ...state,
+                            loading: true
+                        }
+                    case userTypes.GET_USER_SUCCESS:
+                        return {
+                            ...state,
+                            loading: false,
+                            loggedIn: true,
+                            firebase_id: actions.payload[0].firebase_id,
+                            email: actions.payload[0].email,
+                            first_name: actions.payload[0].first_name,
+                            last_name: actions.payload[0].last_name,
+                            address: actions.payload[0].address,
+                            city: actions.payload[0].city, 
+                            state: actions.payload[0].state,
+                            zip: actions.payload[0].zip,
+                            phone: actions.payload[0].phone,
+                            admin: actions.payload[0].admin,
+                            cart: [
+                                ...state.cart,
+                                actions.payload[1]
+                            ],
+                            total: actions.payload[3]
+                        }
+                        case userTypes.GET_USER_FAIL:
+                            return {
+                                ...state,
+                                loading: false,
+                                error: actions.payload
+                            }
             default:
             return state;
     };

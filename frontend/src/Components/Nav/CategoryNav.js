@@ -11,6 +11,13 @@ import Divider from '@material-ui/core/Divider';
 import { getProducts } from "./../../Store/Actions/products";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    // border: "1px solid orange",
+    alignItems: "center",
+    width: "33%",
+    justifyContent: "space-between",
+  },
   dropdown: {
     position: 'fixed',
     width: 300,
@@ -32,7 +39,9 @@ const useStyles = makeStyles((theme) => ({
   btn: {
     color: "white",
     fontSize: "1.3rem",
-    textDecoration: "none"
+    textDecoration: "none",
+    // border: "1px solid green",
+    padding: 0,
   },
   icon: {
     fontSize: "2rem",
@@ -53,8 +62,7 @@ const useStyles = makeStyles((theme) => ({
   divider: {
     width: "100%", 
     color: "#EA4D1F",
-    // marginTop: "1rem", 
-  }
+  },
 }));
 
 const categories = ["Living Room", "Dining Room", "Bedrooms", "Bunkbeds", "Mattresses"]
@@ -65,12 +73,12 @@ const CategoryNav = (props) => {
     const classes = useStyles();
     const dispatch = useDispatch();
 
-    useEffect(() => {
-      dispatch(getProducts())
-      return () => {
-        console.log("unsubscribe")
-      }
-    },[dispatch])
+    // useEffect(() => {
+    //   dispatch(getProducts())
+    //   return () => {
+    //     console.log("unsubscribe")
+    //   }
+    // },[dispatch])
 
     const handleClick = () => {
       setOpen((prev) => !prev);
@@ -81,13 +89,13 @@ const CategoryNav = (props) => {
     };
 console.log("products", products)
     return (
+      <div className={classes.root}>
       <ClickAwayListener onClickAway={handleClickAway}>
       <div >
         <Button className={classes.btn} type="button" onClick={handleClick}>
           DEPARTMENTS
           <ArrowDropDownIcon className={classes.icon}/>
         </Button>
-        <Link className={classes.btn} to="/products">SHOP ALL PRODUCTS</Link>
         {open ? (
           <Portal>
             <div className={classes.dropdown}>
@@ -104,6 +112,8 @@ console.log("products", products)
         ) : null}
       </div>
     </ClickAwayListener>
+    <Button className={classes.btn} onClick={() => props.history.push("/products")}>SHOP ALL PRODUCTS</Button>
+    </div>
     )
 };
 

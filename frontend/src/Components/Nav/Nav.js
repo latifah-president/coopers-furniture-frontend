@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
 import { withRouter, NavLink } from "react-router-dom";
-import { auth} from '../../firebaseConfig';
+import {auth} from '../../firebaseConfig';
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -18,6 +18,7 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Dropdown from "./CategoryNav";
 import Divider from '@material-ui/core/Divider';
 import Portal from '@material-ui/core/Portal';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -239,7 +240,7 @@ const NavBar = (props) => {
   const admin = useSelector(state => state.user.admin);
   const firebase_id = useSelector(state => state.user.firebase_id);
   const [open, setOpen] = useState(false);
-
+  const dispatch = useDispatch()
   const handleClick = () => {
     setOpen((prev) => !prev);
   };
@@ -248,10 +249,16 @@ const NavBar = (props) => {
     setOpen(false);
   };
   const logout = () => {
-    auth.signOut()
-    console.log("click")
-    // dispatch(logOut())
+    // auth.signOut();
+auth.signOut()
+      const msg = "User Signed Out Successfully"
+      dispatch(logOut(msg))
     props.history.push("/");
+    // })
+    // .catch(err => {
+    //   console.log("Error signing out: ", err)
+    // }) 
+    
   };
  
   const profileSignUp = () => {
@@ -267,6 +274,8 @@ const NavBar = (props) => {
 
   return (
   <div className={classes.root}>
+              <button type="submit" onClick={logout}>logout</button>
+
         <Grid className={classes.topNav}>
           <Grid className={classes.delivery}>
           <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, WACO, AND HOUSTON</Typography>
@@ -337,34 +346,22 @@ const NavBar = (props) => {
             <Typography variant="button"> {admin ? "Orders" :  "Cart"} </Typography>
             </NavLink>
             {loggedIn ? 
-             <IconButton
-                 aria-label={loggedIn ? "LOGOUT" : "LOGIN"}
-                 className={classes.iconBtn}
-               
-             >
+            <div >
+              <IconButton  aria-label= "LOGOUT" className={classes.iconBtn}>
                <ExitToAppIcon  onClick={logout} className={classes.icon}/> 
-               <Typography variant="button"> {loggedIn ? "LOGOUT" : "LOGIN"} </Typography>
-
-             </IconButton>
-
-         :
-           <NavLink className={classes.iconText} to={`/`}>
-   <IconButton
-                 aria-label={loggedIn ? "LOGOUT" : "LOGIN"}
-                 className={classes.iconBtn}
-               
-             >
-           <LoginIcon  onClick={login} className={classes.icon}/>
-           </IconButton>
-           <Typography variant="button"> {loggedIn ? "LOGOUT" : "LOGIN"} </Typography>
-
-           </NavLink>
-          }
+             </IconButton> 
+             <Typography style={{color: "#374F71"}} variant="button">LOGOUT</Typography>
+          </div> 
+             :
+            <NavLink className={classes.iconText} to={`/signin`}>
+              <IconButton onClick={login} aria-label="LOGIN" className={classes.iconBtn}>
+                <LoginIcon   className={classes.icon}/>
+              </IconButton>
+              <Typography variant="button">LOGIN</Typography>
+           </NavLink> }
           </Grid>
         </Grid>
-        <Grid className={classes.catNav}>
-            <Dropdown/>
-        </Grid>
+        <Grid className={classes.catNav}><Dropdown/></Grid>
     </div>
   )
 };
