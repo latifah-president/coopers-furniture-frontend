@@ -21,12 +21,15 @@ import { getById } from '../../Store/Actions/users';
 const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
-    border: "2px solid red",
+    border: "2px solid teal",
     // marginTop: "4rem",
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    backgroundColor: "white"
+    height: "100vh"
+    // [theme.breakpoints.down('sm')]: { 
+     
+    // },
     // color: `${fontColor}`
   },
   tabWrapper: {
@@ -114,16 +117,12 @@ const Profile = (props) => {
       setValue(newValue);
    
   };
-  console.log("prams", props)
-    let adminRoutes = (
-      <Switch>
-        <Route exact path="/admin/customers" component={CustomersPage}/>
-        <Route exact path='/admin/addproduct' component={AddProductPage}/>
-      </Switch>
-    )
+  console.log("prams", props.match.path)
+  
     return (
       <Grid className={classes.root}>
-    {admin ? <StoreManagerPage/>
+    {admin ?          <StoreManagerPage/>
+
    :
    <div className={classes.tabWrapper} >
    <AppBar className={classes.profileNav} position="fixed">

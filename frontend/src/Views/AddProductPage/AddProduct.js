@@ -11,7 +11,11 @@ const useStyles = makeStyles(theme => ({
         justifyContent: "center",
         alignItems: "center",
         border: "2px solid green",
-        marginTop: "6rem"
+        width: "100%",
+        height: "100vh"
+        // [theme.breakpoints.down('xs')]: { 
+        //     zIndex: 1300,
+        // },
     },
     title: {
         margin: " auto",

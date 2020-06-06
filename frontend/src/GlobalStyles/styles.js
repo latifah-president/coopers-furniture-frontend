@@ -9,7 +9,9 @@ const lightGrayColor = '#999';
 const  secondaryBtnColor  = "#80D0C7";
 const mainBtnColor = "#35ACDA";
 const GreenRadient = "#80D0C7";
-
+const greenColor = "#366F82";
+const yellowColor = "#F2CC7E";
+const iconColor = "#374F70";
 
 const smrtphn = '370px'; 
 const tablet = '600px';
@@ -195,7 +197,10 @@ export const DarkTitle = styled.h2`
     margin-top: 3rem;
     border: 1px solid orange;
 `;
-export {
+
+export const categories = ["Living Room", "Dining Room", "Bedrooms", "Bunkbeds", "Mattresses"]
+
+export  {
     whiteColor, 
     goldColor,
     purpleColor,
@@ -205,5 +210,8 @@ export {
     mainBtnColor,
     secondaryBtnColor,
     GreenRadient,
+    greenColor,
+    yellowColor,
+    iconColor,
 }
 

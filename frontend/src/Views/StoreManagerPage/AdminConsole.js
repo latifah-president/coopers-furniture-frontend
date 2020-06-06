@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
+import {Switch, Route, withRouter} from "react-router-dom";
+import AddProductPage from "./../AddProductPage/AddProduct";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -12,12 +13,16 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import Drawer from "./../../Components/Admin/Drawer";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
+    // border: "1px solid blue",
+    width: "100%",
+    
   },
   appBar: {
     width: `calc(100% - ${drawerWidth}px)`,
@@ -39,14 +44,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AdminConsole = () => {
+
+const AdminConsole = (props) => {
     const classes = useStyles()
+    console.log("prams", props.match.path)
     return (
-        <div className={classes.root}>
-        {/* <CssBaseline /> */}
-        <div>Store Manager</div>
-        </div>
+        <Drawer>
+          <div className={classes.root}>
+            {/* <Switch> */}
+            <Route path={`${props.match.path}/admin/addproduct`} exact="true" component={AddProductPage} />
+            {/* </Switch> */}
+
+          </div>
+
+        </Drawer>
+ 
     )
 };
 
-export default AdminConsole
+export default withRouter(AdminConsole);

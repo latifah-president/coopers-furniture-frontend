@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {useSelector, useDispatch} from "react-redux";
-import { withRouter, NavLink } from "react-router-dom";
+import { withRouter, NavLink, Link } from "react-router-dom";
 import {auth} from '../../firebaseConfig';
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { makeStyles } from '@material-ui/core/styles';
@@ -18,6 +18,14 @@ import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Dropdown from "./CategoryNav";
 import Divider from '@material-ui/core/Divider';
 import Portal from '@material-ui/core/Portal';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import IconExpandLess from '@material-ui/icons/ExpandLess'
+import IconExpandMore from '@material-ui/icons/ExpandMore'
+import Collapse from '@material-ui/core/Collapse'
+import {categories} from "./../../GlobalStyles/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -224,7 +232,7 @@ delivery: {
   display: "flex",
   alignItems: "center",
   animationName: '$drive',
-  animationDuration: '12s',
+  animationDuration: '1000s',
   animationTimingFunction: 'linear',
   animationIterationCount:'infinite',
   [theme.breakpoints.down('sm')]: { 
@@ -240,7 +248,9 @@ const NavBar = (props) => {
   const admin = useSelector(state => state.user.admin);
   const firebase_id = useSelector(state => state.user.firebase_id);
   const [open, setOpen] = useState(false);
-  const dispatch = useDispatch()
+  const [openMenu, setOpenMenu] = useState(false);
+  const dispatch = useDispatch();
+
   const handleClick = () => {
     setOpen((prev) => !prev);
   };
@@ -272,10 +282,30 @@ auth.signOut()
     {loggedIn ? logOut() : props.history.push(`/signin`) }
   }
 
+  const handleMenuClick = () => {
+    setOpenMenu(!openMenu)
+  }
+
+  const subMenu = (
+    <List>
+      <ListItem button onClick={handleMenuClick}>
+      <ListItemText primary="Deparments"/>
+      {openMenu ? <IconExpandLess /> : <IconExpandMore />}
+      </ListItem>
+      <Collapse in={openMenu} timeout="auto" unmountOnExit>
+        <Divider />
+        <List component="div" disablePadding>
+          {categories.map((key, category) => (
+            <ListItem key={key} component={ Link } to={`/product/?col=category&filter=${category}`} variant="contained" className={classes.menuItem}>
+            <ListItemText inset primary={category} />
+          </ListItem>
+          ))}
+        </List>
+      </Collapse>
+    </List>
+  )
   return (
   <div className={classes.root}>
-              <button type="submit" onClick={logout}>logout</button>
-
         <Grid className={classes.topNav}>
           <Grid className={classes.delivery}>
           <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, WACO, AND HOUSTON</Typography>
@@ -315,6 +345,7 @@ auth.signOut()
                           <Divider  className={classes.divider}/>
                         </ul>
                       </nav>
+                      {subMenu}
                   </div>
                   </Portal>
                 ) : null}

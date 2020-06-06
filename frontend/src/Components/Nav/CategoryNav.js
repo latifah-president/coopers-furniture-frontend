@@ -9,6 +9,7 @@ import Button from '@material-ui/core/Button';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Divider from '@material-ui/core/Divider';
 import { getProducts } from "./../../Store/Actions/products";
+import {categories} from "./../../GlobalStyles/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     width: "33%",
     justifyContent: "space-between",
+    [theme.breakpoints.down('xs')]: { 
+     display: "none"
+    }
   },
   dropdown: {
     position: 'fixed',
@@ -42,6 +46,9 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "none",
     // border: "1px solid green",
     padding: 0,
+    [theme.breakpoints.down('sm')]: { 
+      fontSize: "1rem"
+    }
   },
   icon: {
     fontSize: "2rem",
@@ -65,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const categories = ["Living Room", "Dining Room", "Bedrooms", "Bunkbeds", "Mattresses"]
+// const categories = ["Living Room", "Dining Room", "Bedrooms", "Bunkbeds", "Mattresses"]
 
 const CategoryNav = (props) => {
     const products = useSelector(state => state.product.products);

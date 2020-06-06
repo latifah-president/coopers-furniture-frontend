@@ -5,7 +5,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import Grid from '@material-ui/core/Grid';
 import TextField from "@material-ui/core/TextField";
-import {GreenRadient, mainBtnColor} from '../../GlobalStyles/styles'
 import {useDispatch} from 'react-redux';
 import { registerAdmin } from "../../Store/Actions/admin";
 
@@ -75,12 +74,12 @@ const useStyles = makeStyles(theme => ({
     margin: "2rem auto",
     color: "white",
     width: "60%",
-    backgroundColor: `${GreenRadient}`,
+    // backgroundColor: `${GreenRadient}`,
 
-    "&:hover": {
-      backgroundColor: `${mainBtnColor}`,
+    // "&:hover": {
+    //   backgroundColor: `${mainBtnColor}`,
 
-    }
+    // }
   }
 }));
 
