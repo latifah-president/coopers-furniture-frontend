@@ -140,6 +140,7 @@ section: {
   alignItems: "flex-start",
   flexDirection: "column",
   paddingTop: "2rem",
+  // border: "1px solid red"
 },
 hotItem: {
   // border: "1px solid purple",
@@ -174,7 +175,7 @@ title: {
   margin: "1rem 0"
 },
 link: {
-  textDecoration: "none",
+  // textDecoration: "none",
   color: "#0C1D33"
 },
 hotItemTitle: {
@@ -182,6 +183,18 @@ hotItemTitle: {
   [theme.breakpoints.down('sm')]: {
     alignSelf: "center"
   },
+},
+centerSection: {
+  // color: "#366E82",
+  width: "100%",
+  margin: "2rem 0",
+  textTransform: "uppercase",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  flexDirection: "column",
+  paddingTop: "2rem",
+  // border: "1px solid red"
 }
 }));
 const Home = (props) => {
@@ -246,15 +259,20 @@ const Home = (props) => {
               <Typography className={classes.hotItemTitle} component="h2" variant="h2">hot deals</Typography>
               <Grid className={classes.hotItemSection}>
                 {products.slice(0, 3).map((product, key) => (
-                  //  <Link className={classes.link} to={`/product/?col=id&filter=${produ.id}`}>
-                    <Grid className={classes.hotItem} >
+                    <Grid className={classes.hotItem} key={key}>
                       <img className={classes.image} src={product.image_url} alt={product.title}/>
-                      <Typography variant="button" display="block" className={classes.title}>{product.title}</Typography>
+                     <Link className={classes.link} to={`/product/${product.id}`}> <Typography variant="button" display="block" className={classes.title}>{product.title}</Typography>  </Link> 
                     </Grid>
-                // </Link> 
+               
                 ))}
                 
               </Grid>
+            </Grid>
+            <Grid item className={classes.centerSection}>
+              <Typography  component="h2" variant="h2">Join the family</Typography>
+              <Typography className={classes.paragraph} style={{textTransform: "none"}} component="p" variant="p">
+              Anyone can sign up to be a Coopers Home Furniture sales agent. We welcome any and everyone willing to go the extra mile to provide quality customer service and sales. To learn more visit our <Link className={classes.link} to="/chfagent">CHF sales agent page.</Link>
+            </Typography>
             </Grid>
           </Grid>
         </Grid>

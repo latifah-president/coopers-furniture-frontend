@@ -232,7 +232,7 @@ delivery: {
   display: "flex",
   alignItems: "center",
   animationName: '$drive',
-  animationDuration: '1000s',
+  animationDuration: '12s',
   animationTimingFunction: 'linear',
   animationIterationCount:'infinite',
   [theme.breakpoints.down('sm')]: { 
@@ -272,7 +272,7 @@ auth.signOut()
   };
  
   const profileSignUp = () => {
-    {loggedIn ? props.history.push(`/profile/${firebase_id}/orders`) : props.history.push(`/register`) }
+    {loggedIn ? props.history.push(`/profile/${firebase_id}`) : props.history.push(`/register`) }
     
   }
   const loginCart = () => {
@@ -326,7 +326,7 @@ auth.signOut()
                        <nav aria-label="Menu" >
                         <ul className={classes.listItem}>
                           <li className={classes.listItemText}>
-                            <NavLink className={classes.menuLink} to={loggedIn ? `/profile/orders${firebase_id}/orders` : `/register`} href={loginCart}>
+                            <NavLink className={classes.menuLink} to={loggedIn ? `/profile/${firebase_id}` : `/register`} href={loginCart}>
                               <Typography>{loggedIn ? `ACCOUNT` : `CREATE ACCOUNT`}</Typography>
                             </NavLink></li>
                             <Divider  className={classes.divider}/>
@@ -359,13 +359,13 @@ auth.signOut()
             <Typography  className={classes.caption} variant="caption"> POWERED BY A.R.C. LIMITED </Typography>
           </NavLink>
           <Grid item  className={classes.iconWrapper}>
-            <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={loggedIn ? `/profile/${firebase_id}/orders` : `/register`}>
+            <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={loggedIn ? `/profile/${firebase_id}` : `/register`}>
               <IconButton aria-label="account" className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
               <Typography variant="button" >
                 {loggedIn ? "ACCOUNT" : "CREATE ACCOUNT"}
               </Typography>
             </NavLink>
-            <NavLink className={classes.iconText} to={admin && loggedIn ? `/profile/${firebase_id}/orders` : `/cart`}>
+            <NavLink className={classes.iconText} to={admin && loggedIn ? `/profile/${firebase_id}` : `/cart`}>
             <IconButton
                 aria-label="cart"
                 className={classes.iconBtn}
@@ -377,9 +377,9 @@ auth.signOut()
             <Typography variant="button"> {admin ? "Orders" :  "Cart"} </Typography>
             </NavLink>
             {loggedIn ? 
-            <div >
+            <div onClick={logout}>
               <IconButton  aria-label= "LOGOUT" className={classes.iconBtn}>
-               <ExitToAppIcon  onClick={logout} className={classes.icon}/> 
+               <ExitToAppIcon   className={classes.icon}/> 
              </IconButton> 
              <Typography style={{color: "#374F71"}} variant="button">LOGOUT</Typography>
           </div> 

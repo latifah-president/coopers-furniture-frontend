@@ -5,7 +5,6 @@ import {storage} from "./../../firebaseConfig";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
-import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Input from "@material-ui/core/Input";
 import Button from '@material-ui/core/Button';
 import {addProduct} from "./../../Store/Actions/products";
@@ -15,7 +14,8 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import MenuItem from "@material-ui/core/MenuItem";
-
+import InputAdornment from '@material-ui/core/InputAdornment';
+import { OutlinedInput } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -126,10 +126,21 @@ const useStyles = makeStyles(theme => ({
       },
     },
     category: {
-      width: "98%",
       margin: theme.spacing(1),
 
-    }
+      // marginLeft: theme.spacing(1),
+      //   marginRight: theme.spacing(1),
+        width: "416px",
+        justifyContent: "left",
+        [theme.breakpoints.down('xs')]: { 
+          width: "98%",
+          margin: "1rem auto"
+        },
+
+    },
+    margin: {
+      margin: theme.spacing(1),
+    },
 }))
 const AddProduct = props => {
     const classes = useStyles();
@@ -139,8 +150,8 @@ const AddProduct = props => {
     // eslint-disable-next-line
     const [image_url, setImageUrl] = useState("");
     const [category, setCategory] = useState("");
-    const [quantity, setQuantity] = useState(0);
-    const [item_number, setItemNumber] = useState(0);
+    const [quantity, setQuantity] = useState(1);
+    const [item_number, setItemNumber] = useState("");
     const [item_name, setItemName] = useState("");
     const [supplier, setSupplier] = useState("");
     const [file, setFile] = useState(null);
@@ -148,6 +159,7 @@ const AddProduct = props => {
     const photoInp = createRef();
     const inputLabel =useRef(null);
     const dispatch = useDispatch();
+    const CHAR_LIMIT = 800;
 
     const uploadImage = event => {
         event.preventDefault();
@@ -177,6 +189,7 @@ const AddProduct = props => {
                   category: category,
                   quantity: quantity,
                   item_number: item_number,
+                  item_name: item_name,
                   supplier: supplier
                 };
                 dispatch(addProduct(productObj));
@@ -184,20 +197,18 @@ const AddProduct = props => {
               });
           }
         );
-    }
+    };
     
    
     const fileHandler = e => {
         e.persist();
         if (e.target.files[0]) {
-            console.log("image preview: ", e.target.files[0])
           setFile(() => e.target.files[0]);
           setPreviewImg(URL.createObjectURL(e.target.files[0]));
         }
       };
 
-      console.log("image", file);
-      console.log("preview", previewImg)
+      console.log("item name", item_name);
     return (
         <Grid className={classes.root}>
           <Grid className={classes.imagePreview}>
@@ -212,14 +223,13 @@ const AddProduct = props => {
               type="file"
               onChange={e => fileHandler(e)}
               value={image_url}
-              margin="normal"
+              margin="dense"
               ref={photoInp}
               label="Image Upload"
             /> 
           </Grid>
 
           {/*BEGIN FORM */}
-
           <Grid className={classes.formGrid}>
             <form className={classes.form}>
               <div className={classes.formGroup}>
@@ -235,29 +245,40 @@ const AddProduct = props => {
                   />  
                    <TextField
                     className={classes.textFieldWide}
-                    id="price"
+                    id="description"
                     type="text"
-                    label="Price"
+                    label="Description"
                     margin="dense"
                     variant="outlined"
-                    value={price}
-                    placeholder="$"
-                    onChange={e => setPrice(e.target.value)}
+                    value={description}
+                    rows={2}
+                    multiline
+                    onChange={e => setDescription(e.target.value)}
+                    inputProps={{
+                      maxLength: CHAR_LIMIT
+                    }}
+                    helperText={`${description.length}/${CHAR_LIMIT}`}
                 /> 
+                 
                   </div>
 
                   <div className={classes.formGroup}>
-                  <TextField
-                    className={classes.textFieldWide}
-                    id="supplier"
-                    type="text"
-                    label="Supplier"
-                    margin="dense"
-                    variant="outlined"
-                    value={supplier}
-                    onChange={e => setSupplier(e.target.value)}
-                />  
-                <TextField
+
+<FormControl className={classes.textFieldWide} variant="outlined" style={{margin: "8px"}}>
+          <InputLabel htmlFor="price">Price</InputLabel>
+          <OutlinedInput
+            id="price"
+            value={price}
+            type="number"
+            onChange={e => setPrice(e.target.value)}
+            startAdornment={<InputAdornment position="start">$</InputAdornment>}
+            labelWidth={60}
+            label="Price"
+            style={{height: 41}}
+          />
+        </FormControl>
+
+           <TextField
                     className={classes.textFieldWide}
                     id="quantity"
                     type="text"
@@ -270,6 +291,39 @@ const AddProduct = props => {
                 </div>
 
                 <div className={classes.formGroup}>
+                  <FormControl variant="outlined"  required className={classes.category}>
+                        <InputLabel className={classes.stateInp} ref={inputLabel} htmlFor="Category" >Category</InputLabel>
+                        <Select
+                          // fullWidth
+                          id="category"
+                          type="text"
+                          label="Category"
+                          margin="dense"
+                          variant="outlined"
+                          value={category}
+                          onChange={e => setCategory(e.target.value)}
+                        >
+                            {categories.map((cat, key) => (
+                            <MenuItem key={key} value={cat}>{cat}</MenuItem>
+                            ))}
+                        </Select> 
+                  </FormControl> 
+
+                  <TextField
+                    className={classes.textFieldWide}
+                    id="supplier"
+                    type="text"
+                    label="Supplier"
+                    margin="dense"
+                    variant="outlined"
+                    value={supplier}
+                    onChange={e => setSupplier(e.target.value)}
+                />  
+               
+               
+                </div>
+                
+                 <div className={classes.formGroup}>
                  <TextField
                     className={classes.textFieldWide}
                     id="itemNumber"
@@ -282,7 +336,7 @@ const AddProduct = props => {
                 /> 
                    <TextField
                     className={classes.textFieldWide}
-                    id="itemNumber"
+                    id="itemName"
                     type="text"
                     label="Item Name"
                     margin="dense"
@@ -290,36 +344,12 @@ const AddProduct = props => {
                     value={item_name}
                     onChange={e => setItemName(e.target.value)}
                 />
-                </div>
-                 <FormControl variant="outlined"  required className={classes.category}>
-                        <InputLabel className={classes.stateInp} ref={inputLabel} htmlFor="Category" >Category</InputLabel>
-                        <Select
-                          fullWidth
-                          id="category"
-                          type="text"
-                          label="Category"
-                          margin="dense"
-                          variant="outlined"
-                          value={category}
-                          onChange={e => setCategory(e.target.value)}
-                        >
-                            {categories.map(cat => (
-                            <MenuItem value={cat}>{cat}</MenuItem>
-                            ))}
-                        </Select> 
-                    </FormControl> 
-                 <div className={classes.formGroup}>
-                  <TextareaAutosize className={classes.textarea} aria-label="Product description" rowsMin={10} placeholder="Product description"  id="description"
-                      type="text"
-                      label="Product Description"
-                      margin="dense"
-                      variant="outlined"
-                      value={description}
-                      onChange={e => setDescription(e.target.value)}/> 
                 </div>     
             </form>
             <Button className={classes.btn} type="submit" variant="contained" onClick={uploadImage}>Add Product</Button>
             </Grid>
+
+         
         </Grid>
     )
 };

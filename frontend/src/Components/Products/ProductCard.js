@@ -1,14 +1,19 @@
 import React from "react";
+import {withRouter} from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { Grid } from "@material-ui/core";
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
+import {deleteProduct} from "./../../Store/Actions/products";
+import {yellowColor, iconColor, categories, greenColor} from "./../../GlobalStyles/styles";
+
 const useStyles = makeStyles((theme) => ({
     root: {
       margin: "0 auto",
-    //   border: "1px solid #808080"
-    [theme.breakpoints.down('sm')]: {
+      border: "1px solid #808080",
+      cursor: "pointer",
+    [theme.breakpoints.down('xs')]: {
       width: "100%",
       // border: "1px solid green"
     }
@@ -26,19 +31,33 @@ const useStyles = makeStyles((theme) => ({
     expandOpen: {
       transform: 'rotate(180deg)',
     },
-    button: {
-      background: "none",
-      margin: "0 auto",
-    //   color: "white",
-    //   fontFamily: "Helvetica",
-      width: "80%",
+    btn: {
+      margin: "2rem auto",
+      color: "white",
+      // width: "25%",
+      backgroundColor: `${iconColor}`,
+      borderRadius: 0,
       "&:hover": {
-        background: "none",
+        backgroundColor: `${greenColor}`,
   
-      }
-    },
+      },
+      [theme.breakpoints.down('xs')]: { 
+        width: "90%",
+      },
+  },
+    // button: {
+    //   background: "none",
+    //   margin: "0 auto",
+    // //   color: "white",
+    // //   fontFamily: "Helvetica",
+    //   width: "80%",
+    //   "&:hover": {
+    //     background: "none",
+  
+    //   }
+    // },
     price: {
-      marginTop: "1rem",
+      // marginTop: "1rem",
       fontWeight: 550
     },
     card: {
@@ -47,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
     title: {
         // border: "1px solid red",
         fontFamily: "Helvetica, Arial, sans-serif",
-        marginTop: "1rem",
+        // marginTop: "1rem",
     },
     btnWrapper: {
       // border: "1px solid red",
@@ -59,9 +78,10 @@ const useStyles = makeStyles((theme) => ({
 const ProductCard = (props) => {
     const classes = useStyles();
     const admin = useSelector(state => state.user.admin);
-    console.log(props, "props")
+    const dispatch = useDispatch();
+  console.log("props", props)
     return(    
-    <Grid variant="outlined" className={classes.root} container direction="column" alignItems="center">
+    <Grid variant="outlined" className={classes.root} container direction="column" alignItems="center" onClick={() => props.history.push(`/product/${props.product.id}`)}>
         <img className={classes.media} src={props.product.image_url} alt={props.product.title} />
         <Typography variant="overline"  component="h5" className={classes.title}>
             {props.product.title}
@@ -70,11 +90,12 @@ const ProductCard = (props) => {
             ${props.product.price}
         </Typography>
        
-          {admin ?   <Grid className={classes.btnWrapper}> <Button className={classes.button} size="small"> <Typography variant="overline" display="block"> Delete</Typography> </Button>
-          <Button className={classes.button} size="small"> <Typography variant="overline" display="block"> Edit</Typography> </Button> </Grid>: null}
+          {/* {admin ?   <Grid className={classes.btnWrapper}> 
+          <Button className={classes.btn} size="small"> <Typography variant="overline" display="block"> Delete</Typography> </Button>
+          <Button className={classes.btn} size="small"> <Typography variant="overline" display="block"> Edit</Typography> </Button> </Grid>: null} */}
          
-{admin ? null :        <Grid className={classes.btnWrapper}>    <Button className={classes.button} size="small"> <Typography variant="overline" display="block"> add to cart</Typography> </Button> </Grid>
-}
+ <Grid className={classes.btnWrapper}>    <Button className={classes.btn} size="small"> <Typography variant="overline" display="block"> add to cart</Typography> </Button> </Grid>
+
         
         
 
@@ -82,4 +103,4 @@ const ProductCard = (props) => {
 )
 };
 
-export default ProductCard
+export default withRouter(ProductCard);

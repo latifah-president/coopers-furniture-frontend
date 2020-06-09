@@ -7,6 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import TextField from "@material-ui/core/TextField";
 import {useDispatch} from 'react-redux';
 import { register } from "../../Store/Actions/users";
+import { iconColor, greenColor } from '../../GlobalStyles/styles';
 
 const useStyles = makeStyles(theme => ({
   wrapper: {
@@ -15,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    border: "5px solid green",
+    // border: "5px solid green",
     marginTop: "2rem",
     [theme.breakpoints.down('sm')]: {
       height: "70%",
@@ -28,10 +29,10 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "center",
     alignItems: "center",
     width: "75%",
-    border: "1px solid red"
+    // border: "1px solid red"
   },
   formControl: {
-    border: "1px solid blue",
+    // border: "1px solid blue",
     display: "flex",
     width: "100%",
     flexDirection: "row",
@@ -73,14 +74,17 @@ const useStyles = makeStyles(theme => ({
   btn: {
     margin: "2rem auto",
     color: "white",
-    width: "60%",
-    // backgroundColor: `${GreenRadient}`,
+    width: "25%",
+    backgroundColor: `${iconColor}`,
+    borderRadius: 0,
+    "&:hover": {
+      backgroundColor: `${greenColor}`,
 
-    // "&:hover": {
-    //   backgroundColor: `${mainBtnColor}`,
-
-    // }
-  }
+    },
+    [theme.breakpoints.down('xs')]: { 
+      width: "90%",
+    },
+},
 }));
 
   const Form = (props) => {
@@ -117,7 +121,7 @@ const useStyles = makeStyles(theme => ({
                 };
                 console.log("userObj", userObj)
                 dispatch(register(userObj))
-                  props.history.push(`/profile/${userObj.firebase_id}/orders`)
+                  props.history.push(`/profile/${userObj.firebase_id}`)
             }
           }
         })

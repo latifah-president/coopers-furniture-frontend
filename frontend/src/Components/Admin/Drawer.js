@@ -1,6 +1,6 @@
 import React from 'react';
 import {useSelector} from "react-redux";
-import {Link, NavLink} from "react-router-dom";
+import {Link, NavLink, withRouter} from "react-router-dom";
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -79,11 +79,11 @@ const useStyles = makeStyles((theme) => ({
       width: theme.spacing(9) + 1,
     },
     [theme.breakpoints.down('xs')]: {
-      height: 500,
-      top: 180
+      height: 520,
+      top: 166
     },
     // height: "70%",
-    top: 189,
+    top: 166,
     // zIndex: 4,
     // border: "1px solid red"
 
@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-   
+    border: "1px solid red"
 
   },
   content: {
@@ -104,51 +104,53 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const menuItems = [
-  {
-    name: "Orders",
-    link: "/admin/orders",
-    icon: <InboxIcon/>
-  },
-  {
-    name: "Add Product",
-    link: "admin/addproduct",
-    icon: <AddCircleOutlineIcon/>
-  },
- 
-  {
-    name: "Edit Product",
-    link: "/admin/editproduct",
-    icon: <EditIcon/>
-  },
-];
 
-const subMenuItems = [
-  {
-    name: "Home",
-    link: "/",
-    icon: <HomeIcon/>
-  },
-  {
-    name: "View All Customers",
-    link: "/admin/users",
-    icon: <GroupIcon/>
-  },
-  {
-    name: "View All Products",
-    link: "/products",
-    icon: <StoreIcon/>
-  },
-];
 
-export default function MiniDrawer(props) {
+const MiniDrawer = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const firebase_id = useSelector(state => state.user.firebase_id);
+  console.log("prams", props.match.path)
+
+  const menuItems = [
+    {
+      name: "Orders",
+      link: "/admin/orders",
+      icon: <InboxIcon/>
+    },
+    {
+      name: "Add Product",
+      link: `${props.match.url}/admin/addproduct`,
+      icon: <AddCircleOutlineIcon/>
+    },
+   
+    {
+      name: "Edit Product",
+      link: "/admin/editproduct",
+      icon: <EditIcon/>
+    },
+  ];
   
+  const subMenuItems = [
+    {
+      name: "Home",
+      link: "/",
+      icon: <HomeIcon/>
+    },
+    {
+      name: "View All Customers",
+      link: "/admin/users",
+      icon: <GroupIcon/>
+    },
+    {
+      name: "View All Products",
+      link: "/products",
+      icon: <StoreIcon/>
+    },
+  ];
   const handleDrawerOpen = () => {
-    setOpen(true);
+    setOpen((prev) => !prev);
   };
 
   const handleDrawerClose = () => {
@@ -158,7 +160,7 @@ export default function MiniDrawer(props) {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar
+      {/* <AppBar
         position="fixed"
         className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
@@ -180,7 +182,7 @@ export default function MiniDrawer(props) {
             Store Manager
           </Typography>
         </Toolbar>
-      </AppBar>
+      </AppBar> */}
       <Drawer
         variant="permanent"
         className={clsx(classes.drawer, {
@@ -195,7 +197,7 @@ export default function MiniDrawer(props) {
         }}
       >
         <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerClose}>
+          <IconButton onClick={handleDrawerOpen}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
@@ -224,4 +226,6 @@ export default function MiniDrawer(props) {
       </main>
     </div>
   );
-}
+};
+
+export default withRouter(MiniDrawer);

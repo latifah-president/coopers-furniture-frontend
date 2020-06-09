@@ -2,10 +2,15 @@ import {productsTypes} from "./ActionTypes";
 import axios from "./../../axiosinstance";
 
 export const addProduct = (productObj) => (dispatch) => {
+    console.log("TOP {...prodObj}", {...productObj})
+        console.log("TOP prodObj", productObj)
     dispatch ({
         type: productsTypes.ADD_PRODUCT_START,
     })
     axios.post("admin/addproduct", {...productObj}).then(res => {
+        console.log("{...prodObj}", {...productObj})
+        console.log("prodObj", productObj)
+
         if (res.status === 201) {
             dispatch({
                 type: productsTypes.ADD_PRODUCT_SUCCESS,
@@ -30,6 +35,7 @@ export const getProducts = () => (dispatch) => {
         type: productsTypes.GET_PRODUCT_START,
     })
     axios.get("/").then(res => {
+        console.log("products res: ", res)
         if (res.status === 404) {
             dispatch ({
                 type: productsTypes.GET_PRODUCT_FAIL,
@@ -78,11 +84,11 @@ export const deleteProduct = (id) => (dispatch) => {
     dispatch ({
         type: productsTypes.DELETE_PRODUCT_START,
     })
-    axios.post(`/admin/delete/${id}`).then(res => {
+    axios.delete(`/admin/delete/${id}`).then(res => {
         if (res.status === 404) {
             dispatch({
                 type: productsTypes.DELETE_PRODUCT_FAIL,
-                payload: res.data.message
+                payload: res.data
             })
         } else if (res.status === 204) {
             dispatch({
@@ -127,4 +133,5 @@ export default {
     getProducts,
     updateProduct,
     getProductsBy,
+    deleteProduct,
 }

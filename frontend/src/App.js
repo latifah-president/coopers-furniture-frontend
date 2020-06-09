@@ -14,6 +14,7 @@ import UnauthorizedPage from "./Views/ErrorPage/Unauthorized";
 import CustomersPage from "./Views/CustomersPage/Customers";
 import ProductsPage from "./Views/ProductsPage/Products";
 import ProductsBy from "./Views/ProductsPage/ProductsBy";
+import ProductDetailsPage from "./Views/ProductsPage/ProductDetails";
 import {initAuth} from "./Store/Actions/users";
 import './App.css';
 import { getProducts } from './Store/Actions/products';
@@ -38,10 +39,8 @@ console.log("is admin", admin)
               .then((idToken) => {
                 if(idToken) {
                   dispatch(initAuth(email, uid, idToken));
-                  // setAdmin(true);
                 } else {
                   console.log("no token")
-                  // setAdmin(false)
                 }
               })
               .catch((err) => {
@@ -50,9 +49,6 @@ console.log("is admin", admin)
           }
         })
        //}
-     
-    
-  
     return () => {
       console.log("unsubscribe ");
     };
@@ -72,6 +68,7 @@ let adminRoutes = (
         <Switch>
           <Route exact path='/' component={HomePage} />
           <Route exact path='/products' component={ProductsPage} />
+          <Route exact path='/product/:id' component={ProductDetailsPage} />
           <Route  path='/profile/:firebase_id' component={ProfilePage} />
           <Route exact path="/product/" component={ProductsBy}/>
           <Route exact path='/register' component={Form}/>

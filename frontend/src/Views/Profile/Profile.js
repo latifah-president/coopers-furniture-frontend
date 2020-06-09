@@ -26,10 +26,10 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    height: "100vh"
-    // [theme.breakpoints.down('sm')]: { 
-     
-    // },
+    // height: "100vh"
+    [theme.breakpoints.down('xs')]: { 
+      marginBottom: "7rem"
+    },
     // color: `${fontColor}`
   },
   tabWrapper: {

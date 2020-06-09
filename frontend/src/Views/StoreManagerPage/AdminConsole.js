@@ -52,7 +52,9 @@ const AdminConsole = (props) => {
         <Drawer>
           <div className={classes.root}>
             {/* <Switch> */}
-            <Route path={`${props.match.path}/admin/addproduct`} exact="true" component={AddProductPage} />
+            <Route path={`${props.match.path}/admin/addproduct`} exact={true} component={AddProductPage} />
+            {/* <Route path={`profile/:id/admin/addproduct`} exact="true" component={AddProductPage} /> */}
+
             {/* </Switch> */}
 
           </div>

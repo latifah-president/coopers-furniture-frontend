@@ -1,7 +1,9 @@
-import React from "react";
+import React, {useEffect} from "react";
+import {useSelector, useDispatch} from "react-redux";
 import ProducstList from "../../Components/Products/ProductsList";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { getProducts } from "../../Store/Actions/products";
 
 // Material UI breakpoints
 // value         |0px     600px    960px    1280px   1920px
@@ -20,27 +22,18 @@ const useStyles = makeStyles((theme) => ({
     // height: "auto",
     // flexGrow: 1,
   },
-  gridList: {
-    alignItems: "center",
-    width: "90%",
-    // flexWrap: 'wrap',
-    // width: 500,
-    // [theme.breakpoints.down('md')]: {
-    //   width: "100%",
-    // }
-  },
-  icon: {
-    color: "rgba(255, 255, 255, 0.54)",
-  },
-  gridListTile: {
-    margin: "1rem auto",
-    width: "10%",
-    justifyContent: "space-between",
-    maxWidth: 270,
-  },
 }));
 const Home = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getProducts())  
+    return () => {
+        console.log("unsubscribe ");
+      };
+}, [dispatch]);
+
     return (
         <Grid className={classes.root}>
           <ProducstList/>

@@ -4,20 +4,21 @@ import {useSelector, useDispatch} from "react-redux";
 import { Grid, GridList, GridListTile } from "@material-ui/core";
 import ProductCard from "./ProductCard";
 import { makeStyles } from "@material-ui/core/styles";
-import { getProducts } from "../../Store/Actions/products";
 import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 
 const useStyles = makeStyles((theme) => ({
     root: {
       display: "flex",
       justifyContent: "center",
-      height: "auto",
+      // height: "auto",
       flexGrow: 1,
+      border: "2px solid blue",
+
     },
     gridList: {
       alignItems: "center",
       width: "100%",
-      height: "100vh",
+      // height: "100vh",
       // flexWrap: 'wrap',
       // width: 500,
       // border: "2px solid green",
@@ -43,12 +44,8 @@ const ProducstList = (props) => {
     const products = useSelector(state => state.product.products);
     const classes = useStyles();
     console.log("props", props)
-    useEffect(() => {
-        dispatch(getProducts())  
-        return () => {
-            console.log("unsubscribe ");
-          };
-    }, [dispatch]);
+
+  
 
     const getGridListCols = () => {
         if (isWidthUp("xl", props.width)) {
@@ -69,7 +66,7 @@ const ProducstList = (props) => {
       };
 
     return (
-        <Grid>
+        <Grid className={classes.root}>
             <GridList
                 cols={getGridListCols()}
                 cellHeight={400}

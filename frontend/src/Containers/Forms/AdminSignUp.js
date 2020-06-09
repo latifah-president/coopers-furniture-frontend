@@ -117,7 +117,7 @@ const useStyles = makeStyles(theme => ({
                   };
                   console.log("userObj", userObj)
                   dispatch(registerAdmin(userObj))
-                    props.history.push(`/profile/${userObj.firebase_id}/orders`)
+                    props.history.push(`/profile/${userObj.firebase_id}`)
               }
             }
           })

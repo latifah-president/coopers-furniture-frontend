@@ -12,31 +12,6 @@ const useStyles = makeStyles(theme => ({
         alignItems: "center",
         border: "2px solid green",
         width: "100%",
-        height: "100vh"
-        // [theme.breakpoints.down('xs')]: { 
-        //     zIndex: 1300,
-        // },
-    },
-    title: {
-        margin: " auto",
-        border: "1px solid red"
-    },
-    textFieldWide: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: "416px",
-        justifyContent: "left"
-      },
-      btn: {
-        margin: "2rem auto",
-        color: "white",
-        width: "10%",
-        // backgroundColor: `${purpleColor}`,
-        borderRadius: 0,
-        // "&:hover": {
-        //   backgroundColor: `${purpleColor}`,
-    
-        // }
     },
 }))
 
@@ -45,7 +20,6 @@ const AddProduct = () => {
    
     return (
         <Grid className={classes.root} >
-            {/* <Typography  className={classes.title} variant="h1" component="h3" gutterBottom>Add A Product</Typography> */}
             <AddProductForm/>
         </Grid>
     )
