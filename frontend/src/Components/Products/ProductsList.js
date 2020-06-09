@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: "center",
       // height: "auto",
       flexGrow: 1,
-      border: "2px solid blue",
+      // border: "2px solid blue",
 
     },
     gridList: {

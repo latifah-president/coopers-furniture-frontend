@@ -15,6 +15,7 @@ import CustomersPage from "./Views/CustomersPage/Customers";
 import ProductsPage from "./Views/ProductsPage/Products";
 import ProductsBy from "./Views/ProductsPage/ProductsBy";
 import ProductDetailsPage from "./Views/ProductsPage/ProductDetails";
+import AgentPage from "./Views/AgentPage/AgentPage";
 import {initAuth} from "./Store/Actions/users";
 import './App.css';
 import { getProducts } from './Store/Actions/products';
@@ -74,6 +75,7 @@ let adminRoutes = (
           <Route exact path='/register' component={Form}/>
           <Route exact path="/signin" component={SignIn}/>
           <Route exact path='/admin/register' component={AdminSignUpPage}/>
+          <Route exact path="/chfagent" component={AgentPage}/>
           {/* <Route exact path='/admin/addproduct' component={AddProductPage}/> */}
 
           {/* ROUTES BELOW THIS LINE WILL BE ADMIN ONLY */}
