@@ -1,7 +1,9 @@
 import React, {useState, useRef, createRef} from 'react';
 import {withRouter} from "react-router-dom";
 import AddProductForm from "./../../Containers/Forms/StoreForms/AddProduct";
-import MobileImageUpload from "./../../Containers/Forms/StoreForms/MobileForm/AddProduct/MultiStepForm";
+import MobileImageUpload from "./../../Containers/Forms/StoreForms/MobileForm/AddProduct/ImageUpload";
+import MobileAddProductFrom from "./../../Containers/Forms/StoreForms/MobileForm/AddProduct/MobileAddProduct";
+
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from '@material-ui/core';
@@ -25,8 +27,10 @@ const useStyles = makeStyles(theme => ({
     },
     mobileForm: {
         display: "none",
-        [theme.breakpoints.down("sm")]: {
+        [theme.breakpoints.down("md")]: {
             display: "flex",
+            width: "90%",
+            margin: "0 auto",
         }
     },
     deskTopForm: {
@@ -61,75 +65,57 @@ const AddProduct = (props) => {
     const inputLabel =useRef(null);
     const [step, setStep] = useState(1);
     const [imageSuccess, setSuccess] = useState(false);
-
+console.log("step", step)
     const dispatch = useDispatch();
   
 
     const next = () =>  {
-        // let curStep = step
+       
         setStep(step + 1)
     };
 
     const prev = () =>  {
-        // let curStep = step
+        
         setStep(step - 1)
     };
 
-    const uploadImage = event => {
-        event.preventDefault();
-        let currentProductName = "product-image-" + Date.now();
-        let metaData = {contentType: "image/jpeg"}
-        let uploadImage = storage.ref(`images/${currentProductName}`).put(file, metaData);
-        uploadImage.on(
-          "state_changed",
-          (snapshot) => {
-            let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log(`Upload is ${progress}% done`);
-          },
-          error => {
-            alert(error.message);
-          },
-          () => {
-            storage
-              .ref("images")
-              .child(currentProductName)
-              .getDownloadURL()
-              .then(url => {
-                const productObj = {
-                  title: title,
-                  description: description,
-                  price: price,
-                  image_url: url,
-                  category: category,
-                  quantity: quantity,
-                  item_number: item_number,
-                  item_name: item_name,
-                  supplier: supplier
-                };
-                dispatch(addProduct(productObj));
-                props.history.push("/")
-              });
-          }
-        );
+    const fileHandler = e => {
+        e.persist();
+        if (e.target.files[0]) {
+          setFile(() => e.target.files[0]);
+          setSuccess(true);
+          setPreviewImg(URL.createObjectURL(e.target.files[0]));
+        }
     };
-
-    // const fileHandler = e => {
-    //     e.persist();
-    //     if (e.target.files[0]) {
-    //       setFile(() => e.target.files[0]);
-    //     setSuccess(true)
-    //       setPreviewImg(URL.createObjectURL(e.target.files[0]));
-    //     }
-    // };
-
+    
     return (
         <Grid className={classes.root} >
-            {/* <div className={classes.mobileForm}>
+           
+            <div className={classes.mobileForm}>
+            {step === 1 &&
+    <MobileImageUpload 
+    fileHandler={fileHandler} 
+    previewImg={previewImg} 
+    image_url={image_url} 
+    photoInp={photoInp} 
+    title={title} 
+    file={file} 
+    next={next} 
+    step={step}
+    imageSuccess={imageSuccess}
+    />
+|| step === 2 &&
+<MobileAddProductFrom 
+file={file} 
+next={next} 
+prev={prev}/>
 
-            </div> */}
-            <MobileImageUpload/>
+|| step !== 1 || 2 || undefined  || null && 
+<div>error</div>
 
-            {/* {step === 1 ? <MobileImageUpload fileHandler={fileHandler} previewImg={previewImg} image_url={image_url} photoInp={photoInp} title={title} file={file} next={next} step={step}/> : (step === 2 ? <AddProductForm file={file} next={next} prev={prev}/> : null) } */}
+}
+            </div>
+           
             <div className={classes.deskTopForm}><AddProductForm/></div>
         </Grid>
     )

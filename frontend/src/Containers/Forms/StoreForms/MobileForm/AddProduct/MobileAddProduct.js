@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('md')]: { 
           flexDirection: "column",
           width: "100%",
-          border: "2px solid hotpink",
+          // border: "2px solid hotpink",
           display: "flex",
           // flexDirection: "column",
           justifyContent: "space-between",
@@ -35,13 +35,13 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('sm')]: { 
           // flexDirection: "column",
           // width: "100%",
-          border: "2px solid orange"
+          // border: "2px solid orange"
 
         },
         [theme.breakpoints.down('xs')]: { 
           // flexDirection: "column",
           // width: "100%",
-          border: "2px solid green"
+          // border: "2px solid green"
 
         },
     },
@@ -50,10 +50,10 @@ const useStyles = makeStyles(theme => ({
         marginRight: theme.spacing(1),
         width: "416px",
         justifyContent: "left",
-        // [theme.breakpoints.down('xs')]: { 
-        //   width: "88%",
-        //   margin: "1rem auto"
-        // },
+        [theme.breakpoints.down('xs')]: { 
+          width: "88%",
+          // margin: "1rem auto"
+        },
       },
       btn: {
         margin: "2rem auto",
@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
     
         },
         [theme.breakpoints.down('xs')]: { 
-          width: "40%",
+          width: "70%",
         },
     },
     backBtn: {
@@ -80,7 +80,7 @@ const useStyles = makeStyles(theme => ({
   
       },
       [theme.breakpoints.down('xs')]: { 
-        width: "40%",
+        width: "70%",
       },
   },
     fileInput: {
@@ -168,17 +168,24 @@ const useStyles = makeStyles(theme => ({
           width: "95%",
           margin: "1rem auto"
         },
+        [theme.breakpoints.down('xs')]: { 
+          width: "88%",
+          margin: "1rem  0 1rem .5rem",
+        },
 
     },
     margin: {
       margin: theme.spacing(1),
     },
     btnGrid: {
-      border: "1px solid green",
+      // border: "1px solid green",
       display: "flex",
       width: "70%",
       [theme.breakpoints.down("sm")]: {
         width: "100%",
+      },
+      [theme.breakpoints.down("xs")]: {
+        flexDirection: "column",
       }
     }
 }))
@@ -243,36 +250,12 @@ const AddProduct = props => {
         props.prev()
     };
    
-    // const fileHandler = e => {
-    //     e.persist();
-    //     if (e.target.files[0]) {
-    //       setFile(() => e.target.files[0]);
-    //       setPreviewImg(URL.createObjectURL(e.target.files[0]));
-    //     }
-    //   };
+  
 
       console.log("item name", item_name);
     return (
         <Grid className={classes.root}>
-          {/* <Grid className={classes.imagePreview}>
-            <Grid className={classes.image}>
-              {file === null ? <PublishIcon/> : <img className={classes.img} src={previewImg} alt={"image preview" || title}/>}
-            </Grid>
-            <Input
-              className={classes.fileInput}
-              id="image-upload"
-              accept="image/*"
-              name="image"
-              type="file"
-              onChange={e => fileHandler(e)}
-              value={image_url}
-              margin="dense"
-              ref={photoInp}
-              label="Image Upload"
-            /> 
-          </Grid> */}
-
-          {/*BEGIN FORM */}
+         
           <Grid className={classes.formGrid}>
             <form className={classes.form}>
               <div className={classes.formGroup}>
@@ -315,7 +298,7 @@ const AddProduct = props => {
             type="number"
             onChange={e => setPrice(e.target.value)}
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            // labelWidth={60}
+            
             label="Price"
             style={{height: 41}}
           />
@@ -337,7 +320,7 @@ const AddProduct = props => {
                   <FormControl variant="outlined"  required className={classes.category}>
                         <InputLabel className={classes.stateInp} ref={inputLabel} htmlFor="Category" >Category</InputLabel>
                         <Select
-                          // fullWidth
+                         
                           id="category"
                           type="text"
                           label="Category"

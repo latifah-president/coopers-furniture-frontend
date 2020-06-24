@@ -42,43 +42,43 @@ const MultiStepForm = (props) => {
         setStep(step - 1)
     };
 
-    const uploadImage = event => {
-        event.preventDefault();
-        let currentProductName = "product-image-" + Date.now();
-        let metaData = {contentType: "image/jpeg"}
-        let uploadImage = storage.ref(`images/${currentProductName}`).put(file, metaData);
-        uploadImage.on(
-          "state_changed",
-          (snapshot) => {
-            let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log(`Upload is ${progress}% done`);
-          },
-          error => {
-            alert(error.message);
-          },
-          () => {
-            storage
-              .ref("images")
-              .child(currentProductName)
-              .getDownloadURL()
-              .then(url => {
-                const productObj = {
-                  title: title,
-                  description: description,
-                  price: price,
-                  image_url: url,
-                  category: category,
-                  quantity: quantity,
-                  item_number: item_number,
-                  item_name: item_name,
-                  supplier: supplier
-                };
-                dispatch(addProduct(productObj));
-                props.history.push("/")
-              });
-          }
-        );
-    };
+    // const uploadImage = event => {
+    //     event.preventDefault();
+    //     let currentProductName = "product-image-" + Date.now();
+    //     let metaData = {contentType: "image/jpeg"}
+    //     let uploadImage = storage.ref(`images/${currentProductName}`).put(file, metaData);
+    //     uploadImage.on(
+    //       "state_changed",
+    //       (snapshot) => {
+    //         let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //         console.log(`Upload is ${progress}% done`);
+    //       },
+    //       error => {
+    //         alert(error.message);
+    //       },
+    //       () => {
+    //         storage
+    //           .ref("images")
+    //           .child(currentProductName)
+    //           .getDownloadURL()
+    //           .then(url => {
+    //             const productObj = {
+    //               title: title,
+    //               description: description,
+    //               price: price,
+    //               image_url: url,
+    //               category: category,
+    //               quantity: quantity,
+    //               item_number: item_number,
+    //               item_name: item_name,
+    //               supplier: supplier
+    //             };
+    //             dispatch(addProduct(productObj));
+    //             props.history.push("/")
+    //           });
+    //       }
+    //     );
+    // };
 
     const fileHandler = e => {
         e.persist();
@@ -90,51 +90,96 @@ const MultiStepForm = (props) => {
     };
 
 
-    switch (step) {
-      case 1:
-        return (
-        <MobileImageUpload 
-            fileHandler={fileHandler} 
-            previewImg={previewImg} 
-            image_url={image_url} 
-            photoInp={photoInp} 
-            title={title} 
-            file={file} 
-            next={next} 
-            step={step}
-            imageSuccess={imageSuccess}
-            />
-        )
-      case 2:
-        return ( 
-            <MobileAddProductFrom 
-                file={file} 
-                next={next} 
-                prev={prev}/>
-            )
-      default:
-        return null;
-    }
-    // return (
-    //     <Grid style={{width: "100%"}}>
-    //         {step === 1 ? <MobileImageUpload
-    //          fileHandler={fileHandler} 
-    //                  previewImg={previewImg} 
-    //                  image_url={image_url} 
-    //                  photoInp={photoInp} 
-    //                  title={title} 
-    //                  file={file} 
-    //                  next={next} 
-    //                  step={step}
-    //         /> :  
-    //         <AddProductFrom 
-    //         file={file}
-    //         next={next}
-    //         prev={prev}
-    //         />  }
+    // function renderSwitch(step){
+    //   console.log("before switch step", step)
 
-    //     </Grid>
-    // )
+    //   switch (step.step) {
+
+    //     case 1:
+    //       console.log("switch step", step.step)
+
+    //       return (
+    //       <MobileImageUpload 
+    //           fileHandler={fileHandler} 
+    //           previewImg={previewImg} 
+    //           image_url={image_url} 
+    //           photoInp={photoInp} 
+    //           title={title} 
+    //           file={file} 
+    //           next={next} 
+    //           step={step}
+    //           imageSuccess={imageSuccess}
+    //           />
+    //       )
+    //     case 2:
+    //       return ( 
+    //           <MobileAddProductFrom 
+    //               file={file} 
+    //               next={next} 
+    //               prev={prev}/>
+    //           )
+    //     default:
+    //       return <div>error</div>;
+    //   }
+    // }
+
+    return (
+        <Grid style={{width: "100%"}}>
+          {step === 1 &&
+    <MobileImageUpload 
+    fileHandler={fileHandler} 
+    previewImg={previewImg} 
+    image_url={image_url} 
+    photoInp={photoInp} 
+    title={title} 
+    file={file} 
+    next={next} 
+    step={step}
+    imageSuccess={imageSuccess}
+    />
+|| step === 2 &&
+<MobileAddProductFrom 
+file={file} 
+next={next} 
+prev={prev}/>
+
+|| step !== 1 || 2 && 
+<div>wrror</div>
+
+}
+
+          {/* <renderSwitch step={step} />           */}
+          {/* {(() => {
+                switch (step) {
+
+                  case 1:
+          
+                    return (
+                    <MobileImageUpload 
+                        fileHandler={fileHandler} 
+                        previewImg={previewImg} 
+                        image_url={image_url} 
+                        photoInp={photoInp} 
+                        title={title} 
+                        file={file} 
+                        next={next} 
+                        step={step}
+                        imageSuccess={imageSuccess}
+                        />
+                    )
+                  case 2:
+                    return ( 
+                        <MobileAddProductFrom 
+                            file={file} 
+                            next={next} 
+                            prev={prev}/>
+                        )
+                  default:
+                    return <div>error</div>;
+                }
+            })()} */}
+        </Grid>
+    )
 };
 
 export default withRouter(MultiStepForm);

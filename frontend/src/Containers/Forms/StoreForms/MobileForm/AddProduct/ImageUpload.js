@@ -26,17 +26,17 @@ const useStyles = makeStyles(theme => ({
       border: "1px solid black"
     },
     imagePreview: {
-        display: "none",
-      [theme.breakpoints.down('md')]: { 
+      //   display: "none",
+      // [theme.breakpoints.down('md')]: { 
       
        width: "80%",
       height: 400,
-      border: "2px solid black",
+      // border: "2px solid black",
       display: "flex",
       justifyContent: "space-around",
       alignItems: "center",
       flexDirection: "column",
-      },
+      // },
       [theme.breakpoints.down('xs')]: { 
       
         width: "100%",
@@ -101,7 +101,6 @@ const MobileImageUpload = (props) => {
     };
 
     return (
-        // <Grid className={classes.root}>
             <Grid className={classes.imagePreview}>
                         <Grid className={classes.image}>
                             <label htmlFor="image-upload" className={classes.label}>
@@ -122,9 +121,9 @@ const MobileImageUpload = (props) => {
                         label="Image Upload"
                         style={{display: "none"}}
                         /> 
-                        <Button disabled={props.previewImg ? false : true} className={classes.btn} type="button" aria-label="next" onClick={next}>Next</Button>
+                        <Button style={{color: "white"}} disabled={props.previewImg ? false : true} className={classes.btn} type="button" aria-label="next" onClick={next}>Next</Button>
                 </Grid>
-        // </Grid>
+      
        
     )
 };

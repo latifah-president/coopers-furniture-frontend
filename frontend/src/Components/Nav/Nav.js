@@ -54,6 +54,7 @@ const useStyles = makeStyles((theme) => ({
 sectionMobile: {
   display: 'flex',
   color: "white",
+  zIndex: 1300,
   // border: "1px solid red",
   [theme.breakpoints.up('md')]: { 
     display: 'none',
@@ -127,7 +128,7 @@ dropdown: {
   border: '1px solid #0C1D33',
   padding: theme.spacing(1),
   backgroundColor: theme.palette.background.paper,
- zIndex: 3,
+  zIndex: 14000,
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
@@ -221,7 +222,8 @@ listItemText: {
 divider: {
   width: "100%", 
   color: "#EA4D1F",
-  marginBottom: "1rem"
+  marginBottom: "1rem",
+  
 },
 
 '@keyframes blinker': {
@@ -277,13 +279,13 @@ mobileHome: {
 sub: {
   marginTop: "4rem",
   [theme.breakpoints.down("xs")]: {
-    marginTop: "2rem",
+    marginTop: "4rem",
   }
 },
 nav: {
   paddingTop: "6rem",
   [theme.breakpoints.down("xs")]: {
-    paddingTop: "3rem",
+    paddingTop: "4rem",
   }
 },
 portal: {
