@@ -37,7 +37,7 @@ const ProducstList = (props) => {
     const dispatch = useDispatch();
     const users = useSelector(state => state.admin.users);
     const classes = useStyles();
-    console.log("users: ", users)
+    // console.log("users: ", users)
 
     useEffect(() => {
         dispatch(getUsers())

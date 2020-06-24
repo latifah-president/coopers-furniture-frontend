@@ -30,8 +30,7 @@ const MultiStepForm = (props) => {
     const [step, setStep] = useState(1);
     const [imageSuccess, setSuccess] = useState(false);
     const dispatch = useDispatch();
-    console.log("step #", step);
-    console.log("image file", file);
+  
     
     const next = () =>  {
         // let curStep = step

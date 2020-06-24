@@ -94,10 +94,6 @@ const useStyles = makeStyles(theme => ({
 
 const MobileImageUpload = (props) => {
     const classes = useStyles();
-    console.log("props", props);
-    console.log("title from image", props.title);
-    console.log("step from image", props.step);
-    console.log("mobile image", props.imageSuccess === true ? "image uploaded" : "image is not here");
 
     const next = e => {
         e.preventDefault();

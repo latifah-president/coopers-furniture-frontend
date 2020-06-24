@@ -115,7 +115,6 @@ const MiniDrawer = (props) => {
   const firebase_id = useSelector(state => state.user.firebase_id);
   const loading = useSelector(state => state.user.loading);
 
-  console.log("prams", props.match.path)
 
   const menuItems = [
     {

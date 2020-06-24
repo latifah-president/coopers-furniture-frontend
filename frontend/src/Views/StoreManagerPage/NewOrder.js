@@ -1,5 +1,4 @@
 import React from 'react';
-import AddProductForm from "./../../Containers/Forms/AddProduct";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from '@material-ui/core';
@@ -23,8 +22,8 @@ const AddProduct = () => {
    
     return (
         <Grid className={classes.root} >
-            <AddProductForm/>
-            <Gri className={classes.cart}>cart items</Gri>
+            {/* <AddProductForm/> */}
+            <Grid className={classes.cart}>new orders</Grid>
         </Grid>
     )
 };

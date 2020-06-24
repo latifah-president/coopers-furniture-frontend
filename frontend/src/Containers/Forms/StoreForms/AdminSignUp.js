@@ -102,8 +102,8 @@ const useStyles = makeStyles(theme => ({
     const [errorMsg, setErrorMsg] = useState("");
     const classes = useStyles();
     const dispatch = useDispatch();
-    console.log(props.match.path === "/admin/register" ? "admin reg page" : "nope");
-    console.log("path", props );
+    // console.log(props.match.path === "/admin/register" ? "admin reg page" : "nope");
+    // console.log("path", props );
 
     const signUpWithEmailAndPassword = () => {
       if (!email || !password) {

@@ -103,7 +103,6 @@ const Profile = (props) => {
   const firebase_id = useSelector(state => state.user.firebase_id);
   const admin = useSelector(state => state.user.admin);
   const agent = useSelector(state => state.user.agent);
-  console.log("is admin", admin)
   const dispatch = useDispatch();
   const [value, setValue] = useState(0);
 
@@ -116,7 +115,6 @@ const Profile = (props) => {
       setValue(newValue);
    
   };
-  console.log("prams", props.match.path)
   
     return (
       <Grid className={classes.root}>

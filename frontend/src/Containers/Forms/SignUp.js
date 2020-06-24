@@ -111,18 +111,18 @@ const useStyles = makeStyles(theme => ({
         .createUserWithEmailAndPassword(email, password)
         .then(({ user }) => {
           if (user) {
-            console.log("incoming user", user);
+            // console.log("incoming user", user);
             if (user.email) {
               const { email, uid } = user;
-              localStorage.setItem("firebase_id", uid)
-              console.log("emailuser", user);
+              // localStorage.setItem("firebase_id", uid)
+              // console.log("emailuser", user);
               const userObj = {
                 email,
                 firebase_id: uid,
                 first_name: first_name,
                 last_name: last_name,
                 };
-                console.log("userObj", userObj)
+                // console.log("userObj", userObj)
                 dispatch(register(userObj))
                   props.history.push(`/profile/${userObj.firebase_id}`)
             }

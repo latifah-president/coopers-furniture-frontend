@@ -135,11 +135,11 @@ export const addToCart = (id, quantity, firebase_id, price) =>  (dispatch) => {
     dispatch ({
         type: userTypes.ADD_TO_CART_START
     })
-    console.log("price time qty", price*quantity)
+    // console.log("price time qty", price*quantity)
    
     axios.post(`/user/add-to-cart/${id}`, { products_id: id, quantity, firebase_id, price }).then(res => {
     if (res.status === 201) {
-        console.log("res from add to cart", res)
+        // console.log("res from add to cart", res)
         dispatch({
             type: userTypes.ADD_TO_CART_SUCCESS,
             payload: id

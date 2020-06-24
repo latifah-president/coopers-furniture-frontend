@@ -47,7 +47,7 @@ const ProducstList = (props) => {
     const loading = useSelector(state => state.product.loading);
     const error = useSelector(state => state.product.error);
 
-    console.log("products", products)
+    // console.log("products", products)
 
     useEffect(() => {
       

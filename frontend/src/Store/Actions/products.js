@@ -2,15 +2,13 @@ import {productsTypes} from "./ActionTypes";
 import axios from "./../../axiosinstance";
 
 export const addProduct = (productObj) => (dispatch) => {
-    console.log("TOP {...prodObj}", {...productObj})
-        console.log("TOP prodObj", productObj)
+    // console.log("TOP {...prodObj}", {...productObj})
+    //     console.log("TOP prodObj", productObj)
     dispatch ({
         type: productsTypes.ADD_PRODUCT_START,
     })
     axios.post("admin/addproduct", {...productObj}).then(res => {
-        console.log("{...prodObj}", {...productObj})
-        console.log("prodObj", productObj)
-
+      
         if (res.status === 201) {
             dispatch({
                 type: productsTypes.ADD_PRODUCT_SUCCESS,

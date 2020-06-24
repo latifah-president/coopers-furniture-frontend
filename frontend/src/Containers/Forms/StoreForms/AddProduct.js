@@ -272,7 +272,6 @@ const AddProduct = props => {
         }
       };
 
-      console.log("item name", item_name);
     return (
         <Grid className={classes.root}>
            <Grid className={classes.imagePreview}>

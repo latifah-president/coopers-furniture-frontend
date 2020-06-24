@@ -140,7 +140,7 @@ const SignIn = (props) => {
 
     const passwordReset = () => {
       auth.sendPasswordResetEmail(email).then(res => {
-        console.log("res from reset password", res)
+        // console.log("res from reset password", res)
         setSuccess(true)
       }).catch(function(error) {
         console.log("error from password reset", error)

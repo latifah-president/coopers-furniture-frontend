@@ -28,7 +28,7 @@ function App(props) {
   const loggedIn = useSelector(state => state.user.loggedIn)
   const admin = useSelector(state => state.user.admin)
   const dispatch = useDispatch();
-console.log("is admin", admin)
+// console.log("is admin", admin)
   useEffect(() => {
     // {props.match.path === "/products" ? setHome(false) : dispatch(getProducts())}
 
@@ -36,7 +36,7 @@ console.log("is admin", admin)
         firebase.auth().onAuthStateChanged((user) => {
           if (user) {
             const { email, uid } = user;
-            console.log(user)
+            // console.log(user)
               firebase.auth()
               .currentUser.getIdToken()
               .then((idToken) => {

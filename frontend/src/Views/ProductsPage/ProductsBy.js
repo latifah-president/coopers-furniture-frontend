@@ -11,8 +11,8 @@ const ProductBy = (props) => {
     const col = parsed.col
     const filter = parseInt(parsed.filter)
     const [home, setHome] = useState(null)
-    console.log("col:", col)
-    console.log("filter:", filter)
+    // console.log("col:", col)
+    // console.log("filter:", filter)
 
     useEffect(() => {
         {props.match.path === "/product" ? setHome(false) :  dispatch(getProductsBy(col, filter))}
@@ -23,7 +23,7 @@ const ProductBy = (props) => {
           };
     }, [dispatch, home]);
 
-    console.log("product by", product)
+    // console.log("product by", product)
 
     return (
 

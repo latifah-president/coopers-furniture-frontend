@@ -4,7 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { Grid } from "@material-ui/core";
-import {useSelector, useDispatch} from "react-redux";
+import {useSelector} from "react-redux";
 import {deleteProduct} from "./../../Store/Actions/products";
 import {yellowColor, iconColor, categories, greenColor} from "./../../GlobalStyles/styles";
 
@@ -78,8 +78,7 @@ const useStyles = makeStyles((theme) => ({
 const ProductCard = (props) => {
     const classes = useStyles();
     const admin = useSelector(state => state.user.admin);
-    const dispatch = useDispatch();
-  console.log("props", props)
+   
     return(    
     <Grid variant="outlined" className={classes.root} container direction="column" alignItems="center" onClick={() => props.history.push(`/product/${props.product.id}`)}>
         <img className={classes.media} src={props.product.image_url} alt={props.product.title} />

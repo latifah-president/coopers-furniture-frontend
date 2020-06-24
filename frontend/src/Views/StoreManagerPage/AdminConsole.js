@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {Switch, Route, withRouter} from "react-router-dom";
 import AddProductPage from "./../AddProductPage/AddProduct";
+import NewOrderPage from "./../StoreManagerPage/NewOrder";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -47,13 +48,12 @@ const useStyles = makeStyles((theme) => ({
 
 const AdminConsole = (props) => {
     const classes = useStyles()
-    console.log("prams", props.match.path)
     return (
         <Drawer>
           <div className={classes.root}>
             {/* <Switch> */}
             <Route path={`${props.match.path}/admin/addproduct`} exact={true} component={AddProductPage} />
-            <Route path={`${props.match.path}/bookorder`} exact={true} component={AddProductPage} />
+            <Route path={`${props.match.path}/bookorder`} exact={true} component={NewOrderPage} />
 
             {/* </Switch> */}
 

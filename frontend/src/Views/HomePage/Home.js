@@ -203,7 +203,6 @@ const Home = (props) => {
   const loading = useSelector(state => state.product.loading);
   const error = useSelector(state => state.product.error);
 
-  console.log("home products", products);
   const dispatch = useDispatch();
 
   useEffect(() => {

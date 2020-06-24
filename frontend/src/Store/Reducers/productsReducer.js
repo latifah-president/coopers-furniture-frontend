@@ -8,7 +8,6 @@ const initialState = {
 }
 
 export default (state = initialState, actions) => {
-    console.log(state.id)
     switch (actions.type) {
         case productsTypes.ADD_PRODUCT_START:
             return {

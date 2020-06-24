@@ -63,8 +63,7 @@ const AddProduct = (props) => {
     const [imageSuccess, setSuccess] = useState(false);
 
     const dispatch = useDispatch();
-    console.log("step #", step);
-    console.log("image file", file);
+  
 
     const next = () =>  {
         // let curStep = step
