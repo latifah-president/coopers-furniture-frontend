@@ -1,10 +1,11 @@
 import React, {useEffect} from "react";
 import {withRouter} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
-import { Grid, GridList, GridListTile } from "@material-ui/core";
+import { Grid, GridList, GridListTile, CircularProgress } from "@material-ui/core";
 import ProductCard from "./ProductCard";
 import { makeStyles } from "@material-ui/core/styles";
 import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
+import {getProducts} from "./../../Store/Actions/products";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -43,9 +44,19 @@ const ProducstList = (props) => {
     const dispatch = useDispatch();
     const products = useSelector(state => state.product.products);
     const classes = useStyles();
-    console.log("props", props)
+    const loading = useSelector(state => state.product.loading);
+    const error = useSelector(state => state.product.error);
 
-  
+    console.log("products", products)
+
+    useEffect(() => {
+      
+      dispatch(getProducts())
+      
+      return () => {
+          console.log("unsubscribe ");
+        };
+  }, [dispatch]);
 
     const getGridListCols = () => {
         if (isWidthUp("xl", props.width)) {
@@ -71,7 +82,7 @@ const ProducstList = (props) => {
                 cols={getGridListCols()}
                 cellHeight={400}
                 className={classes.gridList}>
-                {products.map((product, key) => (
+                {loading || error ? <CircularProgress/> : products.map((product) => (
                     <GridListTile className={classes.gridListTile} key={product.id}>
                         <ProductCard
                             product={product}

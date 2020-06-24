@@ -1,13 +1,15 @@
 import React, {useState} from 'react';
-import {auth} from '../../firebaseConfig';
+import {auth} from '../../../firebaseConfig';
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import Grid from '@material-ui/core/Grid';
 import TextField from "@material-ui/core/TextField";
 import {useDispatch} from 'react-redux';
-import { registerAdmin } from "../../Store/Actions/admin";
-
+import { registerAdmin } from "../../../Store/Actions/admin";
+import { registerAgent } from "../../../Store/Actions/agent";
+import {iconColor, greenColor} from "./../../../GlobalStyles/styles"
+import { Typography } from '@material-ui/core';
 const useStyles = makeStyles(theme => ({
   wrapper: {
     flexGrow: 1,
@@ -15,10 +17,15 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    border: "5px solid green",
-    marginTop: "2rem",
+    // border: "5px solid green",
+    margin: "4rem 0",
     [theme.breakpoints.down('sm')]: {
       height: "70%",
+      // border: "5px solid green"
+    },
+    [theme.breakpoints.down('xs')]: {
+      height: "70%",
+      // border: "5px solid green"
     }
   },
   form: {
@@ -27,37 +34,34 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    width: "75%",
-    border: "1px solid red"
+    // width: "50%",
+    // border: "1px solid red"
   },
   formControl: {
-    border: "1px solid blue",
+    // border: "1px solid blue",
     display: "flex",
     width: "100%",
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "center",
-    marginBottom: "2rem",
+    // marginBottom: "2rem",
     // minWidth: 120,
     // maxWidth: 280
-  },
-  textFieldThin: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: "200px",
-    justifyContent: "left"
   },
   textFieldWide: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     width: "416px",
-    justifyContent: "left"
+    justifyContent: "left",
+    [theme.breakpoints.down('xs')]: {
+     width: "350px"
+    }
   },
-  selectFieldThin: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: "200px",
-    justifyContent: "left"
-  },
+  // selectFieldThin: {
+  //   marginLeft: theme.spacing(1),
+  //   marginRight: theme.spacing(1),
+  //   width: "200px",
+  //   justifyContent: "left"
+  // },
   root: {
     justifyContent: "center",
     margin: theme.spacing(20),
@@ -68,18 +72,22 @@ const useStyles = makeStyles(theme => ({
   },
   header: {
     marginBottom: "2rem",
-    textAlign: "center"
+    textAlign: "center",
+    fontSize: "2rem",
   },
   btn: {
     margin: "2rem auto",
     color: "white",
-    width: "60%",
-    // backgroundColor: `${GreenRadient}`,
+    width: "20%",
+    backgroundColor: `${iconColor}`,
+    borderRadius: 0,
+    "&:hover": {
+      backgroundColor: `${greenColor}`,
 
-    // "&:hover": {
-    //   backgroundColor: `${mainBtnColor}`,
-
-    // }
+    },
+    [theme.breakpoints.down('xs')]: { 
+      width: "90%",
+    },
   }
 }));
 
@@ -94,6 +102,8 @@ const useStyles = makeStyles(theme => ({
     const [errorMsg, setErrorMsg] = useState("");
     const classes = useStyles();
     const dispatch = useDispatch();
+    console.log(props.match.path === "/admin/register" ? "admin reg page" : "nope");
+    console.log("path", props );
 
     const signUpWithEmailAndPassword = () => {
       if (!email || !password) {
@@ -104,10 +114,10 @@ const useStyles = makeStyles(theme => ({
           .createUserWithEmailAndPassword(email, password)
           .then(({ user }) => {
             if (user) {
-              console.log("incoming user", user);
+              // console.log("incoming user", user);
               if (user.email) {
                 const { email, uid } = user;
-                console.log("emailuser", user);
+                // console.log("emailuser", user);
                 const userObj = {
                   email,
                   firebase_id: uid,
@@ -115,9 +125,14 @@ const useStyles = makeStyles(theme => ({
                   last_name: last_name,
                   // admin: true
                   };
-                  console.log("userObj", userObj)
-                  dispatch(registerAdmin(userObj))
-                    props.history.push(`/profile/${userObj.firebase_id}`)
+                  if (props.match.path === "/admin/register" ) {
+                    dispatch(registerAdmin(userObj))
+                  } else if (props.match.path === "/agent/register") {
+                    dispatch(registerAgent(userObj))
+                  }
+                   
+                  
+                  props.history.push(`/storemanager/${userObj.firebase_id}/bookorder`)
               }
             }
           })
@@ -127,49 +142,11 @@ const useStyles = makeStyles(theme => ({
             setErrorMsg(err.message)
           })
     };
-  //  const signUpWithEmailAndPassword = () => {
-  //   if (!email || !password) {
-  //     setError(true)
-  //     setErrorMsg("Please enter email and password")
-  //   }
-  //   auth
-  //       .createUserWithEmailAndPassword(email, password)
-  //       .then(({ user }) => {
-  //         if (user) {
-  //           if (user.email) {
-  //               const { email, uid } = user;
-  //               auth.currentUser.getIdTokenResult().then ( (idToken) => {
-  //                 if (!!idToken.claims.admin) {
-  //                   setError(true)
-  //                   setErrorMsg("This user is already an admin")
-  //                 } else {
-  //                   console.log("User:", user)
-  //                   const userObj = {
-  //                     email,
-  //                     firebase_id: user.uid,
-  //                     first_name: first_name,
-  //                     last_name: last_name,
-
-  //                     };
-  //                     dispatch(registerAdmin(userObj))
-  //                     props.history.push(`/profile/${userObj.firebase_id}/orders`)
-  //                 }
-  //               })
-  //           } else {
-  //             setError(true);
-  //             setErrorMsg("A user was not added")
-  //           }
-  //         }
-  //       })
-  //       .catch(err => {
-  //         console.log("Error Authenticating User:", err)
-  //         setError(true)
-  //         setErrorMsg(err.message)
-  //       })
-  // };
+  
 
       return (
         <Grid container item xs={12} className={classes.wrapper}>
+          <Typography className={classes.header} component="h3" variant="h3">Cooper's Home Furniture Employee Registration Portal</Typography>
           <form className={classes.form} >
             <FormControl className={classes.formControl}>
               <TextField
@@ -228,7 +205,7 @@ const useStyles = makeStyles(theme => ({
               />
             </FormControl>
           </form>
-          <Button className={classes.btn} type="submit" variant="contained" color="primary" onClick={signUpWithEmailAndPassword}>Sign Up</Button>
+          <Button arai-label="Signup" className={classes.btn} type="submit" variant="contained" color="primary" onClick={signUpWithEmailAndPassword}>Sign Up</Button>
       </Grid>
     )
   }

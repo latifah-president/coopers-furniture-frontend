@@ -1,6 +1,5 @@
-import React, {useState, useEffect} from "react";
-import {useSelector, useDispatch} from "react-redux";
-import {withRouter, Link} from "react-router-dom";
+import React, {useState} from "react";
+import {withRouter} from "react-router-dom";
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
@@ -8,19 +7,25 @@ import Portal from '@material-ui/core/Portal';
 import Button from '@material-ui/core/Button';
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import Divider from '@material-ui/core/Divider';
-import { getProducts } from "./../../Store/Actions/products";
 import {categories} from "./../../GlobalStyles/styles";
 
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+    zIndex: 4000,
     // border: "1px solid orange",
     alignItems: "center",
     width: "33%",
     justifyContent: "space-between",
-    [theme.breakpoints.down('xs')]: { 
-     display: "none"
-    }
+    [theme.breakpoints.down('md')]: { 
+      // border: "1px solid red",
+      width: "50%",
+    },
+    [theme.breakpoints.down('sm')]: { 
+      // border: "1px solid blue",
+      display: "none"
+    },
+    
   },
   dropdown: {
     position: 'fixed',
@@ -35,6 +40,11 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     justifyContent: "space-between",
     textTransform: "uppercase",
+    [theme.breakpoints.down('md')]: { 
+      // border: "1px solid orange",
+      top: "18%",
+      left: '50%',
+    },
     [theme.breakpoints.down('sm')]: { 
       top: "20.5%",
       left: '2%',
@@ -44,11 +54,9 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     fontSize: "1.3rem",
     textDecoration: "none",
-    // border: "1px solid green",
+    // border: "1px solid black",
     padding: 0,
-    [theme.breakpoints.down('sm')]: { 
-      fontSize: "1rem"
-    }
+   
   },
   icon: {
     fontSize: "2rem",
@@ -72,21 +80,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const categories = ["Living Room", "Dining Room", "Bedrooms", "Bunkbeds", "Mattresses"]
 
 const CategoryNav = (props) => {
-    const products = useSelector(state => state.product.products);
     const [open, setOpen] = useState(false);
     const classes = useStyles();
-    const dispatch = useDispatch();
-
-    // useEffect(() => {
-    //   dispatch(getProducts())
-    //   return () => {
-    //     console.log("unsubscribe")
-    //   }
-    // },[dispatch])
-
+    
     const handleClick = () => {
       setOpen((prev) => !prev);
     };
@@ -94,12 +92,11 @@ const CategoryNav = (props) => {
     const handleClickAway = () => {
       setOpen(false);
     };
-console.log("products", products)
     return (
       <div className={classes.root}>
       <ClickAwayListener onClickAway={handleClickAway}>
       <div >
-        <Button className={classes.btn} type="button" onClick={handleClick}>
+        <Button aria-label="departments" className={classes.btn} type="button" onClick={handleClick}>
           DEPARTMENTS
           <ArrowDropDownIcon className={classes.icon}/>
         </Button>
@@ -119,7 +116,7 @@ console.log("products", products)
         ) : null}
       </div>
     </ClickAwayListener>
-    <Button className={classes.btn} onClick={() => props.history.push("/products")}>SHOP ALL PRODUCTS</Button>
+    <Button aria-label="shop all products" className={classes.btn} onClick={() => props.history.push("/products")}>SHOP ALL PRODUCTS</Button>
     </div>
     )
 };

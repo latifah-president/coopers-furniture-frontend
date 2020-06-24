@@ -94,7 +94,7 @@ const ProductCard = (props) => {
           <Button className={classes.btn} size="small"> <Typography variant="overline" display="block"> Delete</Typography> </Button>
           <Button className={classes.btn} size="small"> <Typography variant="overline" display="block"> Edit</Typography> </Button> </Grid>: null} */}
          
- <Grid className={classes.btnWrapper}>    <Button className={classes.btn} size="small"> <Typography variant="overline" display="block"> add to cart</Typography> </Button> </Grid>
+ <Grid className={classes.btnWrapper}>    <Button arial-label="add to cart" className={classes.btn} size="small"> <Typography variant="overline" display="block"> Add To Cart</Typography> </Button> </Grid>
 
         
         

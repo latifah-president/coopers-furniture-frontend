@@ -14,18 +14,18 @@ import LocalShipping from '@material-ui/icons/LocalShipping';
 import MoreIcon from '@material-ui/icons/MoreVert';
 import Grid  from "@material-ui/core/Grid";
 import {logOut} from '../../Store/Actions/users';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
 import Dropdown from "./CategoryNav";
 import Divider from '@material-ui/core/Divider';
-import Portal from '@material-ui/core/Portal';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import IconExpandLess from '@material-ui/icons/ExpandLess'
 import IconExpandMore from '@material-ui/icons/ExpandMore'
 import Collapse from '@material-ui/core/Collapse'
-import {categories} from "./../../GlobalStyles/styles";
+import {categories, iconColor, } from "./../../GlobalStyles/styles";
+import Button from '@material-ui/core/Button';
+import CloseIcon from '@material-ui/icons/Close';
+import WorkIcon from '@material-ui/icons/Work';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -79,7 +79,8 @@ iconWrapper: {
   display: "flex",
   alignSelf: "center",
   justifyContent: "space-around",
-  width: "30%",
+  width: "40%",
+  
   [theme.breakpoints.down('sm')]: { 
     display: 'none',
   },
@@ -93,8 +94,8 @@ topNav: {
   position: "fixed",
   zIndex: 1,
   [theme.breakpoints.down('sm')]: { 
-    justifyContent: "flex-end",
-
+    justifyContent: "space-between",
+    // border: "1px solid green"
   },
 },
 mobileMenu: {
@@ -131,6 +132,8 @@ dropdown: {
   flexDirection: "column",
   justifyContent: "space-between",
   textTransform: "uppercase",
+  color: `${iconColor}`
+  // height: 500
 },
 menuLink: {
   color: "#374F71",
@@ -182,17 +185,23 @@ title: {
   [theme.breakpoints.down('sm')]: { 
     justifyContent: "center",
   },
+  [theme.breakpoints.down('xs')]: { 
+    display: "none",
+  },
 },
 catNav: {
   display: "flex",
   justifyContent: "space-between",
   backgroundColor: "#366E82",
   width: "100%",
-  // border: "1px solid red",
+  // border: "4px solid green",
   height: "32px",
   alignItems: "center",
+  alignSelf: "flex-end",
   padding: "0 .5rem",
- 
+ [theme.breakpoints.down("md")]: {
+  justifyContent: "flex-end",
+ }
 },
 listItem: {
   width: "100%",
@@ -212,6 +221,7 @@ listItemText: {
 divider: {
   width: "100%", 
   color: "#EA4D1F",
+  marginBottom: "1rem"
 },
 
 '@keyframes blinker': {
@@ -235,75 +245,137 @@ delivery: {
   animationDuration: '12s',
   animationTimingFunction: 'linear',
   animationIterationCount:'infinite',
+  [theme.breakpoints.down('md')]: { 
+    // border: "1px solid red",
+    width: "50%",
+  },
   [theme.breakpoints.down('sm')]: { 
+    // border: "1px solid blue",
+    // display: "none",
     animation: "none",
-    width: "100%"
+    width: "70%",
+    marginRight: "10rem"
+  },
+  [theme.breakpoints.down('xs')]: { 
+    // border: "1px solid orange",
+    display: "none"
   },
 },
+subMenuText: {
+  color: `${iconColor}`,
+},
+hide: {
+  display: "none",
+},
+mobileHome: {
+  display: "none",
+  [theme.breakpoints.down("xs")]: {
+    display: "flex",
+    // border: "1px solid orange",
+  }
+},
+sub: {
+  marginTop: "4rem",
+  [theme.breakpoints.down("xs")]: {
+    marginTop: "2rem",
+  }
+},
+nav: {
+  paddingTop: "6rem",
+  [theme.breakpoints.down("xs")]: {
+    paddingTop: "3rem",
+  }
+},
+portal: {
+  display: "flex",
+  justifyContent: 'space-around',
+  // border: "1px solid red",
+  width: "40%"
+}
 }));
 
 const NavBar = (props) => {
   const classes = useStyles();
   const loggedIn = useSelector(state => state.user.loggedIn);
   const admin = useSelector(state => state.user.admin);
+  const agent = useSelector(state => state.user.agent);
+
   const firebase_id = useSelector(state => state.user.firebase_id);
   const [open, setOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const dispatch = useDispatch();
+// eslint-disable-next-line 
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
+
+ 
   const handleClick = () => {
     setOpen((prev) => !prev);
+    // setOpen(true)
   };
 
-  const handleClickAway = () => {
-    setOpen(false);
-  };
+ 
   const logout = () => {
-    // auth.signOut();
-auth.signOut()
+    auth.signOut()
       const msg = "User Signed Out Successfully"
       dispatch(logOut(msg))
     props.history.push("/");
-    // })
-    // .catch(err => {
-    //   console.log("Error signing out: ", err)
-    // }) 
     
   };
  
   const profileSignUp = () => {
-    {loggedIn ? props.history.push(`/profile/${firebase_id}`) : props.history.push(`/register`) }
-    
-  }
+    props.history.push(loggedIn ? `/profile/${firebase_id}` : `/register`)
+  };
+
   const loginCart = () => {
-    {loggedIn? props.history.push(`/profile/${firebase_id}/cart`) : props.history.push(`/signin`) }
-  }
-  const login = () => {
-    {loggedIn ? logOut() : props.history.push(`/signin`) }
-  }
+    props.history.push(loggedIn ? `/profile/${firebase_id}/cart` : `/signin`) 
+  };
+
+  // const login = () => {
+  //   {loggedIn ? logOut() : props.history.push(`/signin`) }
+  // }
 
   const handleMenuClick = () => {
     setOpenMenu(!openMenu)
   }
 
   const subMenu = (
-    <List>
-      <ListItem button onClick={handleMenuClick}>
-      <ListItemText primary="Deparments"/>
+    <List className={classes.sub}>
+      <ListItem aria-label={openMenu ? 'close' : "open"} button onClick={handleMenuClick}>
+      <ListItemText className={classes.subMenuText} primary="Deparments"/>
       {openMenu ? <IconExpandLess /> : <IconExpandMore />}
       </ListItem>
       <Collapse in={openMenu} timeout="auto" unmountOnExit>
         <Divider />
         <List component="div" disablePadding>
-          {categories.map((key, category) => (
-            <ListItem key={key} component={ Link } to={`/product/?col=category&filter=${category}`} variant="contained" className={classes.menuItem}>
-            <ListItemText inset primary={category} />
+          {categories.map((category) => (
+            <ListItem key={category} component={ Link } to={`/product/?col=category&filter=${category}`} variant="contained" className={classes.menuItem}>
+            <ListItemText className={classes.subMenuText} inset primary={category} />
           </ListItem>
           ))}
         </List>
       </Collapse>
     </List>
   )
+  // const subMenu = (
+  //   <List className={classes.catNav} style={{marginTop: "1rem"}}>
+  //     <ListItem button  aria-label="categories menu" onClick={handleMenuClick}>
+  //     <ListItemText style={{color: ` ${iconColor}`}} className={classes.listItemText} primary="Categories"/>
+  //     {openMenu ? <IconExpandLess style={{color: `${iconColor}`}}/> : <IconExpandMore style={{color: `${iconColor}`}}/>}
+  //     </ListItem>
+  //     <Collapse in={openMenu} timeout="auto" unmountOnExit>
+  //       <Divider style={{border: `1px solid ${iconColor}`, backgroundColor: `${iconColor}`}}/>
+  //       <List component="div" disablePadding>
+  //         {categories.map((category) => (
+  //             console.log("category", category),
+  //           <ListItem style={{textDecoration: "none", color: '#0C1D33'}}  key={category} component={ Link } to={`/product/category/?col=category&filter=${category}`} variant="contained" className={classes.menuItem}>
+  //           <ListItemText className={classes.listItemText} inset primary={category} />
+  //         </ListItem>
+  //         ))}
+  //       </List>
+  //     </Collapse>
+  //   </List>
+  // )
   return (
   <div className={classes.root}>
         <Grid className={classes.topNav}>
@@ -311,31 +383,68 @@ auth.signOut()
           <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, WACO, AND HOUSTON</Typography>
           <LocalShipping className={classes.deliveryIcon}/>
           </Grid>
+
+          <Grid className={classes.mobileHome}>
+            <NavLink to='/'className={classes.link}  >
+              <Typography style={{color: "white", fontSize: "1rem"}} className={classes.home} variant="h5"> Cooper's Home Furniture </Typography>
+              {/* <Typography  className={classes.caption} variant="caption"> POWERED BY A.R.C. LIMITED </Typography> */}
+            </NavLink>
+          </Grid>
+         
           <div className={classes.sectionMobile}> 
-            <ClickAwayListener
-              onClickAway={handleClickAway}
-              className={classes.mobileMenu} 
+         
+            <div
+              // onClick={handleClickAway}
+              className={`${classes.mobileMenu} ${classes.sectionMobile}`}
            > 
             <div >
-              <IconButton style={{color: "#F2CC7E"}} type="button" onClick={handleClick}>
-                <MoreIcon/>
+              <IconButton aria-label="menu" style={{color: "#F2CC7E"}} type="button" onClick={handleClick}>
+                {open ? <CloseIcon/> : <MoreIcon/>}
               </IconButton>
                 {open ? (
-                    <Portal>
-                      <div className={classes.dropdown}>
-                       <nav aria-label="Menu" >
-                        <ul className={classes.listItem}>
-                          <li className={classes.listItemText}>
-                            <NavLink className={classes.menuLink} to={loggedIn ? `/profile/${firebase_id}` : `/register`} href={loginCart}>
-                              <Typography>{loggedIn ? `ACCOUNT` : `CREATE ACCOUNT`}</Typography>
+                    // <Portal>
+                      <div className={open ? classes.dropdown : classes.hide}>
+                       <nav aria-label="Menu" className={classes.nav}>
+                        <ul className={classes.listItem} >
+                        <li className={classes.listItemText}>
+                            <NavLink className={classes.menuLink} to="/">
+                              <Typography>HOME</Typography>
                             </NavLink></li>
                             <Divider  className={classes.divider}/>
                           <li className={classes.listItemText}>
-                            <NavLink className={classes.menuLink} to={loggedIn ? `/profile/orders${firebase_id}/cart` : `/singin`} href={loginCart}>
-                              <Typography>{loggedIn ? `CART` : `LOGIN`}</Typography>
+                            <NavLink className={classes.menuLink} to={loggedIn ? `/profile/${firebase_id}` : `/register`}>
+                              <Typography>{loggedIn ? `ACCOUNT` : `CREATE ACCOUNT`}</Typography>
+                            </NavLink></li>
+                            <Divider  className={classes.divider}/>
+                            
+                            {admin || agent ? 
+                            <li className={classes.listItemText}>
+                            <NavLink className={classes.menuLink} to={admin ? `/storemanager/${firebase_id}/admin/addproduct` : `/storemanager/${firebase_id}/bookorder`}>
+                              <Typography>STORE MANAGER</Typography>
+                            </NavLink></li>
+                             : null
+                            }
+                            <Divider  className={admin || agent ? classes.divider : classes.hide}/>
+                          <li className={loggedIn ? classes.listItemText : classes.hide}>
+                            <NavLink className={classes.menuLink} to={loggedIn  ? `/profile/orders${firebase_id}/cart`  : `/signin` } href={loginCart}>
+                              <Typography>CART</Typography>
                             </NavLink>
                           </li>
-                          <Divider  className={classes.divider}/>
+                          <Divider  className={loggedIn ? classes.divider : classes.hide}/>
+                         
+                          <li className={loggedIn ? classes.listItemText : classes.hide}>
+                            <Button aria-label="logout" style={{padding: 0}} className={classes.menuLink} onClick={logout}>
+                              <Typography>LOGOUT</Typography>
+                            </Button>
+                          </li>
+                          <Divider  className={loggedIn ? classes.divider : classes.hide}/>
+
+                          <li className={!loggedIn ? classes.listItemText : classes.hide}>
+                            <NavLink className={classes.menuLink} to='/signin'>
+                              <Typography>LOGIN</Typography>
+                            </NavLink>
+                          </li>
+                          <Divider  className={!loggedIn ? classes.divider : classes.hide}/>
 
                           <li className={classes.listItemText}>
                             <NavLink className={classes.menuLink} to='/contact'>
@@ -343,14 +452,29 @@ auth.signOut()
                             </NavLink>
                           </li>
                           <Divider  className={classes.divider}/>
+
+                          <li className={classes.listItemText}>
+                            <NavLink className={classes.menuLink} to='/portal/signin'>
+                              <Typography>EMPLOYEE PORTAL</Typography>
+                            </NavLink>
+                          </li>
+                          <Divider  className={classes.divider}/>
+
+                          <li className={classes.listItemText}>
+                            <NavLink className={classes.menuLink} to='/products'>
+                              <Typography>SHOP ALL PRODUCTS</Typography>
+                            </NavLink>
+                          </li>
+                          <Divider  className={classes.divider}/>
+
                         </ul>
                       </nav>
                       {subMenu}
                   </div>
-                  </Portal>
+                  //  </Portal>
                 ) : null}
             </div>
-            </ClickAwayListener>
+            </div>
           </div> 
         </Grid>
         <Grid item className={classes.title}>
@@ -359,40 +483,82 @@ auth.signOut()
             <Typography  className={classes.caption} variant="caption"> POWERED BY A.R.C. LIMITED </Typography>
           </NavLink>
           <Grid item  className={classes.iconWrapper}>
+            {loggedIn && admin ||  agent ? 
+            <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={`/storemanager/${firebase_id}/bookorder`}>
+            <IconButton aria-label="STORE MANAGER" className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
+            <Typography variant="button" >
+              STORE MANAGER
+            </Typography>
+          </NavLink>
+            : 
             <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={loggedIn ? `/profile/${firebase_id}` : `/register`}>
-              <IconButton aria-label="account" className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
+              <IconButton aria-label={loggedIn ? "ACCOUNT" : "CREATE ACCOUNT"} className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
               <Typography variant="button" >
                 {loggedIn ? "ACCOUNT" : "CREATE ACCOUNT"}
               </Typography>
-            </NavLink>
-            <NavLink className={classes.iconText} to={admin && loggedIn ? `/profile/${firebase_id}` : `/cart`}>
+            </NavLink> }
+            <NavLink className={classes.iconText} to={loggedIn ? `/cart/${firebase_id}` : `/signin` }>
             <IconButton
                 aria-label="cart"
                 className={classes.iconBtn}
             >
               <Badge badgeContent={1} color="secondary">
-                {admin ? <LocalShipping className={classes.icon}/> :  <ShoppingCartIcon  className={classes.icon}/>}
+                 <ShoppingCartIcon  className={classes.icon}/>
               </Badge> 
             </IconButton>
-            <Typography variant="button"> {admin ? "Orders" :  "Cart"} </Typography>
+            <Typography variant="button">Cart</Typography>
             </NavLink>
+                  {admin || agent ? 
+            <NavLink className={classes.iconText} to={admin && loggedIn ? `/storemanager/${firebase_id}/orders` : agent && loggedIn ? `/storemanager/${firebase_id}/agentorders` : `/`}>
+            <IconButton
+                aria-label="orders"
+                className={classes.iconBtn}
+            >
+              <Badge badgeContent={1} color="secondary">
+                 <LocalShipping className={classes.icon}/> 
+              </Badge> 
+            </IconButton>
+            <Typography variant="button"> Orders</Typography>
+            </NavLink> : null
+              }
             {loggedIn ? 
             <div onClick={logout}>
               <IconButton  aria-label= "LOGOUT" className={classes.iconBtn}>
                <ExitToAppIcon   className={classes.icon}/> 
              </IconButton> 
-             <Typography style={{color: "#374F71"}} variant="button">LOGOUT</Typography>
+             <Typography style={{color: `${iconColor}`}} variant="button">LOGOUT</Typography>
+
+             
           </div> 
              :
-            <NavLink className={classes.iconText} to={`/signin`}>
-              <IconButton onClick={login} aria-label="LOGIN" className={classes.iconBtn}>
-                <LoginIcon   className={classes.icon}/>
-              </IconButton>
-              <Typography variant="button">LOGIN</Typography>
-           </NavLink> }
+             <div className={classes.portal} >
+           <NavLink className={classes.iconText} to="/portal/signin">
+            <IconButton
+                aria-label="employee login"
+                className={classes.iconBtn}
+            >
+         
+                 <WorkIcon className={classes.icon}/>
+             
+            </IconButton>
+            <Typography variant="button">PORTAL</Typography>
+            </NavLink>
+<div>
+        <NavLink className={classes.iconText} to="/signin">
+           <IconButton  aria-label= "LOGOUT" className={classes.iconBtn}>
+           <LoginIcon  className={classes.icon}/> 
+         </IconButton> 
+         <Typography style={{color: `${iconColor}`}} variant="button">LOGIN</Typography>
+         </NavLink>
+         </div>
+         </div>
+           }
           </Grid>
         </Grid>
-        <Grid className={classes.catNav}><Dropdown/></Grid>
+        <Grid className={classes.catNav}>
+          <Dropdown/>
+  
+          </Grid>
     </div>
   )
 };

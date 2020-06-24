@@ -1,50 +1,18 @@
-import React, {useState, useRef, createRef} from 'react';
+import React, {useState, useRef, createRef} from "react";
+import MobileAddProductFrom from "./MobileAddProduct";
+import MobileImageUpload from "./ImageUpload";
 import {withRouter} from "react-router-dom";
-import AddProductForm from "./../../Containers/Forms/StoreForms/AddProduct";
-import MobileImageUpload from "./../../Containers/Forms/StoreForms/MobileForm/AddProduct/MultiStepForm";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { Typography } from '@material-ui/core';
 import {useDispatch} from "react-redux"
-import {storage} from "./../../firebaseConfig";
-import {addProduct} from "./../../Store/Actions/products";
+import {storage} from "./../../../../../firebaseConfig";
+import {addProduct} from "./../../../../../Store/Actions/products";
 import Input from "@material-ui/core/Input";
-import {yellowColor, iconColor, categories, greenColor} from "./../../GlobalStyles/styles";
+import {yellowColor, iconColor, categories, greenColor} from "./../../../../../GlobalStyles/styles";
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        // border: "2px solid green",
-        width: "100%",
-        // [theme.breakpoints.down("xs")]: {
-        //     height: 200
-        // }
-    },
-    mobileForm: {
-        display: "none",
-        [theme.breakpoints.down("sm")]: {
-            display: "flex",
-        }
-    },
-    deskTopForm: {
-        border: "1px solid red",
-        width: "100%",
-        // [theme.breakpoints.down("sm")]: {
-        //     border: "10px solid orange",
-            
-        // },
-        [theme.breakpoints.down("md")]: {
-            // border: "1px solid pink",
-            display: "none",
-        }
-    }
-}))
-
-const AddProduct = (props) => {
-    const classes = useStyles();
+const MultiStepForm = (props) => {
+    // const classes = useStyles();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [price, setPrice] = useState(null);
@@ -61,11 +29,10 @@ const AddProduct = (props) => {
     const inputLabel =useRef(null);
     const [step, setStep] = useState(1);
     const [imageSuccess, setSuccess] = useState(false);
-
     const dispatch = useDispatch();
     console.log("step #", step);
     console.log("image file", file);
-
+    
     const next = () =>  {
         // let curStep = step
         setStep(step + 1)
@@ -114,26 +81,61 @@ const AddProduct = (props) => {
         );
     };
 
-    // const fileHandler = e => {
-    //     e.persist();
-    //     if (e.target.files[0]) {
-    //       setFile(() => e.target.files[0]);
-    //     setSuccess(true)
-    //       setPreviewImg(URL.createObjectURL(e.target.files[0]));
-    //     }
-    // };
+    const fileHandler = e => {
+        e.persist();
+        if (e.target.files[0]) {
+          setFile(() => e.target.files[0]);
+          setSuccess(true);
+          setPreviewImg(URL.createObjectURL(e.target.files[0]));
+        }
+    };
 
-    return (
-        <Grid className={classes.root} >
-            {/* <div className={classes.mobileForm}>
 
-            </div> */}
-            <MobileImageUpload/>
+    switch (step) {
+      case 1:
+        return (
+        <MobileImageUpload 
+            fileHandler={fileHandler} 
+            previewImg={previewImg} 
+            image_url={image_url} 
+            photoInp={photoInp} 
+            title={title} 
+            file={file} 
+            next={next} 
+            step={step}
+            imageSuccess={imageSuccess}
+            />
+        )
+      case 2:
+        return ( 
+            <MobileAddProductFrom 
+                file={file} 
+                next={next} 
+                prev={prev}/>
+            )
+      default:
+        return null;
+    }
+    // return (
+    //     <Grid style={{width: "100%"}}>
+    //         {step === 1 ? <MobileImageUpload
+    //          fileHandler={fileHandler} 
+    //                  previewImg={previewImg} 
+    //                  image_url={image_url} 
+    //                  photoInp={photoInp} 
+    //                  title={title} 
+    //                  file={file} 
+    //                  next={next} 
+    //                  step={step}
+    //         /> :  
+    //         <AddProductFrom 
+    //         file={file}
+    //         next={next}
+    //         prev={prev}
+    //         />  }
 
-            {/* {step === 1 ? <MobileImageUpload fileHandler={fileHandler} previewImg={previewImg} image_url={image_url} photoInp={photoInp} title={title} file={file} next={next} step={step}/> : (step === 2 ? <AddProductForm file={file} next={next} prev={prev}/> : null) } */}
-            <div className={classes.deskTopForm}><AddProductForm/></div>
-        </Grid>
-    )
+    //     </Grid>
+    // )
 };
 
-export default withRouter(AddProduct);
+export default withRouter(MultiStepForm);

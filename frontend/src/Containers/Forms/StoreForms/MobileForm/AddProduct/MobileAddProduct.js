@@ -1,15 +1,15 @@
 import React, { useState, useRef, createRef } from 'react';
 import {withRouter} from "react-router-dom";
 import {useDispatch} from "react-redux"
-import {storage} from "./../../firebaseConfig";
+import {storage} from "./../../../../../firebaseConfig";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import Input from "@material-ui/core/Input";
 import Button from '@material-ui/core/Button';
-import {addProduct} from "./../../Store/Actions/products";
+import {addProduct} from "./../../../../../Store/Actions/products";
 import PublishIcon from '@material-ui/icons/Publish';
-import {yellowColor, iconColor, categories, greenColor} from "./../../GlobalStyles/styles";
+import {yellowColor, iconColor, categories, greenColor} from "./../../../../../GlobalStyles/styles";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
@@ -19,17 +19,29 @@ import { OutlinedInput } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     root: {
-        display: "flex",
-        // flexDirection: "column",
-        justifyContent: "space-between",
-        alignItems: "center",
-        width: "100%",
-        // border: "2px solid orange",
-        // marginTop: "2rem",
-        // paddingTop: "2rem",
-        [theme.breakpoints.down('sm')]: { 
+        display: "none",
+       
+        [theme.breakpoints.down('md')]: { 
           flexDirection: "column",
           width: "100%",
+          border: "2px solid hotpink",
+          display: "flex",
+          // flexDirection: "column",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+
+        },
+        [theme.breakpoints.down('sm')]: { 
+          // flexDirection: "column",
+          // width: "100%",
+          border: "2px solid orange"
+
+        },
+        [theme.breakpoints.down('xs')]: { 
+          // flexDirection: "column",
+          // width: "100%",
+          border: "2px solid green"
 
         },
     },
@@ -38,25 +50,39 @@ const useStyles = makeStyles(theme => ({
         marginRight: theme.spacing(1),
         width: "416px",
         justifyContent: "left",
-        [theme.breakpoints.down('xs')]: { 
-          width: "98%",
-          margin: "1rem auto"
-        },
+        // [theme.breakpoints.down('xs')]: { 
+        //   width: "88%",
+        //   margin: "1rem auto"
+        // },
       },
       btn: {
         margin: "2rem auto",
         color: "white",
-        width: "25%",
+        width: "35%",
         backgroundColor: `${iconColor}`,
         borderRadius: 0,
         "&:hover": {
-          backgroundColor: `${greenColor}`,
+          backgroundColor: `${iconColor}`,
     
         },
         [theme.breakpoints.down('xs')]: { 
-          width: "90%",
+          width: "40%",
         },
     },
+    backBtn: {
+      margin: "2rem auto",
+      color: "white",
+      width: "35%",
+      backgroundColor: `${greenColor}`,
+      borderRadius: 0,
+      "&:hover": {
+        backgroundColor: `${greenColor}`,
+  
+      },
+      [theme.breakpoints.down('xs')]: { 
+        width: "40%",
+      },
+  },
     fileInput: {
       border: "1px solid black"
     },
@@ -74,12 +100,18 @@ const useStyles = makeStyles(theme => ({
       width: "100%",
       display: "flex",
       justifyContent: "center",
-      [theme.breakpoints.down('xs')]: { 
+      [theme.breakpoints.down('sm')]: { 
         flexDirection: "column",
-        width: "100%",
-        border: "2px solid gold",
+        // width: "100%",
+       
         marginTop: "1rem"
       },
+      // [theme.breakpoints.down('xs')]: { 
+      //   flexDirection: "column",
+      //   width: "100%",
+      //   border: "2px solid gold",
+      //   marginTop: "1rem"
+      // },
     },
     imagePreview: {
       width: "30%",
@@ -119,7 +151,7 @@ const useStyles = makeStyles(theme => ({
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "space-between",
-      border: "2px solid limegreen ",
+      // border: "2px solid limegreen ",
       [theme.breakpoints.down('xs')]: { 
         width: "100%",
         height: "auto"
@@ -132,8 +164,8 @@ const useStyles = makeStyles(theme => ({
       //   marginRight: theme.spacing(1),
         width: "416px",
         justifyContent: "left",
-        [theme.breakpoints.down('xs')]: { 
-          width: "98%",
+        [theme.breakpoints.down('md')]: { 
+          width: "95%",
           margin: "1rem auto"
         },
 
@@ -141,12 +173,20 @@ const useStyles = makeStyles(theme => ({
     margin: {
       margin: theme.spacing(1),
     },
+    btnGrid: {
+      border: "1px solid green",
+      display: "flex",
+      width: "70%",
+      [theme.breakpoints.down("sm")]: {
+        width: "100%",
+      }
+    }
 }))
 const AddProduct = props => {
     const classes = useStyles();
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [price, setPrice] = useState(null);
+    const [price, setPrice] = useState(0);
     // eslint-disable-next-line
     const [image_url, setImageUrl] = useState("");
     const [category, setCategory] = useState("");
@@ -154,7 +194,7 @@ const AddProduct = props => {
     const [item_number, setItemNumber] = useState("");
     const [item_name, setItemName] = useState("");
     const [supplier, setSupplier] = useState("");
-    const [file, setFile] = useState(null);
+    // const [file, setFile] = useState(null);
     const [previewImg, setPreviewImg] = useState("");
     const photoInp = createRef();
     const inputLabel =useRef(null);
@@ -165,7 +205,7 @@ const AddProduct = props => {
         event.preventDefault();
         let currentProductName = "product-image-" + Date.now();
         let metaData = {contentType: "image/jpeg"}
-        let uploadImage = storage.ref(`images/${currentProductName}`).put(file, metaData);
+        let uploadImage = storage.ref(`images/${currentProductName}`).put(props.file, metaData);
         uploadImage.on(
           "state_changed",
           (snapshot) => {
@@ -199,19 +239,22 @@ const AddProduct = props => {
         );
     };
     
+    const prev = () => {
+        props.prev()
+    };
    
-    const fileHandler = e => {
-        e.persist();
-        if (e.target.files[0]) {
-          setFile(() => e.target.files[0]);
-          setPreviewImg(URL.createObjectURL(e.target.files[0]));
-        }
-      };
+    // const fileHandler = e => {
+    //     e.persist();
+    //     if (e.target.files[0]) {
+    //       setFile(() => e.target.files[0]);
+    //       setPreviewImg(URL.createObjectURL(e.target.files[0]));
+    //     }
+    //   };
 
       console.log("item name", item_name);
     return (
         <Grid className={classes.root}>
-          <Grid className={classes.imagePreview}>
+          {/* <Grid className={classes.imagePreview}>
             <Grid className={classes.image}>
               {file === null ? <PublishIcon/> : <img className={classes.img} src={previewImg} alt={"image preview" || title}/>}
             </Grid>
@@ -227,7 +270,7 @@ const AddProduct = props => {
               ref={photoInp}
               label="Image Upload"
             /> 
-          </Grid>
+          </Grid> */}
 
           {/*BEGIN FORM */}
           <Grid className={classes.formGrid}>
@@ -251,7 +294,7 @@ const AddProduct = props => {
                     margin="dense"
                     variant="outlined"
                     value={description}
-                    rows={2}
+                    rows={4}
                     multiline
                     onChange={e => setDescription(e.target.value)}
                     inputProps={{
@@ -264,7 +307,7 @@ const AddProduct = props => {
 
                   <div className={classes.formGroup}>
 
-<FormControl className={classes.textFieldWide} variant="outlined" style={{margin: "8px"}}>
+<FormControl className={classes.textFieldWide} variant="outlined" style={{margin: "8px 0px 8px 8px"}}>
           <InputLabel htmlFor="price">Price</InputLabel>
           <OutlinedInput
             id="price"
@@ -272,7 +315,7 @@ const AddProduct = props => {
             type="number"
             onChange={e => setPrice(e.target.value)}
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            labelWidth={60}
+            // labelWidth={60}
             label="Price"
             style={{height: 41}}
           />
@@ -346,7 +389,11 @@ const AddProduct = props => {
                 />
                 </div>     
             </form>
-            <Button className={classes.btn} type="submit" variant="contained" onClick={uploadImage}>Add Product</Button>
+            <Grid className={classes.btnGrid}>
+              <Button aria-label="back" className={classes.backBtn} type="submit" variant="contained" onClick={prev}>Back</Button>
+              <Button aria-label="add product" className={classes.btn} type="submit" variant="contained" onClick={uploadImage}>Add Product</Button>
+
+            </Grid>
             </Grid>
 
          

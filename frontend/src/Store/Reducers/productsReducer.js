@@ -81,6 +81,24 @@ export default (state = initialState, actions) => {
                         error: true,
                         errorMsg: actions.payload
                     }
+        case productsTypes.GET_PRODUCT_BY_ID_START:
+            return {
+                ...state,
+                loading: true,
+            }
+        case productsTypes.GET_PRODUCT_BY_ID_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                products: state.products.find( item  => { return actions.payload === `${item.id}`})
+            }
+        case productsTypes.GET_PRODUCT_BY_ID_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: true,
+                errorMsg: actions.payload
+            }
         default:
             return state;
     };

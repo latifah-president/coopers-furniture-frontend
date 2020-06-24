@@ -8,18 +8,20 @@ import Form from "./Containers/Forms/SignUp";
 import HomePage from './Views/HomePage/Home';
 import ProfilePage from './Views/Profile/Profile';
 import SignIn from './Containers/Forms/SignIn';
-import AdminSignUpPage from "./Containers/Forms/AdminSignUp";
+import AdminSignUpPage from "./Containers/Forms/StoreForms/AdminSignUp";
 import AddProductPage from "./Views/AddProductPage/AddProduct";
 import UnauthorizedPage from "./Views/ErrorPage/Unauthorized";
 import CustomersPage from "./Views/CustomersPage/Customers";
 import ProductsPage from "./Views/ProductsPage/Products";
 import ProductsBy from "./Views/ProductsPage/ProductsBy";
 import ProductDetailsPage from "./Views/ProductsPage/ProductDetails";
+import StoreManagerPage from "./Views/StoreManagerPage/AdminConsole";
 import AgentPage from "./Views/AgentPage/AgentPage";
 import {initAuth} from "./Store/Actions/users";
 import './App.css';
 import { getProducts } from './Store/Actions/products';
 import Footer from "./Components/Footer/Footer";
+import EmployeeSignIn from './Containers/Forms/EmployeeSignIn';
 
 function App(props) {
   const [home, setHome] = useState(null)
@@ -39,7 +41,10 @@ console.log("is admin", admin)
               .currentUser.getIdToken()
               .then((idToken) => {
                 if(idToken) {
-                  dispatch(initAuth(email, uid, idToken));
+                  if (props.match.path === "/") {
+                    dispatch(initAuth(email, uid, idToken));
+      
+                 }
                 } else {
                   console.log("no token")
                 }
@@ -49,6 +54,7 @@ console.log("is admin", admin)
               });
           }
         })
+        dispatch(getProducts())
        //}
     return () => {
       console.log("unsubscribe ");
@@ -57,7 +63,8 @@ console.log("is admin", admin)
 
 let adminRoutes = (
   <Switch>
-    <Route exact path="/admin/customers" component={CustomersPage}/>
+     <Route  path='/storemanager/:firebase_id' component={StoreManagerPage} />
+
   </Switch>
 )
   return (
@@ -67,20 +74,27 @@ let adminRoutes = (
 
         <main className="wrapper">
         <Switch>
-          <Route exact path='/' component={HomePage} />
-          <Route exact path='/products' component={ProductsPage} />
-          <Route exact path='/product/:id' component={ProductDetailsPage} />
+          {/* <Route exact path='/profile/:id/cart' component={CartPage}/> */}
           <Route  path='/profile/:firebase_id' component={ProfilePage} />
+
           <Route exact path="/product/" component={ProductsBy}/>
           <Route exact path='/register' component={Form}/>
           <Route exact path="/signin" component={SignIn}/>
           <Route exact path='/admin/register' component={AdminSignUpPage}/>
+          <Route exact path='/agent/register' component={AdminSignUpPage}/>
+          <Route exact path="/portal/signin" component={EmployeeSignIn}/>
+
           <Route exact path="/chfagent" component={AgentPage}/>
+
+          <Route exact path='/' component={HomePage} />
+          <Route exact path='/products' component={ProductsPage} />
+          <Route exact path='/product/:id' component={ProductDetailsPage} />
+
           {/* <Route exact path='/admin/addproduct' component={AddProductPage}/> */}
 
           {/* ROUTES BELOW THIS LINE WILL BE ADMIN ONLY */}
 
-         {/* {admin ? adminRoutes : <UnauthorizedPage/>} */}
+         {admin ? adminRoutes : <UnauthorizedPage/>}
           </Switch>
         </main>
       <Footer/>

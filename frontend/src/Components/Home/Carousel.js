@@ -8,10 +8,8 @@ const useStyles = makeStyles((theme) => ({
     carousel: {
         margin: 'auto',
         width: '80%',
-        // border: "1px solid green",
-        [theme.breakpoints.down('sm')]: {
-            width: "95%",
-          },       
+        //  border: "1px solid green",
+               
     },
     slide: {
         // border: "1px solid red",

@@ -128,10 +128,38 @@ export const getProductsBy = (col, filter) => (dispatch) => {
     })
 };
 
+export const getProductsById = (id) => (dispatch) => {
+    dispatch ({
+        type: productsTypes.GET_PRODUCT_BY_ID_START,
+    })
+    // dispatch ({
+    //     type: productsTypes.GET_PRODUCT_BY_SUCCESS,
+    //     payload: id
+    // })
+    // axios.get(`products/${id}`).then(res => {
+       
+        if (id) {
+            dispatch ({
+                type: productsTypes.GET_PRODUCT_BY_ID_SUCCESS,
+                payload: id
+            })
+        } else {
+           
+            dispatch ({
+                type: productsTypes.GET_PRODUCT_BY_ID_FAIL,
+                payload: "no product found"
+            })
+        }
+   
+      
+    // })
+};
+
 export default {
     addProduct,
     getProducts,
     updateProduct,
     getProductsBy,
     deleteProduct,
+    getProductsById,
 }

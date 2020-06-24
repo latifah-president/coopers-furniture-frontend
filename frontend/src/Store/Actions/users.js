@@ -64,21 +64,21 @@ export const register = (userObj) =>  (dispatch) => {
     
 }
 
-export const logOut = (msg) => (dispatch) => {
+export const logOut = () => (dispatch) => {
     dispatch ({
         type: authTypes.LOGOUT_START
     });
-    if (msg) {
+    // if (msg) {
         dispatch ({
             type: authTypes.LOGOUT_SUCCESS,
             payload: false
         })
-    } else {
+    // } else {
         dispatch ({
             type: authTypes.LOGOUT_FAIL,
             payload: 'Failed to log user out'
         })
-    }
+    // }
 };
 
 export const logIn = (user) => (dispatch) => {
@@ -108,7 +108,7 @@ export const getById = (firebase_id) => dispatch => {
         // axios.defaults.headers.common["IdTokenResults"] = idTokenResults;
         axios.get(`/user/${firebase_id}`)
         .then(res => {
-            console.log("get user response", res)
+            // console.log("get user response", res)
             if (res.status === 200) {
                 
                 dispatch({
@@ -130,10 +130,39 @@ export const getById = (firebase_id) => dispatch => {
         })
     }
 };
+
+export const addToCart = (id, quantity, firebase_id, price) =>  (dispatch) => {
+    dispatch ({
+        type: userTypes.ADD_TO_CART_START
+    })
+    console.log("price time qty", price*quantity)
+   
+    axios.post(`/user/add-to-cart/${id}`, { products_id: id, quantity, firebase_id, price }).then(res => {
+    if (res.status === 201) {
+        console.log("res from add to cart", res)
+        dispatch({
+            type: userTypes.ADD_TO_CART_SUCCESS,
+            payload: id
+        })
+    } else if (res.status === 400) {
+        dispatch({
+            type: userTypes.ADD_TO_CART_FAIL,
+            payload: res.data.message
+        })
+    }
+   }).catch( err => {
+    dispatch({
+        type: userTypes.ADD_TO_CART_FAIL,
+        payload: err
+    })
+})
+    
+};
 export default {
     register,
     initAuth,
     logOut,
     logIn,
     getById,
+    addToCart,
 }

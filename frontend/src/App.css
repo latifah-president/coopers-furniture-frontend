@@ -27,6 +27,12 @@
 .App-link {
   color: #61dafb;
 }
+/* // Material UI breakpoints
+// value         |0px     600px    960px    1280px   1920px
+// key           |xs      sm       md       lg       xl
+// screen width  |--------|--------|--------|--------|-------->
+// range         |   xs   |   sm   |   md   |   lg   |   xl */
+
 
 @keyframes App-logo-spin {
   from {
@@ -38,14 +44,24 @@
 }
 
 .wrapper {
-  margin: 11.5rem auto 0 auto;
+  margin: 11.5rem auto 10.5rem auto;
+  /* margin: 10rem auto  5.5rem auto; */
+
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   /* border: 5px solid saddlebrown; */
+ 
 }
+@media only screen and (max-width: 600px) {
+  .wrapper {
+    margin: 4.5rem auto 10.5rem auto;
+    /* border: 5px solid hotpink; */
 
+  }
+  
+}
 .logo {
   background-color: gray;
   height: 250px;;

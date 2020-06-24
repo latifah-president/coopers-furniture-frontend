@@ -2,7 +2,6 @@ import { authTypes } from "./../Actions/ActionTypes";
 import { userTypes } from "./../Actions/ActionTypes";
 
 const initialState = {
-    // user: [],
     firebase_id: null,
     email: null,
     first_name: null,
@@ -12,12 +11,13 @@ const initialState = {
     state: null,
     zip: null,
     phone: null,
-    admin: null,
+    admin: false,
+    agent: false,
     cart: [],
     total: 0.00,
     loading: false,
     loggedIn: false,
-    error: null,
+    error: false,
     authenticated: false,
 };
 
@@ -33,7 +33,7 @@ export default (state = initialState, actions) => {
             return {
                 ...state,
                 loading: false,
-                authenticated: true,
+                // authenticated: true,
                 firebase_id: actions.payload[0].firebase_id,
                 email: actions.payload[0].email,
                 first_name: actions.payload[0].first_name,
@@ -44,10 +44,9 @@ export default (state = initialState, actions) => {
                 zip: actions.payload[0].zip,
                 phone: actions.payload[0].phone,
                 admin: actions.payload[0].admin,
-                cart: [
-                    ...state.cart,
-                    actions.payload[1]
-                ],
+                agent: actions.payload[0].agent,
+                loggedIn: true,
+                cart: actions.payload[2],
                 total: actions.payload[3]
             }
             case authTypes.AUTH_FAIL:
@@ -65,7 +64,7 @@ export default (state = initialState, actions) => {
                 return {
                     ...state,
                     loading: false,
-                    loggedIn: actions.payload,
+                    loggedIn: false,
                 }
             case authTypes.LOGOUT_FAIL:
                 return {
@@ -99,7 +98,7 @@ export default (state = initialState, actions) => {
                         return {
                             ...state,
                             loading: false,
-                            loggedIn: true,
+                            // loggedIn: true,
                             firebase_id: actions.payload[0].firebase_id,
                             email: actions.payload[0].email,
                             first_name: actions.payload[0].first_name,
@@ -110,10 +109,8 @@ export default (state = initialState, actions) => {
                             zip: actions.payload[0].zip,
                             phone: actions.payload[0].phone,
                             admin: actions.payload[0].admin,
-                            cart: [
-                                ...state.cart,
-                                actions.payload[1]
-                            ],
+                            agent: actions.payload[0].agent,
+                            cart: actions.payload[2],
                             total: actions.payload[3]
                         }
                         case userTypes.GET_USER_FAIL:

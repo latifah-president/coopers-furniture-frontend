@@ -20,10 +20,12 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import AccountCircle from '@material-ui/icons/AccountCircle';
 import EditIcon from '@material-ui/icons/Edit';
 import HomeIcon from '@material-ui/icons/Home';
 import GroupIcon from '@material-ui/icons/Group';
 import StoreIcon from '@material-ui/icons/Store';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const drawerWidth = 240;
 
@@ -65,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
-    top: 189,
+    top: 50,
     // zIndex: 2
   },
   drawerClose: {
@@ -80,7 +82,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down('xs')]: {
       height: 520,
-      top: 166
+      top: 50
     },
     // height: "70%",
     top: 166,
@@ -95,12 +97,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    border: "1px solid red"
+    // border: "1px solid red"
 
   },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3),
+    // padding: theme.spacing(3),
   },
 }));
 
@@ -111,25 +113,27 @@ const MiniDrawer = (props) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const firebase_id = useSelector(state => state.user.firebase_id);
+  const loading = useSelector(state => state.user.loading);
+
   console.log("prams", props.match.path)
 
   const menuItems = [
     {
-      name: "Orders",
-      link: "/admin/orders",
-      icon: <InboxIcon/>
+      name: "Agent Profile",
+      link: `${props.match.url}/agentprofile/`,
+      icon: <AccountCircle/>
     },
     {
-      name: "Add Product",
-      link: `${props.match.url}/admin/addproduct`,
-      icon: <AddCircleOutlineIcon/>
-    },
-   
-    {
-      name: "Edit Product",
-      link: "/admin/editproduct",
+      name: "Book An Order",
+      link: `${props.match.url}/bookorder`,
       icon: <EditIcon/>
     },
+    {
+      name: "Your Orders",
+      link: `${props.match.url}/agentorders`,
+      icon: <InboxIcon/>
+    },
+    
   ];
   
   const subMenuItems = [
@@ -144,9 +148,14 @@ const MiniDrawer = (props) => {
       icon: <GroupIcon/>
     },
     {
-      name: "View All Products",
-      link: "/products",
-      icon: <StoreIcon/>
+      name: "View All Orders",
+      link: `${props.match.url}/orders`,
+      icon: <InboxIcon/>
+    },
+    {
+      name: "Add Product",
+      link: `${props.match.url}/admin/addproduct`,
+      icon: <AddCircleOutlineIcon/>
     },
   ];
   const handleDrawerOpen = () => {
@@ -197,7 +206,7 @@ const MiniDrawer = (props) => {
         }}
       >
         <div className={classes.toolbar}>
-          <IconButton onClick={handleDrawerOpen}>
+          <IconButton aria-label="open menu" onClick={handleDrawerOpen}>
             {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
           </IconButton>
         </div>
@@ -222,7 +231,8 @@ const MiniDrawer = (props) => {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-            {props.children}
+        {loading ? <CircularProgress/> : props.children }
+            
       </main>
     </div>
   );

@@ -102,8 +102,7 @@ const Profile = (props) => {
   const classes = useStyles();
   const firebase_id = useSelector(state => state.user.firebase_id);
   const admin = useSelector(state => state.user.admin);
-  const hash = props.location.hash[1]
-  const hashToNum = parseInt(hash)
+  const agent = useSelector(state => state.user.agent);
   console.log("is admin", admin)
   const dispatch = useDispatch();
   const [value, setValue] = useState(0);
@@ -121,9 +120,7 @@ const Profile = (props) => {
   
     return (
       <Grid className={classes.root}>
-    {admin ?          <StoreManagerPage/>
-
-   :
+   
    <div className={classes.tabWrapper} >
    <AppBar className={classes.profileNav} position="fixed">
      <Tabs className={classes.tabs} value={value} onChange={handleChange} aria-label="profile tabs" variant="scrollable" scrollButtons="auto">
@@ -152,7 +149,7 @@ const Profile = (props) => {
      Account Settings
    </TabPanel>
  </div>
-  }
+  
           
     
       </Grid> 

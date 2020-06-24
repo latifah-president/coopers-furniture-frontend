@@ -1,15 +1,15 @@
 import React, {useState} from 'react';
-import {auth} from '../../firebaseConfig';
+import {auth} from '../../../firebaseConfig';
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import Grid from '@material-ui/core/Grid';
 import TextField from "@material-ui/core/TextField";
-import Typography from "@material-ui/core/Typography";
 import {useDispatch} from 'react-redux';
-import { register } from "../../Store/Actions/users";
-import { iconColor, greenColor } from '../../GlobalStyles/styles';
-
+import { registerAdmin } from "../../../Store/Actions/admin";
+import { registerAgent } from "../../../Store/Actions/agent";
+import {iconColor, greenColor} from "./../../../GlobalStyles/styles"
+import { Typography } from '@material-ui/core';
 const useStyles = makeStyles(theme => ({
   wrapper: {
     flexGrow: 1,
@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    // width: "75%",
+    // width: "50%",
     // border: "1px solid red"
   },
   formControl: {
@@ -42,21 +42,24 @@ const useStyles = makeStyles(theme => ({
     // minWidth: 120,
     // maxWidth: 280
   },
+  textFieldThin: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: "200px",
+    justifyContent: "left"
+  },
   textFieldWide: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     width: "416px",
-    justifyContent: "left",
-    [theme.breakpoints.down('xs')]: {
-     width: "350px"
-    }
+    justifyContent: "left"
   },
-  // selectFieldThin: {
-  //   marginLeft: theme.spacing(1),
-  //   marginRight: theme.spacing(1),
-  //   width: "200px",
-  //   justifyContent: "left"
-  // },
+  selectFieldThin: {
+    marginLeft: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    width: "200px",
+    justifyContent: "left"
+  },
   root: {
     justifyContent: "center",
     margin: theme.spacing(20),
@@ -68,16 +71,12 @@ const useStyles = makeStyles(theme => ({
   header: {
     marginBottom: "2rem",
     textAlign: "center",
-    [theme.breakpoints.down("xs")]: {
-      fontSize: "1.5rem",
-      lineHeight: 1.5,
-      padding: "0 .229rem"
-    }
+    fontSize: "2rem",
   },
   btn: {
     margin: "2rem auto",
     color: "white",
-    width: "25%",
+    width: "20%",
     backgroundColor: `${iconColor}`,
     borderRadius: 0,
     "&:hover": {
@@ -87,7 +86,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: { 
       width: "90%",
     },
-},
+  }
 }));
 
   const Form = (props) => {
@@ -101,44 +100,51 @@ const useStyles = makeStyles(theme => ({
     const [errorMsg, setErrorMsg] = useState("");
     const classes = useStyles();
     const dispatch = useDispatch();
+    console.log(props.match.path === "/admin/register" ? "admin reg page" : "nope");
+    console.log("path", props );
 
-   const signUpWithEmailAndPassword = () => {
-    if (!email || !password) {
-      setError(true)
-      setErrorMsg("Please enter email and password")
-    }
-    auth
-        .createUserWithEmailAndPassword(email, password)
-        .then(({ user }) => {
-          if (user) {
-            console.log("incoming user", user);
-            if (user.email) {
-              const { email, uid } = user;
-              localStorage.setItem("firebase_id", uid)
-              console.log("emailuser", user);
-              const userObj = {
-                email,
-                firebase_id: uid,
-                first_name: first_name,
-                last_name: last_name,
-                };
-                console.log("userObj", userObj)
-                dispatch(register(userObj))
-                  props.history.push(`/profile/${userObj.firebase_id}`)
+    const signUpWithEmailAndPassword = () => {
+      if (!email || !password) {
+        setError(true)
+        setErrorMsg("Please enter email and password")
+      }
+      auth
+          .createUserWithEmailAndPassword(email, password)
+          .then(({ user }) => {
+            if (user) {
+              // console.log("incoming user", user);
+              if (user.email) {
+                const { email, uid } = user;
+                // console.log("emailuser", user);
+                const userObj = {
+                  email,
+                  firebase_id: uid,
+                  first_name: first_name,
+                  last_name: last_name,
+                  // admin: true
+                  };
+                  if (props.match.path === "/admin/register" ) {
+                    dispatch(registerAdmin(userObj))
+                  } else if (props.match.path === "/agent/register") {
+                    dispatch(registerAgent(userObj))
+                  }
+                   
+                  
+                  props.history.push(`/storemanager/${userObj.firebase_id}/bookorder`)
+              }
             }
-          }
-        })
-        .catch(err => {
-          console.log("Error Authenticating User:", err)
-          setError(true)
-          setErrorMsg(err.message)
-        })
-  };
+          })
+          .catch(err => {
+            console.log("Error Authenticating User:", err)
+            setError(true)
+            setErrorMsg(err.message)
+          })
+    };
+  
 
-  console.log(email, 'email')
       return (
         <Grid container item xs={12} className={classes.wrapper}>
-          <Typography className={classes.header} component="h3" variant="h3">Welcome To Cooper's Home Furniture <br/> Create An Account </Typography>
+          <Typography className={classes.header} component="h3" variant="h3">Book An Order</Typography>
           <form className={classes.form} >
             <FormControl className={classes.formControl}>
               <TextField
@@ -183,7 +189,7 @@ const useStyles = makeStyles(theme => ({
                   onChange={e => setEmail(e.target.value)}
                 />
               <TextField
-                for="password"
+                for="address"
                 required
                 className={classes.textFieldWide}
                 id="password"
@@ -197,10 +203,24 @@ const useStyles = makeStyles(theme => ({
               />
             </FormControl>
           </form>
-          <Button aria-label="signup" className={classes.btn} type="submit" variant="contained" color="primary" onClick={signUpWithEmailAndPassword}>Sign Up</Button>
+          <Button arai-label="Signup" className={classes.btn} type="submit" variant="contained" color="primary" onClick={signUpWithEmailAndPassword}>Sign Up</Button>
       </Grid>
     )
   }
   export default Form;
 
-  
+  {/* 
+           <FormControl className={classes.formControl}>
+        <TextField
+                required
+                className={classes.textFieldWide}
+                id="confirm password"
+                label="Confirm Password"
+                type="password"
+                margin="dense"
+                variant="outlined"
+                value={password2}
+                helperText={errorMsg}
+                onChange={e => setPassword2(e.target.value)}
+              /> 
+           </FormControl> */}

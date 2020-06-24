@@ -20,7 +20,7 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    // border: "1px solid blue",
+    //  border: "1px solid blue",
     width: "100%",
     
   },
@@ -53,7 +53,7 @@ const AdminConsole = (props) => {
           <div className={classes.root}>
             {/* <Switch> */}
             <Route path={`${props.match.path}/admin/addproduct`} exact={true} component={AddProductPage} />
-            {/* <Route path={`profile/:id/admin/addproduct`} exact="true" component={AddProductPage} /> */}
+            <Route path={`${props.match.path}/bookorder`} exact={true} component={AddProductPage} />
 
             {/* </Switch> */}
 

@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {Link, withRouter} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
-import { Grid, Typography } from "@material-ui/core";
+import { Grid, Typography, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import Carousel from "./../../Components/Home/Carousel";
 import { getProducts } from "./../../Store/Actions/products";
@@ -200,24 +200,27 @@ centerSection: {
 const Home = (props) => {
   const classes = useStyles();
   const products = useSelector(state => state.product.products);
+  const loading = useSelector(state => state.product.loading);
+  const error = useSelector(state => state.product.error);
+
   console.log("home products", products);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    {props.match.path === "/" ?  dispatch(getProducts())
-    :  console.log("not home")}
+   dispatch(getProducts())
+   
 
     return () => {
       console.log("unsubscribe")
     }
-  },[dispatch, props.match.path]);
+  },[dispatch]);
 
     return (
         <Grid className={classes.root}>
           <Carousel/>
           <Grid container className={classes.main}>
             <Typography className={classes.heading} component="h1" variant="h1">Welcome to Cooper's Home Furniture</Typography>
-            <Typography className={classes.paragraph} component="p" variant="p">
+            <Typography className={classes.paragraph} component="p" variant="body1">
               We pride ourselves on  providing fast, affordable and reliable furniture across Central Texas.
               We believe that leasing furniture should be a thing of the past. Our financing option are hassle free, and owning your furniture outright is easy with us.  Currently we service the following areas, the Greater Austin area, Huston, Killeen, and Waco with plans to expand into more cities  in the up coming months. 
             </Typography>
@@ -228,29 +231,29 @@ const Home = (props) => {
                 <Grid className={classes.step}>
                   <Grid className={classes.stepNum}>
                 <span className={classes.span}></span>
-                  <Typography  className={classes.num} component="body1" varient="body1">1</Typography>
+                  <Typography  className={classes.num} component="p" >1</Typography>
                   <span className={classes.span}></span>
                   </Grid>
                   <Typography style={{minHeight: "60px", display: "flex", alignItems: "center", justifyContent: "center"}} className={classes.stepHeader} component="h3" varient="h3">Select Your Furniture</Typography>
-                  <Typography className={classes.stepText} component="body1" variant="body1"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eget nulla placerat, finibus arcu eget, porttitor mauris. Sed a hendrerit ipsum, vel laoreet orci. Praesent ac dolor ac augue sagittis tincidunt eget quis sem.</Typography>                      
+                  <Typography className={classes.stepText} component="p" >Browse our selection of stylish furnisher. We have many options available to fit every style, budget, and preference.</Typography>                      
                 </Grid>
                 <Grid className={classes.step}>
                 <Grid className={classes.stepNum}>
                 <span className={classes.span}></span>
-                  <Typography  className={classes.num} component="body1" varient="body1">2</Typography>
+                  <Typography  className={classes.num} component="p" >2</Typography>
                   <span className={classes.span}></span>
                   </Grid>  
-                  <Typography className={classes.stepHeader} component="h3" varient="h3">Add your items to your Cart and proceed to booking</Typography>  
-                  <Typography className={classes.stepText} component="body1" variant="body1"> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eget nulla placerat, finibus arcu eget, porttitor mauris. Sed a hendrerit ipsum, vel laoreet orci. Praesent ac dolor ac augue sagittis tincidunt eget quis sem.</Typography>                      
+                  <Typography className={classes.stepHeader} component="h3" varient="h3">Add your items to your Cart</Typography>  
+                  <Typography className={classes.stepText} component="p" variant="body1"> After making a decision on your brand new piece of furniture add you item to your cart and proceed to booking.</Typography>                      
                   </Grid>
                 <Grid className={classes.step}>
                 <Grid className={classes.stepNum}>
                 <span className={classes.span}></span>
-                  <Typography  className={classes.num} component="body1" varient="body1">3</Typography>
+                  <Typography  className={classes.num} component="p" varient="body1">3</Typography>
                   <span className={classes.span}></span>
                   </Grid> 
-                  <Typography className={classes.stepHeader} component="h3" varient="h3">receive confirmation of order </Typography>     
-                  <Typography className={classes.stepText} component="body1" variant="body1">We will then provide you with available delivery slots, in most cases we can deliver the very  next day. You pay for your product on delivery with either cash or card. </Typography>          
+                  <Typography className={classes.stepHeader} component="h3" varient="h3">receive confirmation </Typography>     
+                  <Typography className={classes.stepText} component="p" variant="body1">We will provide you with available delivery slots; in most cases we can deliver the very  next day. You pay for your product on delivery with either cash or card. </Typography>          
                 </Grid>
               </Grid>
             </Grid>
@@ -258,7 +261,7 @@ const Home = (props) => {
             <Grid item className={classes.section}>
               <Typography className={classes.hotItemTitle} component="h2" variant="h2">hot deals</Typography>
               <Grid className={classes.hotItemSection}>
-                {products.slice(0, 3).map((product, key) => (
+                {error || loading ? <CircularProgress/>  : products.slice(0, 3).map((product, key) => (
                     <Grid className={classes.hotItem} key={key}>
                       <img className={classes.image} src={product.image_url} alt={product.title}/>
                      <Link className={classes.link} to={`/product/${product.id}`}> <Typography variant="button" display="block" className={classes.title}>{product.title}</Typography>  </Link> 
@@ -269,9 +272,9 @@ const Home = (props) => {
               </Grid>
             </Grid>
             <Grid item className={classes.centerSection}>
-              <Typography  component="h2" variant="h2">Join the family</Typography>
-              <Typography className={classes.paragraph} style={{textTransform: "none"}} component="p" variant="p">
-              Anyone can sign up to be a Coopers Home Furniture sales agent. We welcome any and everyone willing to go the extra mile to provide quality customer service and sales. To learn more visit our <Link className={classes.link} to="/chfagent">CHF sales agent page.</Link>
+              <Typography  component="h2" variant="h2">Becaome An Associate</Typography>
+              <Typography className={classes.paragraph} style={{textTransform: "none"}} component="p" variant="body1">
+                Anyone can sign up to be a Coopers Home Furniture sales agent. We welcome any and everyone willing to go the extra mile to provide quality customer service and sales. To learn more visit our <Link className={classes.link} to="/chfagent">CHF sales agent page.</Link>
             </Typography>
             </Grid>
           </Grid>

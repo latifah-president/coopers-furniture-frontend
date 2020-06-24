@@ -91,26 +91,26 @@ const Footer = () => {
     return(
         <div className={classes.root}>
                       <Grid item className={classes.iconWrapper}>
-                          <IconButton className={classes.iconBtn}>
+                          <IconButton aria-label="facebook" className={classes.iconBtn}>
                                 <FacebookIcon className={classes.socialIcon}/>
                           </IconButton>
-                          <IconButton className={classes.iconBtn}>
+                          <IconButton aria-label="twitter" className={classes.iconBtn}>
                                 <TwitterIcon className={classes.socialIcon}/>
                           </IconButton>
-                          <IconButton className={classes.iconBtn}>
+                          <IconButton aria-label="instagram" className={classes.iconBtn}>
                                 <InstagramIcon className={classes.socialIcon}/>
                           </IconButton>
                       </Grid>
 
                       <Grid item className={classes.iconWrapper}>
-                          <IconButton className={classes.iconBtn}>
+                          <IconButton aria-label="phone" className={classes.iconBtn}>
                                 <PhoneIcon className={classes.socialIcon}/>
                           </IconButton>
                           <a  className={classes.anchor} href="tel:1-737-333-8683"><Typography>737-333-8683</Typography></a>
                       </Grid>
 
                       <Grid item className={classes.iconWrapper}>
-                          <IconButton className={classes.iconBtn}>
+                          <IconButton aria-label="email" className={classes.iconBtn}>
                                 <EmailIcon className={classes.socialIcon}/>
                           </IconButton>
                           <a className={classes.anchor} href="mailto:contact@coppershomefurniture.com"> <Typography>contact@coppershomefurniture.com</Typography></a>

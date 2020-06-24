@@ -94,7 +94,15 @@ pwrdbtn: {
   "&:hover": {
     backgroundColor: "transparent",
   },
-}
+},
+header: {
+  marginBottom: "2rem",
+  textAlign: "center",
+  fontSize: "2rem",
+  [theme.breakpoints.down("xs")]: {
+    lineHeight: 2
+  }
+},
 }));
 
 const SignIn = (props) => {
@@ -117,7 +125,7 @@ const SignIn = (props) => {
         auth.signInWithEmailAndPassword(email, password).then(({user}) => {
           if (user) {
             dispatch(logIn(user))
-            {admin || agent ? props.history.push(`/storemanager/${user.uid}`) : props.history.push(`/profile/${user.uid}`)}
+             props.history.push(`/storemanager/${user.uid}/bookorder`) 
             
           } else {
             console.log("error no user")
@@ -174,9 +182,10 @@ const SignIn = (props) => {
     return (
    
            <Grid container item xs={12} className={classes.wrapper}>
+          <Typography className={classes.header} component="h3" variant="h3">Cooper's Home Furniture Employee Portal</Typography>
                          {alert}
 
-          <form className={classes.form} >
+          <form className={classes.form}>
               <TextField
                   error={error}
                   htmlFor="email"
