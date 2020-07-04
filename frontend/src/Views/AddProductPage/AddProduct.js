@@ -1,17 +1,11 @@
-import React, {useState, useRef, createRef} from 'react';
+import React from 'react';
 import {withRouter} from "react-router-dom";
 import AddProductForm from "./../../Containers/Forms/StoreForms/AddProduct";
-import MobileImageUpload from "./../../Containers/Forms/StoreForms/MobileForm/AddProduct/ImageUpload";
-import MobileAddProductFrom from "./../../Containers/Forms/StoreForms/MobileForm/AddProduct/MobileAddProduct";
-
+import Error from "./../../Components/Error/Error";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import { Typography } from '@material-ui/core';
-import {useDispatch} from "react-redux"
-import {storage} from "./../../firebaseConfig";
-import {addProduct} from "./../../Store/Actions/products";
-import Input from "@material-ui/core/Input";
-import {yellowColor, iconColor, categories, greenColor} from "./../../GlobalStyles/styles";
+import {iconColor,  greenColor} from "./../../GlobalStyles/styles";
+import MultiStepForm from '../../Containers/Forms/StoreForms/MobileForm/AddProduct/MultiStepForm';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -21,20 +15,22 @@ const useStyles = makeStyles(theme => ({
         alignItems: "center",
         // border: "2px solid green",
         width: "100%",
-        // [theme.breakpoints.down("xs")]: {
-        //     height: 200
-        // }
+        // marginTop: "15rem",
+        [theme.breakpoints.up("md")]: {
+            marginTop: "2rem"
+        }
     },
     mobileForm: {
         display: "none",
         [theme.breakpoints.down("md")]: {
             display: "flex",
-            width: "90%",
+            width: "100%",
             margin: "0 auto",
+            flexDirection: "column",
         }
     },
     deskTopForm: {
-        border: "1px solid red",
+        // border: "1px solid red",
         width: "100%",
         // [theme.breakpoints.down("sm")]: {
         //     border: "10px solid orange",
@@ -44,76 +40,49 @@ const useStyles = makeStyles(theme => ({
             // border: "1px solid pink",
             display: "none",
         }
-    }
+    },
+    backButton: {
+        marginRight: theme.spacing(1),
+      },
+      instructions: {
+        marginTop: theme.spacing(1),
+        marginBottom: theme.spacing(1),
+      },
+      btn: {
+          // margin: "2rem auto",
+          color: "white",
+          width: "25%",
+          // border: "1px solid red",
+          backgroundColor: `${iconColor}`,
+          borderRadius: 0,
+          margin: ".3rem 0",
+          "&:hover": {
+            backgroundColor: `${greenColor}`,
+      
+          },
+          [theme.breakpoints.down('xs')]: { 
+            width: "100%",
+          },
+      },
+      hide: {
+          display: "none"
+      }
 }))
 
 const AddProduct = (props) => {
-    const classes = useStyles();
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [price, setPrice] = useState(null);
-    // eslint-disable-next-line
-    const [image_url, setImageUrl] = useState("");
-    const [category, setCategory] = useState("");
-    const [quantity, setQuantity] = useState(1);
-    const [item_number, setItemNumber] = useState("");
-    const [item_name, setItemName] = useState("");
-    const [supplier, setSupplier] = useState("");
-    const [file, setFile] = useState(null);
-    const [previewImg, setPreviewImg] = useState("");
-    const photoInp = createRef();
-    const inputLabel =useRef(null);
-    const [step, setStep] = useState(1);
-    const [imageSuccess, setSuccess] = useState(false);
-console.log("step", step)
-    const dispatch = useDispatch();
-  
 
-    const next = () =>  {
-       
-        setStep(step + 1)
-    };
+const classes = useStyles();
 
-    const prev = () =>  {
-        
-        setStep(step - 1)
-    };
 
-    const fileHandler = e => {
-        e.persist();
-        if (e.target.files[0]) {
-          setFile(() => e.target.files[0]);
-          setSuccess(true);
-          setPreviewImg(URL.createObjectURL(e.target.files[0]));
-        }
-    };
-    
+
     return (
         <Grid className={classes.root} >
            
             <div className={classes.mobileForm}>
-            {step === 1 &&
-    <MobileImageUpload 
-    fileHandler={fileHandler} 
-    previewImg={previewImg} 
-    image_url={image_url} 
-    photoInp={photoInp} 
-    title={title} 
-    file={file} 
-    next={next} 
-    step={step}
-    imageSuccess={imageSuccess}
-    />
-|| step === 2 &&
-<MobileAddProductFrom 
-file={file} 
-next={next} 
-prev={prev}/>
-
-|| step !== 1 || 2 || undefined  || null && 
-<div>error</div>
-
-}
+              <MultiStepForm
+                handleChange={props.handleChange}
+              />
+            
             </div>
            
             <div className={classes.deskTopForm}><AddProductForm/></div>

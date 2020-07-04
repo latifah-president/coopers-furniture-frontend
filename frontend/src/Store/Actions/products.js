@@ -3,7 +3,7 @@ import axios from "./../../axiosinstance";
 
 export const addProduct = (productObj) => (dispatch) => {
     // console.log("TOP {...prodObj}", {...productObj})
-    //     console.log("TOP prodObj", productObj)
+    //     
     dispatch ({
         type: productsTypes.ADD_PRODUCT_START,
     })
@@ -33,7 +33,7 @@ export const getProducts = () => (dispatch) => {
         type: productsTypes.GET_PRODUCT_START,
     })
     axios.get("/").then(res => {
-        console.log("products res: ", res)
+        console.log("TOP prodObj", res)
         if (res.status === 404) {
             dispatch ({
                 type: productsTypes.GET_PRODUCT_FAIL,
@@ -130,27 +130,25 @@ export const getProductsById = (id) => (dispatch) => {
     dispatch ({
         type: productsTypes.GET_PRODUCT_BY_ID_START,
     })
-    // dispatch ({
-    //     type: productsTypes.GET_PRODUCT_BY_SUCCESS,
-    //     payload: id
-    // })
-    // axios.get(`products/${id}`).then(res => {
-       
-        if (id) {
-            dispatch ({
-                type: productsTypes.GET_PRODUCT_BY_ID_SUCCESS,
-                payload: id
-            })
-        } else {
-           
+    axios.get(`/product/${id}`).then(res => {
+        if (res.status === 404) {
             dispatch ({
                 type: productsTypes.GET_PRODUCT_BY_ID_FAIL,
-                payload: "no product found"
+                payload: res.data.message
+            })
+        } else {
+            dispatch ({
+                
+                type: productsTypes.GET_PRODUCT_BY_ID_SUCCESS,
+                payload: res.data
             })
         }
-   
-      
-    // })
+    }).catch (err => {
+        dispatch ({
+            type: productsTypes.GET_PRODUCT_BY_ID_FAIL,
+            payload: err
+        })
+    })
 };
 
 export default {

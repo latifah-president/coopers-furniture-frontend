@@ -1,7 +1,8 @@
 import React from 'react';
+import {useSelector} from "react-redux";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import { Typography } from '@material-ui/core';
+import { Typography, CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -9,22 +10,24 @@ const useStyles = makeStyles(theme => ({
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
-        border: "2px solid green",
+        // border: "2px solid green",
         width: "100%",
     },
     cart: {
-        border: "1px solid red"
+        // border: "1px solid red"
     },
 }))
 
 const AddProduct = () => {
     const classes = useStyles();
-   
+    const loading = useSelector(state => state.user.loading)
     return (
-        <Grid className={classes.root} >
-            {/* <AddProductForm/> */}
-            <Grid className={classes.cart}>new orders</Grid>
+        <Grid>
+            {loading ? <CircularProgress/> : 
+                <Grid>book an order</Grid>
+            }
         </Grid>
+        
     )
 };
 

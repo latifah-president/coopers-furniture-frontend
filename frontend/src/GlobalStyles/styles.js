@@ -3,7 +3,8 @@ import styled from 'styled-components';
 const goldColor = '#F4D212';
 const purpleColor = '#AA65FF';
 const whiteColor = '#FFFF';
-const fontColor = '#0C1D33';
+const fontColor = '#465465';
+// const fontColor = '#0C1D33';
 const lightyellowColor = '#FEFCEE';
 const lightGrayColor = '#999';
 const secondaryBtnColor  = "#80D0C7";
@@ -12,7 +13,7 @@ const GreenRadient = "#80D0C7";
 const greenColor = "#366F82";
 const yellowColor = "#F2CC7E";
 const iconColor = "#374F70";
-
+const offWhiteColor = "#F7F7F7"
 const smrtphn = '370px'; 
 const tablet = '600px';
 
@@ -40,7 +41,7 @@ export const ContentArea = styled.section`
     margin: 3rem 1rem;
     /* margin-bottom: 2rem; */
     width: ${props => props.horizontal ? '80%' : null};
-    border: 1px solid green;
+    /* border: 1px solid green; */
     @media only screen and (max-width: ${smrtphn}) {
         width: 90%;
         display: flex;
@@ -198,7 +199,7 @@ export const DarkTitle = styled.h2`
     border: 1px solid orange;
 `;
 
-export const categories = ["Living Room", "Dining Room", "Bedrooms", "Bunkbeds", "Mattresses"]
+export const categories = ["Living Room", "Dining Room", "Bedrooms", "Bunkbeds", "Mattresses", "Recliners"]
 
 export  {
     whiteColor, 
@@ -213,5 +214,6 @@ export  {
     greenColor,
     yellowColor,
     iconColor,
+    offWhiteColor
 }
 

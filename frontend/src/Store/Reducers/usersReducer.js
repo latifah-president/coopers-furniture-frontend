@@ -19,6 +19,7 @@ const initialState = {
     loggedIn: false,
     error: false,
     authenticated: false,
+    deleted: false,
 };
 
 export default (state = initialState, actions) => {
@@ -46,80 +47,136 @@ export default (state = initialState, actions) => {
                 admin: actions.payload[0].admin,
                 agent: actions.payload[0].agent,
                 loggedIn: true,
-                cart: actions.payload[2],
-                total: actions.payload[3]
+                cart: actions.payload[1],
+                total: actions.payload[2]
             }
-            case authTypes.AUTH_FAIL:
+        case authTypes.AUTH_FAIL:
                 return {
                     ...state,
                     loading: false,
                     error: actions.payload
                 }
-            case authTypes.LOGOUT_START:
+        case authTypes.LOGOUT_START:
                 return {
                     ...state,
                     loading: true
                 }
-            case authTypes.LOGOUT_SUCCESS:
+        case authTypes.LOGOUT_SUCCESS:
                 return {
                     ...state,
                     loading: false,
                     loggedIn: false,
                 }
-            case authTypes.LOGOUT_FAIL:
+        case authTypes.LOGOUT_FAIL:
                 return {
                     ...state,
                     loading: false,
                     error: actions.payload
                 }
-                case authTypes.LOGIN_START:
-                    return {
-                        ...state,
-                        loading: true
-                    }
-                case authTypes.LOGIN_SUCCESS:
-                    return {
-                        ...state,
-                        loading: false,
-                        loggedIn: actions.payload,
-                    }
-                case authTypes.LOGIN_FAIL:
-                    return {
-                        ...state,
-                        loading: false,
-                        error: actions.payload
-                    }
-                    case userTypes.GET_USER_START:
-                        return {
-                            ...state,
-                            loading: true
-                        }
-                    case userTypes.GET_USER_SUCCESS:
-                        return {
-                            ...state,
-                            loading: false,
-                            // loggedIn: true,
-                            firebase_id: actions.payload[0].firebase_id,
-                            email: actions.payload[0].email,
-                            first_name: actions.payload[0].first_name,
-                            last_name: actions.payload[0].last_name,
-                            address: actions.payload[0].address,
-                            city: actions.payload[0].city, 
-                            state: actions.payload[0].state,
-                            zip: actions.payload[0].zip,
-                            phone: actions.payload[0].phone,
-                            admin: actions.payload[0].admin,
-                            agent: actions.payload[0].agent,
-                            cart: actions.payload[2],
-                            total: actions.payload[3]
-                        }
-                        case userTypes.GET_USER_FAIL:
-                            return {
-                                ...state,
-                                loading: false,
-                                error: actions.payload
-                            }
-            default:
-            return state;
+        case authTypes.LOGIN_START:
+            return {
+                ...state,
+                loading: true
+            }
+        case authTypes.LOGIN_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                loggedIn: actions.payload,
+            }
+        case authTypes.LOGIN_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: actions.payload
+            }
+        case userTypes.GET_USER_START:
+            return {
+                ...state,
+                loading: true
+            }
+        case userTypes.GET_USER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                // loggedIn: true,
+                firebase_id: actions.payload[0].firebase_id,
+                email: actions.payload[0].email,
+                first_name: actions.payload[0].first_name,
+                last_name: actions.payload[0].last_name,
+                address: actions.payload[0].address,
+                city: actions.payload[0].city, 
+                state: actions.payload[0].state,
+                zip: actions.payload[0].zip,
+                phone: actions.payload[0].phone,
+                admin: actions.payload[0].admin,
+                agent: actions.payload[0].agent,
+                cart: actions.payload[1],
+                total: actions.payload[2]
+            }
+        case userTypes.GET_USER_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: actions.payload
+            }
+        case userTypes.ADD_TO_CART_START:
+            return {
+                ...state,
+                loading: true
+            }
+        case userTypes.ADD_TO_CART_SUCCESS:
+                    
+            return {
+                ...state,
+                loading: false,
+                cart: state.cart.map(item =>
+                    item.id === actions.payload ? {...item, quantity: item.quantity + 1} : item,
+                    ),
+            }
+        case userTypes.ADD_TO_CART_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: actions.payload
+            }
+        case userTypes.GET_CART_START:
+            return {
+                    ...state,
+                    loading: true
+                }
+        case userTypes.GET_CART_SUCCESS:
+            return {
+                    ...state,
+                    loading: false,
+                    cart: actions.payload.cartItem,
+                    total: actions.payload.total
+                }
+        case userTypes.GET_CART_FAIL:
+            return {
+                    ...state,
+                    loading: false,
+                    error: actions.payload
+                }
+        case userTypes.REMOVE_FROM_CART_START:
+            return {
+                ...state,
+                loading: true
+            }
+        case userTypes.REMOVE_FROM_CART_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                cart: state.cart.filter(item => item.id !== actions.payload),
+                deleted: true,
+            }
+        case userTypes.REMOVE_FROM_CART_FAIL:
+            return {
+                ...state,
+                loading: false,
+                error: actions.payload
+            }
+        default:
+        return state;
     };
 };

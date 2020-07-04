@@ -125,14 +125,14 @@ const useStyles = makeStyles(theme => ({
                   last_name: last_name,
                   // admin: true
                   };
-                  if (props.match.path === "/admin/register" ) {
+                  // if (props.match.path === "/admin/register" ) {
                     dispatch(registerAdmin(userObj))
-                  } else if (props.match.path === "/agent/register") {
-                    dispatch(registerAgent(userObj))
-                  }
+                  // } else if (props.match.path === "/agent/register") {
+                  //   dispatch(registerAgent(userObj))
+                  // }
                    
                   
-                  props.history.push(`/storemanager/${userObj.firebase_id}/bookorder`)
+                  props.history.push(`/storemanager/${userObj.firebase_id}`)
               }
             }
           })

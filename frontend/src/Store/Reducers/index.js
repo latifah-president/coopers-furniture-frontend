@@ -6,7 +6,8 @@ import {combineReducers} from "redux";
 
 export default combineReducers({
     product:  productReducer,
-    user:  userReducer,
     admin: adminReducer,
     agent: agentReducer,
+    user:  userReducer,
+ 
 }); 

@@ -2,6 +2,8 @@ import { productsTypes } from '../Actions/ActionTypes';
 
 const initialState = {
     products: [],
+    colors: [],
+    images: [],
     error: false,
     errorMsg: null,
     loading: false
@@ -35,7 +37,9 @@ export default (state = initialState, actions) => {
             return {
                 ...state,
                 loading: false,
-                products: actions.payload,
+                products: actions.payload.products,
+                colors: actions.payload.colors,
+                images: actions.payload.images,
             }
         case productsTypes.GET_PRODUCT_FAIL:
             return {
@@ -50,10 +54,12 @@ export default (state = initialState, actions) => {
                     loading: true,
                 }
         case productsTypes.GET_PRODUCT_BY_SUCCESS:
+
                 return {
                     ...state,
                     loading: false,
                     products: actions.payload[0],
+                    colors: actions.payload[1],
                 }
         case productsTypes.GET_PRODUCT_BY_FAIL:
                 return {
@@ -89,7 +95,8 @@ export default (state = initialState, actions) => {
             return {
                 ...state,
                 loading: false,
-                products: state.products.find( item  => { return actions.payload === `${item.id}`})
+                // products: state.products.find( item  => { return actions.payload === `${item.id}`})
+                product: actions.payload[0]
             }
         case productsTypes.GET_PRODUCT_BY_ID_FAIL:
             return {

@@ -31,7 +31,7 @@ const ResponsiveCarousel = () => {
     const classes = useStyles();
     return (
 	<Grid className={classes.carousel}>
-		<Carousel showThumbs={false} showStatus={false} autoPlay={true} infiniteLoop={true} style={{border: "3px solid orange"}}>
+		<Carousel showThumbs={false} showStatus={false} autoPlay={true} infiniteLoop={true} >
 			<div className={classes.slide}>
 				<img style={{width: "100%"}} src={require("./../../Assets/rEVERSIBLE_SECTIONAL.jpeg")} alt="Reversible Gray Sectional" />
 			</div>

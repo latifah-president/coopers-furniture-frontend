@@ -30,10 +30,13 @@ import WorkIcon from '@material-ui/icons/Work';
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    position: "fixed",
+    position: "relative",
     top: 0,
     width: "100%",
     zIndex: 2,
+    [theme.breakpoints.down('xs')]: {
+      position: "fixed",
+    },
     // border: "1px solid orange",
   },
   menuButton: {
@@ -55,6 +58,7 @@ sectionMobile: {
   display: 'flex',
   color: "white",
   zIndex: 1300,
+  display: 'none',
   // border: "1px solid red",
   [theme.breakpoints.up('md')]: { 
     display: 'none',
@@ -92,11 +96,18 @@ topNav: {
   width: "100%",
   alignItems: "center",
   padding: "0 .5rem",
-  position: "fixed",
+  minHeight: 32,
+  maxWidth: "100%",
+  overflow: "hidden",
+  // position: "sticky",
   zIndex: 1,
   [theme.breakpoints.down('sm')]: { 
     justifyContent: "space-between",
     // border: "1px solid green"
+  },
+  [theme.breakpoints.down('xs')]: { 
+    width: "96%",
+    //  border: "1px solid green"
   },
 },
 mobileMenu: {
@@ -170,6 +181,9 @@ caption: {
     textAlign: "center",
     fontSize: ".7rem"
   },
+  [theme.breakpoints.down('xs')]: { 
+    color: "white"
+  },
 },
 title: {
   flexGrow: 1,
@@ -180,7 +194,7 @@ title: {
   paddingLeft: "1rem",
   height: 100,
   width: "100%",
-  marginTop: "2rem",
+  // marginTop: "2rem",
   backgroundColor: "#EFEAE1",
   justifyContent: "space-between",
   [theme.breakpoints.down('sm')]: { 
@@ -202,6 +216,9 @@ catNav: {
   padding: "0 .5rem",
  [theme.breakpoints.down("md")]: {
   justifyContent: "flex-end",
+ },
+ [theme.breakpoints.down("xs")]: {
+  display: "none",
  }
 },
 listItem: {
@@ -301,7 +318,7 @@ const NavBar = (props) => {
   const loggedIn = useSelector(state => state.user.loggedIn);
   const admin = useSelector(state => state.user.admin);
   const agent = useSelector(state => state.user.agent);
-
+  const cart = useSelector(state => state.user.cart)
   const firebase_id = useSelector(state => state.user.firebase_id);
   const [open, setOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
@@ -389,7 +406,7 @@ const NavBar = (props) => {
           <Grid className={classes.mobileHome}>
             <NavLink to='/'className={classes.link}  >
               <Typography style={{color: "white", fontSize: "1rem"}} className={classes.home} variant="h5"> Cooper's Home Furniture </Typography>
-              {/* <Typography  className={classes.caption} variant="caption"> POWERED BY A.R.C. LIMITED </Typography> */}
+              <Typography  className={classes.caption} variant="caption"> POWERED BY A.R.C. LIMITED </Typography>
             </NavLink>
           </Grid>
          
@@ -421,7 +438,7 @@ const NavBar = (props) => {
                             
                             {admin || agent ? 
                             <li className={classes.listItemText}>
-                            <NavLink className={classes.menuLink} to={admin ? `/storemanager/${firebase_id}/admin/addproduct` : `/storemanager/${firebase_id}/bookorder`}>
+                            <NavLink className={classes.menuLink} to={admin ? `/storemanager/${firebase_id}` : `/storemanager/${firebase_id}`}>
                               <Typography>STORE MANAGER</Typography>
                             </NavLink></li>
                              : null
@@ -486,7 +503,7 @@ const NavBar = (props) => {
           </NavLink>
           <Grid item  className={classes.iconWrapper}>
             {loggedIn && admin ||  agent ? 
-            <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={`/storemanager/${firebase_id}/bookorder`}>
+            <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={`/storemanager/${firebase_id}`}>
             <IconButton aria-label="STORE MANAGER" className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
             <Typography variant="button" >
               STORE MANAGER
@@ -499,19 +516,19 @@ const NavBar = (props) => {
                 {loggedIn ? "ACCOUNT" : "CREATE ACCOUNT"}
               </Typography>
             </NavLink> }
-            <NavLink className={classes.iconText} to={loggedIn ? `/cart/${firebase_id}` : `/signin` }>
+            <NavLink className={classes.iconText} to={loggedIn ? `profile/${firebase_id}/cart` : `/signin` }>
             <IconButton
                 aria-label="cart"
                 className={classes.iconBtn}
             >
-              <Badge badgeContent={1} color="secondary">
+              <Badge badgeContent={cart.length} color="secondary">
                  <ShoppingCartIcon  className={classes.icon}/>
               </Badge> 
             </IconButton>
             <Typography variant="button">Cart</Typography>
             </NavLink>
                   {admin || agent ? 
-            <NavLink className={classes.iconText} to={admin && loggedIn ? `/storemanager/${firebase_id}/orders` : agent && loggedIn ? `/storemanager/${firebase_id}/agentorders` : `/`}>
+            <NavLink className={classes.iconText} to={admin && loggedIn ? `/storemanager/${firebase_id}` : agent && loggedIn ? `/storemanager/${firebase_id}` : `/`}>
             <IconButton
                 aria-label="orders"
                 className={classes.iconBtn}

@@ -1,17 +1,17 @@
 import React, {useState} from 'react';
 import {withRouter} from "react-router-dom"
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch, } from "react-redux";
 import {auth} from '../../firebaseConfig';
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import Grid from '@material-ui/core/Grid';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';import TextField from "@material-ui/core/TextField";
+import DialogTitle from '@material-ui/core/DialogTitle';
+import TextField from "@material-ui/core/TextField";
 import Alert from '@material-ui/lab/Alert';
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
@@ -113,8 +113,6 @@ const SignIn = (props) => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
     const [success, setSuccess] = useState(false);
-    const admin = useSelector(state => state.user.admin);
-    const agent = useSelector(state => state.user.agent)
     const dispatch = useDispatch();
 
     const signInWithEmail = () => {
@@ -125,7 +123,7 @@ const SignIn = (props) => {
         auth.signInWithEmailAndPassword(email, password).then(({user}) => {
           if (user) {
             dispatch(logIn(user))
-             props.history.push(`/storemanager/${user.uid}/bookorder`) 
+             props.history.push(`/storemanager/${user.uid}`) 
             
           } else {
             console.log("error no user")

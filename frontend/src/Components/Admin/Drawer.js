@@ -32,9 +32,12 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
-    width: "100%",
+    width: "95%",
+    minHeight: "100vh",
+    // border: "2px solid teal",
   },
   appBar: {
+
     zIndex: theme.zIndex.drawer + 1,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
@@ -91,7 +94,7 @@ const useStyles = makeStyles((theme) => ({
 
   },
   toolbar: {
-    display: 'flex',
+    display: 'none',
     alignItems: 'center',
     justifyContent: 'flex-end',
     padding: theme.spacing(0, 1),
