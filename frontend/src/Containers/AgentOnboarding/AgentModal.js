@@ -30,10 +30,6 @@ export default function CustomizedDialogs(props) {
 
   return (
     <div>
-      {/* <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-        Open dialog
-      </Button> */}
-
       <Dialog  onClose={props.handleClose}  open={props.open} role="dialog" aria-labelledby="dialog-title" aria-describedby="dialog-description" disableEnforceFocus>
         <DialogTitle id="dialog-title" onClose={props.handleClose}>
         Thanks for choosing to join our sales force.

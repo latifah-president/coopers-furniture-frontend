@@ -56,8 +56,35 @@ export const getUsers = () => (dispatch) => {
             payload: err
         })
     })
-}
+};
 
+ 
+export const getAgents = () => (dispatch) => {
+    dispatch ({
+        type: adminTypes.GET_AGENTS_START
+    })
+    axios.get("/admin/agents").then(res => {
+        if (res.status === 404) {
+            dispatch ({
+                type: adminTypes.GET_AGENTS_FAIL,
+                payload: res.data.message
+            })
+        } else {
+            dispatch ({
+                type: adminTypes.GET_AGENTS_SUCCESS,
+                payload: res.data
+            })
+        }
+        
+    })
+    .catch (err => {
+        dispatch ({
+            type: adminTypes.GET_AGENTS_FAIL,
+            payload: err
+        })
+    })
+};
 export default  {
     registerAdmin,
+    getAgents,
 }

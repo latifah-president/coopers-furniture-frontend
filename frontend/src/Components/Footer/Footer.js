@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
         position: "fixed",
       },
       [theme.breakpoints.down('xs')]: {
-        backgroundColor: "nonw",
+        zIndex: 2,
 
       },
     },
@@ -159,7 +159,7 @@ const Footer = (props) => {
 
                       <Grid item className={classes.iconWrapper}>
                                 <PhoneIcon className={`${classes.socialIcon}`}/>
-                          <a  className={classes.anchor} href="tel:1-737-333-8683"><Typography className={classes.anchorText}>737-333-8683</Typography></a>
+                          <a  className={classes.anchor} href="tel:1-855-801-5576"><Typography className={classes.anchorText}>(855) 801-5576</Typography></a>
                       </Grid>
 
                       <Grid item className={classes.iconWrapper}>

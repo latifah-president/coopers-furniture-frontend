@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
       [theme.breakpoints.down('md')]: {
         // border: "3px solid brown",
         width: "100%",
+        paddingBottom: "4rem",
       },
       // [theme.breakpoints.down('sm')]: {
       //   border: "3px solid hotpink"

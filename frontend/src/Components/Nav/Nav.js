@@ -139,7 +139,7 @@ dropdown: {
   border: '1px solid #0C1D33',
   padding: theme.spacing(1),
   backgroundColor: theme.palette.background.paper,
-  zIndex: 14000,
+  zIndex: 6000,
   display: "flex",
   flexDirection: "column",
   justifyContent: "space-between",
@@ -319,6 +319,8 @@ const NavBar = (props) => {
   const admin = useSelector(state => state.user.admin);
   const agent = useSelector(state => state.user.agent);
   const cart = useSelector(state => state.user.cart)
+  const orders = useSelector(state => state.order.order)
+
   const firebase_id = useSelector(state => state.user.firebase_id);
   const [open, setOpen] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
@@ -335,15 +337,20 @@ const NavBar = (props) => {
 
  
   const logout = () => {
-    auth.signOut()
-      const msg = "User Signed Out Successfully"
+    auth.signOut().then(() => {
       dispatch(logOut(msg))
+      localStorage.clear()
     props.history.push("/");
+    }).catch(err => {
+      console.log("user was not signed out", err)
+    })
+      const msg = "User Signed Out Successfully"
+ 
     
   };
  
   const profileSignUp = () => {
-    props.history.push(loggedIn ? `/profile/${firebase_id}` : `/register`)
+    props.history.push(loggedIn ? `/profile/${firebase_id}/settings` : `/register`)
   };
 
   const loginCart = () => {
@@ -431,21 +438,21 @@ const NavBar = (props) => {
                             </NavLink></li>
                             <Divider  className={classes.divider}/>
                           <li className={classes.listItemText}>
-                            <NavLink className={classes.menuLink} to={loggedIn ? `/profile/${firebase_id}` : `/register`}>
+                            <NavLink className={classes.menuLink} to={loggedIn ? `/profile/${firebase_id}/settings` : `/register`}>
                               <Typography>{loggedIn ? `ACCOUNT` : `CREATE ACCOUNT`}</Typography>
                             </NavLink></li>
                             <Divider  className={classes.divider}/>
                             
                             {admin || agent ? 
                             <li className={classes.listItemText}>
-                            <NavLink className={classes.menuLink} to={admin ? `/storemanager/${firebase_id}` : `/storemanager/${firebase_id}`}>
-                              <Typography>STORE MANAGER</Typography>
+                            <NavLink className={classes.menuLink} to={`/profile/${firebase_id}/settings`}>
+                              <Typography>ACCOUNT</Typography>
                             </NavLink></li>
                              : null
                             }
                             <Divider  className={admin || agent ? classes.divider : classes.hide}/>
                           <li className={loggedIn ? classes.listItemText : classes.hide}>
-                            <NavLink className={classes.menuLink} to={loggedIn  ? `/profile/orders${firebase_id}/cart`  : `/signin` } href={loginCart}>
+                            <NavLink className={classes.menuLink} exact={true} to={loggedIn  ? `/prodile/${firebase_id}/cart`  : `/signin` }>
                               <Typography>CART</Typography>
                             </NavLink>
                           </li>
@@ -472,12 +479,12 @@ const NavBar = (props) => {
                           </li>
                           <Divider  className={classes.divider}/>
 
-                          <li className={classes.listItemText}>
+                          {/* <li className={classes.listItemText}>
                             <NavLink className={classes.menuLink} to='/portal/signin'>
                               <Typography>EMPLOYEE PORTAL</Typography>
                             </NavLink>
                           </li>
-                          <Divider  className={classes.divider}/>
+                          <Divider  className={classes.divider}/> */}
 
                           <li className={classes.listItemText}>
                             <NavLink className={classes.menuLink} to='/products'>
@@ -502,21 +509,22 @@ const NavBar = (props) => {
             <Typography  className={classes.caption} variant="caption"> POWERED BY A.R.C. LIMITED </Typography>
           </NavLink>
           <Grid item  className={classes.iconWrapper}>
-            {loggedIn && admin ||  agent ? 
+            {/* {loggedIn && admin ||  agent ? 
             <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={`/storemanager/${firebase_id}`}>
             <IconButton aria-label="STORE MANAGER" className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
             <Typography variant="button" >
               STORE MANAGER
             </Typography>
           </NavLink>
-            : 
-            <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={loggedIn ? `/profile/${firebase_id}` : `/register`}>
+            :  */}
+            <NavLink onClick={profileSignUp} className={classes.iconText} activeClassName={classes.active}  to={loggedIn ? `/profile/${firebase_id}/settings` : `/register`}>
               <IconButton aria-label={loggedIn ? "ACCOUNT" : "CREATE ACCOUNT"} className={classes.iconBtn}> <AccountCircle  className={classes.icon}/> </IconButton>
               <Typography variant="button" >
                 {loggedIn ? "ACCOUNT" : "CREATE ACCOUNT"}
               </Typography>
-            </NavLink> }
-            <NavLink className={classes.iconText} to={loggedIn ? `profile/${firebase_id}/cart` : `/signin` }>
+            </NavLink> 
+            {/* } */}
+            <NavLink className={classes.iconText} exact={true} to={loggedIn ? `/profile/${firebase_id}/cart` : `/signin` }>
             <IconButton
                 aria-label="cart"
                 className={classes.iconBtn}
@@ -527,13 +535,13 @@ const NavBar = (props) => {
             </IconButton>
             <Typography variant="button">Cart</Typography>
             </NavLink>
-                  {admin || agent ? 
-            <NavLink className={classes.iconText} to={admin && loggedIn ? `/storemanager/${firebase_id}` : agent && loggedIn ? `/storemanager/${firebase_id}` : `/`}>
+                  {admin || loggedIn? 
+            <NavLink className={classes.iconText} exact to={`/profile/${firebase_id}/orders`}>
             <IconButton
                 aria-label="orders"
                 className={classes.iconBtn}
             >
-              <Badge badgeContent={1} color="secondary">
+              <Badge badgeContent={orders.length} color="secondary">
                  <LocalShipping className={classes.icon}/> 
               </Badge> 
             </IconButton>
@@ -551,7 +559,7 @@ const NavBar = (props) => {
           </div> 
              :
              <div className={classes.portal} >
-           <NavLink className={classes.iconText} to="/portal/signin">
+           {/* <NavLink className={classes.iconText} to="/portal/signin">
             <IconButton
                 aria-label="employee login"
                 className={classes.iconBtn}
@@ -561,7 +569,7 @@ const NavBar = (props) => {
              
             </IconButton>
             <Typography variant="button">PORTAL</Typography>
-            </NavLink>
+            </NavLink> */}
 <div>
         <NavLink className={classes.iconText} to="/signin">
            <IconButton  aria-label= "LOGOUT" className={classes.iconBtn}>

@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux"
 import { Grid, Typography, Divider, Paper, Button, IconButton, CircularProgress } from "@material-ui/core";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import {getCart, getById, removeFromCart} from "./../../Store/Actions/users";
-import {purpleColor, whiteColor, fontColor} from "./../../GlobalStyles/styles"
+import {iconColor, whiteColor, fontColor, greenColor} from "./../../GlobalStyles/styles"
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -19,7 +19,7 @@ const BootstrapInput = withStyles((theme) => ({
       },
     },
     input: {
-        color: `${purpleColor}`,
+        color: `${iconColor}`,
       borderRadius: 4,
       position: 'relative',
       backgroundColor: theme.palette.background.paper,
@@ -335,7 +335,7 @@ const useStyles = makeStyles((theme) => ({
     },
     span: {
         alignSelf: "flex-end",
-        color: `${purpleColor}`
+        color: `${iconColor}`
     },
     subTitle: {
         fontWeight: 700,
@@ -357,13 +357,13 @@ const useStyles = makeStyles((theme) => ({
     },
     btn: {
         color: `${whiteColor}`,
-        backgroundColor: `${purpleColor}`,
+        backgroundColor: `${iconColor}`,
         margin: "1rem auto", 
         width: "80%",
         fontWeight: 700,
         // border: "1px solid red",
         "&:hover": {
-            backgroundColor: `${purpleColor}`,
+            backgroundColor: `${iconColor}`,
         }
     },
     margin: {
@@ -397,63 +397,72 @@ const useStyles = makeStyles((theme) => ({
     itemPrice: {
         fontWeight: 700,
 
+    },
+    cartList: {
+        maxWidth: 887,
     }
 }) )
 const Cart = (props) => {
     const dispatch = useDispatch();
     const classes = useStyles();
-    const id = props.match.params.id;
+    const id = props.match.params.firebase_id;
     const cart = useSelector(state => state.user.cart);
     const firebase_id = useSelector(state => state.user.firebase_id);
     const loading = useSelector(state => state.user.loading);
-
-    const total = useSelector(state => state.user.total);
+    const prodAdded = useSelector(state => state.user.prodAdded);
+    // const [total, setTotal] = useState(0);
     const cartQantity = cart.length;
     const [qty, setQty] = useState(1);
     const [success, setSucces] = useState(false);
+    const total = useSelector(state => state.user.total);
     // let total = 0
     // const cartTotal = cart.map(item => total += item.price);
     // const finalTotal = cartTotal + 2.00;
+console.log("firebase_id", firebase_id)
+console.log("id", id)
 
-    // useEffect(() => {
-    //     // const id = firebase_id
-    //     dispatch(getById(id))
-        
-    //     return () => {
-    //         console.log("unsubscribe");
-    //       };
-    // },[success, dispatch]);
+    useEffect(() => {
+        // let updatedTotal = 0
+
+        // const price = cart.forEach(element => {
+        //     console.log("element", element)
+        //    return  updatedTotal += element.price 
+            
+        //  });
+        //  setTotal(updatedTotal)
+        //  console.log("price", updatedTotal)
+        // const id = firebase_id
+        console.log("rendering")
+        dispatch(getCart(id))
+        return () => {
+            console.log("unsubscribe");
+          };
+    },[dispatch]);
 
     const handleChange = (event) => {
         setQty(event.target.value);
     };
 
     const deleteItem = () => {
+       
         // dispatch(removeFromCart(id));
         setSucces(true)
         props.history.push(`/profile/${firebase_id}/cart`)
     };
 
     return (
-       
         <Grid className={classes.wrapper}>
-           
         {loading ? <CircularProgress/> : 
         <Grid className={classes.root}>
-            {/* <Grid > */}
-        
-          
-        
-        {/* { loading ? <CircularProgress/> : */}
       
-            <div>
+            <div className={classes.cartList}>
                   <Grid className={classes.heading}>
             
             <Typography className={classes.header} component="h6">Shopping Cart ({cartQantity} Items)</Typography>
-            <Typography className={classes.price} component="body2">Price</Typography>
+            <Typography className={classes.price} component="p" varient="body2">Price</Typography>
             <hr style={{width: "107%"}} className={classes.hr}/>
         </Grid>
-                 { cart.map((item, key) => (
+                 {loading ? <CircularProgress/> : cart.map((item, key) => (
             <Grid key={key} className={classes.cartItem}>
                 <Grid className={classes.container}>
                     <Grid className={classes.containerLeft}>
@@ -486,9 +495,7 @@ const Cart = (props) => {
         ))}
             </div>
         
-        {/* // } */}
-        
-    {/* </Grid > */}
+    
         <Grid className={classes.summary}>
             <Grid className={classes.summaryContainer}>
             <Typography className={classes.summaryTitle} component="h2">Summary</Typography>      
@@ -497,11 +504,11 @@ const Cart = (props) => {
             <Grid className={classes.summaryContent}>
                 <Grid className={classes.subTotal}>
                     <Typography component="h4" className={classes.subTitle}>Subtotal </Typography>
-                    <Typography style={{color: `${purpleColor}`}}  className={classes.span, classes.subTitle}>${total}</Typography>
+                    <Typography style={{color: `${iconColor}`}}  className={classes.span, classes.subTitle}>${total}</Typography>
                 </Grid>
                 <Grid className={classes.subTotal}>
-                <Typography className={classes.subTitle}  component="h4">Esimated Shipping</Typography> 
-                <Typography style={{color: `${purpleColor}`}} className={classes.span, classes.subTitle}>$2.00</Typography>
+                <Typography className={classes.subTitle}  component="h4">Estimated Shipping</Typography> 
+                <Typography style={{color: `${iconColor}`}} className={classes.span, classes.subTitle}>Free</Typography>
                 </Grid>
             </Grid>
         
@@ -509,10 +516,10 @@ const Cart = (props) => {
         <Grid className={classes.summaryContent}>
             <Grid className={classes.subTotal}>
                 <Typography className={ classes.subTitle, classes.total} component="h6">Total </Typography>
-                <Typography style={{color: `${purpleColor}`}} className={classes.span, classes.subTitle}> $ {total + 2}</Typography>
+                <Typography style={{color: `${greenColor}`}} className={classes.span, classes.subTitle}> $ {total }</Typography>
             </Grid> 
             <Grid className={classes.btnContainer}>
-            <Button aria-label="place order" className={classes.btn} type="submit">place order</Button>
+            <Button aria-label="place order" className={classes.btn} type="submit" onClick={() => props.history.push(`/profile/${firebase_id}/bookorder`)}>Place Order</Button>
         </Grid>
         </Grid> 
           

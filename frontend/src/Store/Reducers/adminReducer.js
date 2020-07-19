@@ -2,6 +2,7 @@ import { adminTypes } from "./../Actions/ActionTypes";
 
 const initialState = {
     user: [],
+    agents: [],
     firebase_id: null,
     email: null,
     first_name: null,
@@ -64,6 +65,23 @@ export default (state = initialState, actions) => {
                     loading: false,
                     error: actions.payload
                 }
+                case adminTypes.GET_AGENTS_START:
+                    return {
+                        ...state,
+                        loading: true
+                    }
+                case adminTypes.GET_AGENTS_SUCCESS:
+                    return {
+                        ...state,
+                        agents: actions.payload,
+                        loading: false
+                    }
+                case adminTypes.GET_AGENTS_FAIL:
+                    return {
+                        ...state,
+                        loading: false,
+                        error: actions.payload
+                    }
             default:
             return state;
     };

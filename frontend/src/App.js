@@ -22,6 +22,10 @@ import './App.css';
 import Footer from "./Components/Footer/Footer";
 import EmployeeSignIn from './Containers/Forms/EmployeeSignIn';
 import { CircularProgress } from '@material-ui/core';
+import AccountPage from "./Views/Profile/Account";
+import NewOrderPage from "./Views/StoreManagerPage/NewOrder";
+import { getOrders } from './Store/Actions/orders';
+import UpdateProductPage from "./Views/StoreManagerPage/UpdateProduct/UpdateProduct";
 
 function App(props) {
   const loggedIn = useSelector(state => state.user.loggedIn)
@@ -32,19 +36,21 @@ function App(props) {
 // console.log("is admin", admin)
   useEffect(() => {
     // {props.match.path === "/products" ? setHome(false) : dispatch(getProducts())}
+    // dispatch(getProducts())
 
       // if (loggedIn) {
         firebase.auth().onAuthStateChanged((user) => {
           if (user) {
+            console.log(user)
             const { email, uid } = user;
               firebase.auth()
               .currentUser.getIdToken()
               .then((idToken) => {
                 if(idToken) {
-                  if (props.match.path === "/") {
+                  // if (props.match.path === "/") {
                     dispatch(initAuth(email, uid, idToken));
       
-                 }
+                //  }
                 } else {
                   console.log("no token")
                 }
@@ -54,19 +60,27 @@ function App(props) {
               });
           }
         })
-        dispatch(getProducts())
+        // if (admin === true) {
+        //   dispatch(getOrders())
+        // } 
       //  }
     return () => {
       console.log("unsubscribe ");
     };
-  }, [dispatch, props.match.path ]);
+  }, []);
 
-let adminRoutes = (
+const ProtectedRoutes = (
   <Switch>
-     <Route  exact path='/storemanager/:firebase_id' component={StoreManagerPage} />
+          <Route   path='/profile/:firebase_id' component={ProfilePage} />
 
   </Switch>
 )
+
+// const adminRoutes = (
+//   <Switch>
+//     <Route exact path='/update/:id' component={UpdateProductPage} />
+//   </Switch>
+// )
   return (
     <div className="page-container">
      
@@ -76,16 +90,19 @@ let adminRoutes = (
         
         <Switch>
         <Route exact path='/agent/register' component={AgentSignUp}/>
+        <Route exact path='/updateproduct/:id' component={UpdateProductPage} />
 
-        <Route exact path='/profile/:id/cart' component={CartPage}/>
 
         <Route exact path='/product/:id' component={ProductDetailsPage} />
         <Route exact path='/admin/register' component={AdminSignUpPage}/>
-        <Route exact path='/cart/:id' component={CartPage}/>
+        {/* <Route exact path='/bookorder' component={NewOrderPage}/> */}
 
-          <Route exact path="/product/" component={ProductsBy}/>
+          <Route exact path="/product/category/:cat" component={ProductsBy}/>
           <Route exact path='/register' component={Form}/>
-          <Route  path='/profile/:firebase_id' component={ProfilePage} />
+          {/* <Route  exact path='/profile/:firebase_id' component={AccountPage} /> */}
+          {/* <Route   path='/profile/:firebase_id' component={ProfilePage} /> */}
+
+          {/* <Route exact path='/cart/:firebase_id/' component={CartPage}/> */}
 
           <Route exact path="/signin" component={SignIn}/>
           <Route exact path="/portal/signin" component={EmployeeSignIn}/>
@@ -97,10 +114,10 @@ let adminRoutes = (
 
           {/* <Route exact path='/admin/addproduct' component={AddProductPage}/> */}
 
-          {/* ROUTES BELOW THIS LINE WILL BE ADMIN ONLY */}
-          <Route  exact path='/storemanager/:firebase_id' component={StoreManagerPage} />
+          {/* ROUTES BELOW THIS LINE WILL BE PROTECTED  */}
 
-         {/* {loading ? <CircularProgress/> admin || agent? adminRoutes : } */}
+         {loggedIn ? ProtectedRoutes :  <Route exact path="/signin" component={SignIn}/>}
+         {/* {loggedIn && admin ? adminRoutes :  <UnauthorizedPage/>} */}
           </Switch>
           
         </main>

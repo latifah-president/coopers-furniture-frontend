@@ -20,13 +20,22 @@ import { logIn } from '../../Store/Actions/users';
 import { Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingTop: "4rem",
+    // border: "5px solid green",
+  },
   wrapper: {
     flexGrow: 1,
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    // border: "5px solid green",
+    // border: "5px solid black",
+    paddingTop: "4rem",
     marginTop: "2rem",
     [theme.breakpoints.down('xs')]: {
       height: "70%",
@@ -114,7 +123,7 @@ const SignIn = (props) => {
         auth.signInWithEmailAndPassword(email, password).then(({user}) => {
           if (user) {
             dispatch(logIn(user))
-            props.history.push(`/profile/${user.uid}`)
+            props.history.push(`/profile/${user.uid}/settings`)
             
           } else {
             console.log("error no user")
@@ -169,10 +178,8 @@ const SignIn = (props) => {
     </div>
     )
     return (
-   
            <Grid container item xs={12} className={classes.wrapper}>
                          {alert}
-
           <form className={classes.form} >
               <TextField
                   error={error}
@@ -206,6 +213,9 @@ const SignIn = (props) => {
                   />
                   {/* <FormHelperText className={classes.helperText}> */}
                     <div className={classes.helperText}>
+                    {/* <Button aria-label="create an account" type="button" onClick={() => props.history.push('/register')} className={classes.pwrdbtn}>
+                        <Typography variant="p" gutterBottom style={{fontSize: ".9rem"}}>Don't have a?</Typography>
+                      </Button> */}
                       <Button aria-label="forgot password" type="button" onClick={handleClickOpen} className={classes.pwrdbtn}>
                         <Typography variant="p" gutterBottom style={{fontSize: ".9rem"}}>Forgot your password?</Typography>
                       </Button>
@@ -241,16 +251,11 @@ const SignIn = (props) => {
         </DialogActions>
       </Dialog>
                     </div>
-                {/* </FormHelperText> */}
             </FormControl>
-
           </form>
           <Button aria-label="signin" className={classes.btn} type="submit" variant="contained"  onClick={signInWithEmail}>Sign In</Button>
-      
-                </Grid>
-           
-    
-    )
+                </Grid>         
+  )
 };
 
 export default withRouter(SignIn);

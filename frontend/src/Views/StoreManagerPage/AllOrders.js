@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {withRouter} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import  queryString from "query-string";
-import {getProductsByCat} from "./../../Store/Actions/products";
-
-import { GridList, GridListTile, CircularProgress, GridListTileBar, } from "@material-ui/core";
+import {useSelector, useDispatch} from "react-redux";
+import { GridList, Grid, GridListTile, CircularProgress, GridListTileBar, Typography, } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
-
+import {getOrders, getOrdersByAgentId} from "./../../Store/Actions/orders";
+import InfoIcon from '@material-ui/icons/InfoRounded';
+import { green } from "@material-ui/core/colors";
+import { greenColor } from "../../GlobalStyles/styles";
+import {initAuth} from "./../../Store/Actions/users"
 const useStyles = makeStyles((theme) => ({
     // root: {
     //   display: "flex",
@@ -57,7 +58,6 @@ const useStyles = makeStyles((theme) => ({
       [theme.breakpoints.down('md')]: {
         // border: "3px solid brown",
         width: "100%",
-        paddingBottom: "4rem",
       },
       // [theme.breakpoints.down('sm')]: {
       //   border: "3px solid hotpink"
@@ -112,34 +112,36 @@ const useStyles = makeStyles((theme) => ({
     },
     tileBar: {
       textTransform: "uppercase",
+    },
+    agentInfo: {
+      borderTop: `1px solid ${greenColor}`
     }
   }));
-const ProductBy = (props) => {
+
+const ProducstList = (props) => {
     const dispatch = useDispatch();
-    const products = useSelector(state => state.product.products)
-    const parsed = queryString.parse(props.location.search)
-    const col = parsed.col
-    const filter = parsed.filter
-    const cat = props.match.params.cat;
-
-    const [home, setHome] = useState(null)
-  
-    console.log("products:", products)
+    const orders = useSelector(state => state.order.order);
     const images = useSelector(state => state.product.images);
-
+    const admin =  useSelector(state => state.user.admin);
+    const agent =  useSelector(state => state.user.agent);
+    const agent_id = useSelector(state => state.agent.agent_id);
     const classes = useStyles();
     const loading = useSelector(state => state.product.loading);
     const error = useSelector(state => state.product.error);
+  console.log("agent_id", agent_id)
+
     useEffect(() => {
-        dispatch(getProductsByCat(cat))
+      if (admin === true) {
+        dispatch(getOrders())
+      } else if (agent === true) {
+        dispatch(getOrdersByAgentId(agent_id))
+      }
+      
+      return () => {
+          console.log("unsubscribe ");
+        };
+  }, []);
 
-       
-        return () => {
-            console.log("unsubscribe ");
-          };
-    }, [cat]);
-
-    // console.log("product by", product)
     const getGridListCols = () => {
         if (isWidthUp("xl", props.width)) {
           return 5;
@@ -158,32 +160,35 @@ const ProductBy = (props) => {
         return 1;
       };
     return (
-        <div className={classes.root}>
-        <GridList cols={getGridListCols()} cellHeight={380} className={classes.gridList} >
-          {products.map((product) => (
-            console.log("product cat",product),
-            <GridListTile className={classes.tile} key={product.id} onClick={() => props.history.push(`/product/${product.id}`)}>
-              <img src={product.images} alt={product.title} />
-            
-              <GridListTileBar
-                title={product.title}
-                subtitle={<span>${product.price}</span>}
-                className={classes.tileBar}
-                style={{ textTransform: "uppercase", fontSize: ".5rem"}}
-              />
-            </GridListTile>
-          ))}
-        </GridList>
-      </div>
-//         <div>
-// products 
-// name {product.title} 
-// desctiption {product.description}
-// price: {product.price}
+
+    <div className={classes.root}>
+      <GridList cols={getGridListCols()} cellHeight={380} className={classes.gridList} >
+        {loading ? <CircularProgress/> : orders.map((order) => (
+          <Grid className={classes.tile} key={order.id}>
+              <Typography>Order Number: {order.id}</Typography>
+
+              <Typography>Customer Name: {order.customer_first_name} {order.customer_first_name}</Typography>
+              <Typography>Customer Email: {order.customer_email}</Typography>
+              <Typography>Customer Address: {order.customer_address} {order.customer_city} {order.customer_state} {order.customer_zip}</Typography>
+              <Typography>Order Details: {order.title} {order.price}  </Typography>
+              <Typography>Order Total: {order.order_total}</Typography>
+<Grid className={classes.agentInfo}>
+        <Typography>Agent Name: {order.first_name} {order.first_name}</Typography>
+        <Typography>Agent Email: {order.email} </Typography>
+
+        <Typography>Ca$htag: {order.cash_app_name} </Typography>
+
+</Grid>
+          </Grid>
+        ))}
+      </GridList>
+    </div>
+  );
 
 
-//         </div>
-    )
+    
+    
 };
 
-export default withRouter(ProductBy);
+export default withRouter(withWidth()(ProducstList));
+

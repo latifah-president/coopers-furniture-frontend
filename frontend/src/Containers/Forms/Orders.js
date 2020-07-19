@@ -1,20 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { Route, Switch, NavLink} from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 // import ProfileNav from '../../Components/Nav/ProfileNav';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { Grid, Typography, TextField, Snackbar, Button, Alert, IconButton } from '@material-ui/core';
-import CustomersPage from "./../CustomersPage/Customers";
-import AddProductPage from "./../AddProductPage/AddProduct";
-import UnauthorizedPage from "./../ErrorPage/Unauthorized";
-import Settings from "./Settings";
-import StoreManagerPage from "./../StoreManagerPage/AdminConsole";
+
 import {useSelector, useDispatch} from "react-redux";
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
-import { getById } from '../../Store/Actions/users';
 import {greenColor, fontColor} from "./../../GlobalStyles/styles";
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -23,12 +14,91 @@ import InputLabel from '@material-ui/core/InputLabel';
 import {auth} from "./../../firebaseConfig";
 import MuiAlert from '@material-ui/lab/Alert';
 import {Close} from '@material-ui/icons/';
-import { getAgentById } from '../../Store/Actions/agent';
+import Select from "@material-ui/core/Select";
+import {MenuItem} from "@material-ui/core";
+import MaskedInput from 'react-text-mask';
 
+const stateCodes = [
+  "AL",
+  "AK",
+  "AS",
+  "AZ",
+  "AR",
+  "CA",
+  "CO",
+  "CT",
+  "DE",
+  "DC",
+  "FM",
+  "FL",
+  "GA",
+  "GU",
+  "HI",
+  "ID",
+  "IL",
+  "IN",
+  "IA",
+  "KS",
+  "KY",
+  "LA",
+  "ME",
+  "MH",
+  "MD",
+  "MA",
+  "MI",
+  "MN",
+  "MS",
+  "MO",
+  "MT",
+  "NE",
+  "NV",
+  "NH",
+  "NJ",
+  "NM",
+  "NY",
+  "NC",
+  "ND",
+  "MP",
+  "OH",
+  "OK",
+  "OR",
+  "PW",
+  "PA",
+  "PR",
+  "RI",
+  "SC",
+  "SD",
+  "TN",
+  "TX",
+  "UT",
+  "VT",
+  "VI",
+  "VA",
+  "WA",
+  "WV",
+  "WI",
+  "WY"
+];
+
+function TextMaskCustom(props) {
+  const { inputRef, ...other } = props;
+
+  return (
+    <MaskedInput
+      {...other}
+      ref={(ref) => {
+        inputRef(ref ? ref.inputElement : null);
+      }}
+      mask={['(', /[1-9]/, /\d/, /\d/, ')', ' ', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/, /\d/]}
+      placeholderChar={'\u2000'}
+      showMask
+    />
+  );
+};
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: "100%",
+    width: "60%",
     // border: "2px solid teal",
     margin: "0 auto 4rem 0",
     display: "flex",
@@ -39,6 +109,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('xs')]: { 
       marginBottom: "7rem",
       alignItems: "center",
+      width: "100%"
     },
     // color: `${fontColor}`
   },
@@ -46,16 +117,10 @@ const useStyles = makeStyles(theme => ({
     borderBottom: `1px solid #e7ebf3`,
     padding: ".8rem",
     // backgroundColor: "aliceblue",
-    margin: "2rem 0",
+    marginBottom: "2rem",
     display: "flex",
-    justifyContent: "space-around",
-    alignItems: "center",
-    width: "80%",
-    // border: "1px solid red"
-  },
-  link: {
-    textDecoration: "none",
-    color: `${fontColor}`,
+    justifyContent: "flex-end",
+    alignItems: "flex-end"
   },
   heading: {
     fontSize: "1rem",
@@ -68,9 +133,8 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-around",
-    width: "55%",
+    width: "95%",
     borderBottom: `.8px solid ${greenColor}`,
-    marginBottom: "1.5rem",
     [theme.breakpoints.down('xs')]: { 
       width: "80%",
       padding: "1rem"
@@ -90,7 +154,7 @@ const useStyles = makeStyles(theme => ({
   },
   form: {
     // border: "1px solid red",
-    width: "80%",
+    width: "100%",
     color: `${fontColor}`,
     display: "flex",
     flexDirection: "column",
@@ -119,15 +183,7 @@ const useStyles = makeStyles(theme => ({
     margin: ".7rem 0",
     lineHeight: 2
   },
-  // snackbar: {
-  //   // border: "1px solid red",
-  //   width: '90%',
-  //   position: "absolute",
-  //   top: 130,
-  //   // '& > * + *': {
-  //   //   marginTop: theme.spacing(2),
-  //   // },
-  // },
+
  hide: {
    display: "none"
  },
@@ -135,13 +191,8 @@ const useStyles = makeStyles(theme => ({
    display: "flex",
    width: "60%",
    justifyContent: "space-around",
-   marginBottom: "1.5rem",
   //  border: "1px solid red",
-  alignSelf: "center",
-   [theme.breakpoints.down('xs')]: { 
-    alignSelf: "flex-end",
-    // border: "4px solid yellow",
-  },
+   alignSelf: "flex-end",
  },
  btn: {
    border: `1px solid ${greenColor}`,
@@ -155,14 +206,18 @@ const useStyles = makeStyles(theme => ({
   color: `${greenColor}`,
   border: `1px solid ${greenColor}`,
   height: 33,
- }
+ },
+ cart: {
+    border: "1px solid red",
+    display: "flex",
+    flexDirection: "column",
+ },
 }));
 
 
 const Profile = (props) => {
   const classes = useStyles();
-  const loggedIn = useSelector(state => state.user.loggedIn);
-
+  const inputLabel =useRef(null);
   const user_email = useSelector(state => state.user.email);
   const user_first_name = useSelector(state => state.user.first_name);
   const user_last_name = useSelector(state => state.user.last_name);
@@ -171,34 +226,37 @@ const Profile = (props) => {
   const user_state = useSelector(state => state.user.state);
   const user_zip = useSelector(state => state.user.zip);
   const user_phone = useSelector(state => state.user.phone);
-const user_cash_app = useSelector(state => state.agent.cash_app_name)
-  const [email, setEmail] = useState(user_email);
-  const [password, setPassword] = useState("");
-  const [first_name, setFirstName] = useState("" || user_first_name);
-  const [last_name, setLastName] = useState("" || user_last_name);
-  const [address, setAddress] = useState("" || user_address);
-  const [city, setCity] = useState("" || user_city);
-  const [state, setState] = useState("" || user_state);
-  const [zip, setZip] = useState("" || user_zip);
-  const [phone, setPhone] = useState("" || user_phone);
-
-  const [cash_app_name, setCashApp] = useState('' || user_cash_app)
-
-
   const firebase_id = useSelector(state => state.user.firebase_id);
   const admin = useSelector(state => state.user.admin);
   const agent = useSelector(state => state.user.agent);
+    const user_cash_app = useSelector(state => state.agent.cash_app_name)
+  const [email, setEmail] = useState("");
+  const [first_name, setFirstName] = useState("");
+  const [last_name, setLastName] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
+  const [phone, setPhone] = useState('(  )    -    ')
+  const [errorMsg, setErrorMsg] = useState("");
+    const [error, setError] = useState(false);
   const dispatch = useDispatch();
+
+  const [agent_first_name, setAgentFirstName] = useState("" || user_first_name)
+  const [agent_last_name, setAgentLastName] = useState("" || user_last_name)
+    const [agent_email, setAgentEmail] = useState("" || user_email);
   const [value, setValue] = useState(0);
+  const [cash_app_name, setCashApp] = useState("" || user_cash_app);
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(false);
-  const id = props.match.params.firebase_id
+  const CHAR_LIMIT = 800;
+
 console.log("open", open)
   const handleClick = () => {
     setOpen(true);
   };
 
-  const handleClose = (event, reason) => {
+  const bookOrder = () => {
     // if (reason === 'clickaway') {
     //   return;
     // }
@@ -207,27 +265,19 @@ console.log("clicked")
   };
 
 console.log("user email", user_email)
-console.log("id", id)
+console.log("email", email)
 
-const setFormValues = () => {
-  setFirstName(user_first_name);
-setLastName(user_last_name);
-setEmail(user_email );
-};
+//   useEffect(() => {
+//     // dispatch(getById(firebase_id))
+//     setEmail(user_email)
+//   }, [user_email])
 
-  useEffect(() => {
-  //  setFormValues()
-    if(agent === true) {
-      dispatch(getAgentById(firebase_id))
-    }
-    dispatch(getById(id))
+  const handleChange = (event, newValue) => {
    
-  }, )
-
- 
+      setValue(newValue);
+   
+  };
   
-
-
   function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
   }
@@ -253,7 +303,7 @@ setEmail(user_email );
           {title}
         </Alert>
       </Snackbar> */}
-  <Alert severity="success" onClose={handleClose} className={classes.alert}>{title}</Alert>
+  {/* <Alert severity="success" onClose={handleClose} className={classes.alert}>{title}</Alert> */}
   {/* <IconButton
               aria-label="close"
               color="inherit"
@@ -266,23 +316,14 @@ setEmail(user_email );
   )
     return (
       <Grid  container direction="column" justify="center" alignItems="center" className={classes.root}>
-          <Grid container item className={classes.header}>
-              <a className={classes.link} aria-label="Information Portal" target="_blank" rel="noopener noreferrer" href="https://drive.google.com/drive/folders/1jvPVkx-Gx7XYhskueYrSFC1D0_y0rfYx?usp=sharing">Information Portal</a>
-              <a className={classes.link} aria-label="Finance Information" target="_blank" rel="noopener noreferrer" href=" https://consumer.snapfinance.com/#/?mid=490237487 ">Finance Information</a>
-             {admin || agent ?  <a className={classes.link} aria-label="agent chat" target="_blank" rel="noopener noreferrer" href="https://groupme.com/join_group/60636648/G3rnJtSa">Agent Chat</a> : null }
-
-          </Grid>
-         
-        
-          {/* <Grid style> */}
             <Grid className={classes.section}>
               <Grid className={classes.sectionTop}>
-                <Typography className={classes.sectionHeader} component="h2">Profile</Typography>
-                <Typography className={classes.paragraph} component="p">Your email address is your identity on Coopers Home Furniture and is used to log in.</Typography>
+                <Typography className={classes.sectionHeader} component="h2">Customer Information</Typography>
+                {/* <Typography className={classes.paragraph} component="p">Your email address is your identity on Coopers Home Furniture and is used to log in.</Typography> */}
               </Grid>
-              <div>
+              {/* <div>
             {snackBar("Information updated!")}
-          </div>
+          </div> */}
               <form className={classes.form} >
                   {/* <FormControl> */}
                     <Typography className={classes.label}  component="h4" >Email Address</Typography>
@@ -296,10 +337,10 @@ setEmail(user_email );
                          margin="dense"
                          variant="outlined"
                          type="email"
-                         value={email}
+                         value={props.email}
                         //  defaultValue={user_email}
                         //  helperText={errorMsg}
-                         onChange={e => setEmail(e.target.value)}
+                         onChange={e => props.setEmail(e.target.value)}
                       />
               <Typography className={classes.label}  component="h4" >Name</Typography>
                       <TextField
@@ -312,10 +353,10 @@ setEmail(user_email );
                          margin="dense"
                          variant="outlined"
                          type="text"
-                         value={first_name}
+                         value={props.first_name}
                         //  defaultValue={user_email}
                         //  helperText={errorMsg}
-                         onChange={e => setFirstName(e.target.value)}
+                         onChange={e => props.setFirstName(e.target.value)}
                       />
                         <TextField
                          htmlFor="last-name"
@@ -327,88 +368,24 @@ setEmail(user_email );
                          margin="dense"
                          variant="outlined"
                          type="text"
-                         value={last_name}
+                         value={props.last_name}
                         //  defaultValue={user_email}
                         //  helperText={errorMsg}
-                         onChange={e => setLastName(e.target.value)}
+                         onChange={e => props.setLastName(e.target.value)}
                       />
                   {/* </FormControl> */}
               </form>
-              <Grid className={classes.BtnGrid}>
-                <Button className={classes.btn} type="button" aria-label="save">Save</Button>  
-                <Button className={classes.btn, classes.saveBtn} type="button" aria-label="cancel">Cancel</Button>
-              </Grid>
-             
-
             </Grid>
 
+          
             <Grid className={classes.section}>
               <Grid className={classes.sectionTop}>
-                <Typography className={classes.sectionHeader} component="h2">Password</Typography>
+                <Typography className={classes.sectionHeader} component="h2">Delivery Details</Typography>
                 {/* <Typography className={classes.paragraph} component="p">Your email address is your identity on Coopers Home Furniture and is used to log in.</Typography> */}
               </Grid>
-              <form className={classes.form} >
-                  {/* <FormControl> */}
-                    <Typography className={classes.label}  component="h4" >Password</Typography>
-                      <TextField
-                         htmlFor="password"
-                        //  fullWidth
-                         required
-                         className={classes.textFieldWide}
-                         id="password"
-                        //  label="Email"
-                         margin="dense"
-                         variant="outlined"
-                         type="password"
-                         value={password}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setPassword(e.target.value)}
-                      />
-              {/* <Typography className={classes.label}  component="h4" >Name</Typography>
-                      <TextField
-                         htmlFor="first-name"
-                        //  fullWidth
-                         required
-                         className={classes.textFieldWide}
-                         id="first-name"
-                        label="First Name"
-                         margin="dense"
-                         variant="outlined"
-                         type="text"
-                         value={first_name}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setFirstName(e.target.value)}
-                      />
-                        <TextField
-                         htmlFor="last-name"
-                        //  fullWidth
-                         required
-                         className={classes.textFieldWide}
-                         id="last-name"
-                        label="Last Name"
-                         margin="dense"
-                         variant="outlined"
-                         type="text"
-                         value={last_name}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setLastName(e.target.value)}
-                      /> */}
-                  {/* </FormControl> */}
-              </form>
-              <Grid className={classes.BtnGrid}>
-                <Button className={classes.btn} type="button" aria-label="save">Save</Button>  
-                <Button className={classes.btn, classes.saveBtn} type="button" aria-label="cancel">Cancel</Button>
-              </Grid>
-            </Grid>
-          {/* </Grid> */}
-          <Grid className={classes.section}>
-          <Grid className={classes.sectionTop}>
-                <Typography className={classes.sectionHeader} component="h2">Delivery Information</Typography>
-                <Typography className={classes.paragraph} component="p">Keep your address up to date so your furniture always gets there on time.</Typography>
-              </Grid>
+              {/* <div>
+            {snackBar("Information updated!")}
+          </div> */}
               <form className={classes.form} >
                   {/* <FormControl> */}
                     <Typography className={classes.label}  component="h4" >Address</Typography>
@@ -418,129 +395,129 @@ setEmail(user_email );
                          required
                          className={classes.textFieldWide}
                          id="address"
-                         label="Address"
+                         label="address"
                          margin="dense"
                          variant="outlined"
                          type="text"
-                         value={address}
+                         value={props.address}
                         //  defaultValue={user_email}
                         //  helperText={errorMsg}
-                         onChange={e => setAddress(e.target.value)}
+                         onChange={e => props.setAddress(e.target.value)}
                       />
-                        <Typography className={classes.label}  component="h4" >City</Typography>
-
-                       <TextField
+              <Typography className={classes.label}  component="h4" >City</Typography>
+                      <TextField
                          htmlFor="city"
                         //  fullWidth
                          required
                          className={classes.textFieldWide}
                          id="city"
-                         label="City"
+                        label="City"
                          margin="dense"
                          variant="outlined"
                          type="text"
-                         value={city}
+                         value={props.city}
                         //  defaultValue={user_email}
                         //  helperText={errorMsg}
-                         onChange={e => setCity(e.target.value)}
+                         onChange={e => props.setCity(e.target.value)}
                       />
-                        <Typography className={classes.label}  component="h4" >State</Typography>
+                    <Typography className={classes.label}  component="h4" >State</Typography>
 
-                       <TextField
+                        <TextField
                          htmlFor="state"
-                        //  fullWidth
                          required
                          className={classes.textFieldWide}
                          id="state"
-                         label="State"
+                        label="State"
                          margin="dense"
                          variant="outlined"
                          type="text"
-                         value={state}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setState(e.target.value)}
+                         value={props.state}
+                         onChange={e => props.setState(e.target.value)}
                       />
-                       <Typography className={classes.label}  component="h4" >Zip</Typography>
 
-                       <TextField
-                         htmlFor="zip"
-                        //  fullWidth
-                         required
-                         className={classes.textFieldWide}
-                         id="zip"
-                         label="Zip"
-                         margin="dense"
-                         variant="outlined"
-                         type="text"
-                         value={zip}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setZip(e.target.value)}
-                      />
-                       <Typography className={classes.label}  component="h4" >Phone Number</Typography>
+<Typography className={classes.label}  component="h4" >Zip</Typography>
 
 <TextField
-  htmlFor="phone"
- //  fullWidth
-  required
-  className={classes.textFieldWide}
-  id="phone"
-  label="Phone Number"
-  margin="dense"
-  variant="outlined"
-  type="text"
-  value={phone}
- //  defaultValue={user_email}
- //  helperText={errorMsg}
-  onChange={e => setPhone(e.target.value)}
+ htmlFor="zip"
+ required
+ className={classes.textFieldWide}
+ id="zip"
+label="Zip"
+ margin="dense"
+ variant="outlined"
+ type="text"
+ value={props.zip}
+ onChange={e => props.setZip(e.target.value)}
 />
-                       <Grid className={classes.BtnGrid}>
-                <Button className={classes.btn} type="button" aria-label="save">Save</Button>  
-                <Button className={classes.btn, classes.saveBtn} type="button" aria-label="cancel">Cancel</Button>
-              </Grid>
-            
-                       
+        
+      <Typography className={classes.label}  component="h4" >Phone Number</Typography>
+
+<TextField
+ htmlFor="phone-number"
+ required
+ className={classes.textFieldWide}
+ id="phone-number"
+label="Phone Number"
+ margin="dense"
+ variant="outlined"
+ type="text"
+ value={props.phone}
+ onChange={e => props.setPhone(e.target.value)}
+/>
+
+<Typography className={classes.label}  component="h4" >Order Notes</Typography>
+
+<TextField
+                // fullWidth
+                    className={classes.textFieldWide}
+                    id="order-notes"
+                    type="text"
+                    label="Order Notes"
+                    margin="dense"
+                    variant="outlined"
+                    value={props.notes}
+                    rows={4}
+                    multiline
+                    onChange={e => props.setNotes(e.target.value)}
+                    inputProps={{
+                      maxLength: CHAR_LIMIT
+                    }}
+                    helperText={`${props.notes.length}/${CHAR_LIMIT}`}
+                /> 
               </form>
-          </Grid>
-          
-
-
-
-{agent  ? 
-          <Grid className={classes.section}>
+{/* 
+              <Grid className={classes.section}>
           <Grid className={classes.sectionTop}>
                 <Typography className={classes.sectionHeader} component="h2">Agent Information</Typography>
                 <Typography className={classes.paragraph} component="p">Payouts made every Saturday for the previous week's orders to the provided $Cashtag.</Typography>
               </Grid>
               <form className={classes.form} >
-                  {/* <FormControl> */}
                     <Typography className={classes.label}  component="h4" >$Cashtag</Typography>
                       <TextField
                          htmlFor="cash_app_name"
-                        //  fullWidth
+                         required
                          required
                          className={classes.textFieldWide}
                          id="cash_app_name"
-                        //  label="Email"
                          margin="dense"
                          variant="outlined"
                          type="text"
-                         value={cash_app_name}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setCashApp(e.target.value)}
+                         value={user_cash_app}
+                         onChange={e => props.setCashApp(e.target.value)}
                       />
                        <Grid className={classes.BtnGrid}>
                 <Button className={classes.btn} type="button" aria-label="save">Save</Button>  
                 <Button className={classes.btn, classes.saveBtn} type="button" aria-label="cancel">Cancel</Button>
               </Grid>
-              {/* <Typography className={classes.label} style={{marginTop: "2rem"}} component="h4" >Commision</Typography>
-                     <Typography>$0.00</Typography> */}
+              <Typography className={classes.label} style={{marginTop: "2rem"}} component="h4" >Commision</Typography>
+                     <Typography>$0.00</Typography>
                        
               </form>
-          </Grid> 
-          : null}
+          </Grid> */}
+            </Grid>
+         
+          {/* </Grid> */}
+         
       </Grid> 
     )
 };

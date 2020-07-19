@@ -83,9 +83,6 @@ const addToState = (arr) => {
 console.log("added colors from modal", props.newColor)
   return (
     <div>
-      {/* <Button variant="outlined" color="primary" onClick={props.handleClickOpen}>
-        Open dialog
-      </Button> */}
       <Dialog onClose={props.handleClose} aria-labelledby="add color" open={props.open}>
         <DialogTitle id="add color" onClose={props.handleClose}>
           Add a new color

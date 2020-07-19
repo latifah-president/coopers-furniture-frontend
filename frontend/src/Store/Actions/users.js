@@ -75,10 +75,10 @@ export const logOut = () => (dispatch) => {
             payload: false
         })
     // } else {
-        dispatch ({
-            type: authTypes.LOGOUT_FAIL,
-            payload: 'Failed to log user out'
-        })
+        // dispatch ({
+        //     type: authTypes.LOGOUT_FAIL,
+        //     payload: 'Failed to log user out'
+        // })
     // }
 };
 
@@ -102,6 +102,7 @@ export const logIn = (user) => (dispatch) => {
 
 
 export const getById = (firebase_id) => dispatch => {
+    console.log("getById action", firebase_id)
     dispatch ({
         type: userTypes.GET_USER_START
     })
@@ -160,12 +161,39 @@ export const getById = (firebase_id) => dispatch => {
     
 // };
 
-export const addToCart = (id, quantity, firebase_id, price) =>  (dispatch) => {
+export const getCart = (id) =>  (dispatch) => {
+    dispatch ({
+        type: userTypes.GET_CART_START
+    })
+    axios.get(`/user/${id}/cart`).then(res => {
+        console.log("res.data from add to cart", res.data)
+
+    if (res.status === 200) {
+        dispatch({
+            type: userTypes.GET_CART_SUCCESS,
+            payload: res.data
+        })
+    } else if (res.status === 400) {
+        dispatch({
+            type: userTypes.GET_CART_FAIL,
+            payload: res.data.message
+        })
+    }
+   }).catch( err => {
+    dispatch({
+        type: userTypes.GET_CART_FAIL,
+        payload: err
+    })
+})
+    
+};
+
+export const addToCart = (id, firebase_id, price, quantity, color, image) =>  (dispatch) => {
     dispatch ({
         type: userTypes.ADD_TO_CART_START
     })
    
-    axios.post(`/user/add-to-cart/${firebase_id}`, { product_id: id, quantity, firebase_id, price }).then(res => {
+    axios.post(`/user/add-to-cart/${firebase_id}`, { product_id: id, firebase_id, price,  color, image,  quantity }).then(res => {
     if (res.status === 201) {
         dispatch({
             type: userTypes.ADD_TO_CART_SUCCESS,
@@ -186,31 +214,7 @@ export const addToCart = (id, quantity, firebase_id, price) =>  (dispatch) => {
     
 };
 
-export const getCart = (id) =>  (dispatch) => {
-    dispatch ({
-        type: userTypes.GET_CART_START
-    })
-    axios.get(`/user/${id}/cart`).then(res => {
-    if (res.status === 200) {
 
-        dispatch({
-            type: userTypes.GET_CART_SUCCESS,
-            payload: res.data
-        })
-    } else if (res.status === 400) {
-        dispatch({
-            type: userTypes.GET_CART_FAIL,
-            payload: res.data.message
-        })
-    }
-   }).catch( err => {
-    dispatch({
-        type: userTypes.GET_CART_FAIL,
-        payload: err
-    })
-})
-    
-};
 
 export const removeFromCart = (id) => (dispatch) => {
     dispatch({

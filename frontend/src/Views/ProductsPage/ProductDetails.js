@@ -1,17 +1,16 @@
 import React, {useEffect, useState} from "react";
-import {withRouter, Link} from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import  queryString from "query-string";
-import {getProductsBy} from "../../Store/Actions/products";
+import {getProductsBy, deleteProduct, setUpdate} from "../../Store/Actions/products";
 import {addToCart} from "../../Store/Actions/users";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from '@material-ui/core/Grid';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import { Typography, IconButton, Button, Tooltip } from "@material-ui/core";
-import {fontColor, greenColor, whiteColor, yellowColor, offWhiteColor} from "../../GlobalStyles/styles";
-import Select from "./../../Containers/Select/QuantitySelect";
-import { Edit, Delete, LocalShippingOutlined} from  '@material-ui/icons';
-
+import { Typography, IconButton, Button, Snackbar } from "@material-ui/core";
+import {fontColor, greenColor, whiteColor, offWhiteColor} from "../../GlobalStyles/styles";
+import { Edit, Delete, LocalShippingOutlined, CloseOutlined} from  '@material-ui/icons';
+import DeleteModal from "./../../Components/Modals/DeleteModal";
+import MuiAlert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -267,7 +266,7 @@ marginTop: "2rem",
     colorText: {
       fontWeight: 600,
       fontSize: "1rem",
-      textAlign: "uppercase",
+      textTransform: "uppercase",
       textAlign: "center",
     },
     span: {
@@ -299,7 +298,6 @@ marginTop: "2rem",
       textDecoration: "none"
     },
     cartGrid: {
-      // border: "1px solid purple",
       display: "flex",
       alignItems: "center",
       [theme.breakpoints.down('xs')]: { 
@@ -307,16 +305,6 @@ marginTop: "2rem",
       }
     },
     bottomWrapper: {
-      // backgroundColor: `${whiteColor}`,
-      // display: "flex",
-      // width: "100%",
-      // flexDirection: "column",
-      // padding: "0 1rem",
-      // boxShadow: "0 2px 5px rgba(0,0,0,.2)",
-      // [theme.breakpoints.down('xs')]: {
-      //   flexDirection: "column",
-      //   margin: "0rem auto 2rem auto",
-      // }
       backgroundColor: `${whiteColor}`,
       display: "flex",
       width: "100%",
@@ -324,82 +312,237 @@ marginTop: "2rem",
       boxShadow: "0 2px 5px rgba(0,0,0,.2)",
       [theme.breakpoints.down('xs')]: {
         flexDirection: "column",
-        // height: "100vh",
         margin: "0rem auto 6rem auto",
       }
-    }
+    },
+    hide: {
+      display: "none"
+    },
+     snackbar: {
+    // border: "1px solid red",
+    width: '90%',
+    position: "absolute",
+    top: 130,
+    // '& > * + *': {
+    //   marginTop: theme.spacing(2),
+    // },
+  },
   }));
 
+  // function Alert(props) {
+  //   return <MuiAlert elevation={6} variant="filled" {...props} />;
+  // }
 const ProductDetail = (props) => {
     const dispatch = useDispatch();
+    const classes = useStyles();
+
     const firebase_id = useSelector(state => state.user.firebase_id);
     const product = useSelector(state => state.product.products);
     const colors = useSelector(state => state.product.colors);
-
     const admin = useSelector(state => state.user.admin);
     const loggedIn = useSelector(state => state.user.loggedIn);
-    const col = "id"
-    const id = props.match.params.id;
-    const [quantity, setQty] = useState(1);
-    const classes = useStyles();
     const loading = useSelector(state => state.product.loading);
     const error = useSelector(state => state.product.error);
-    const [color, setColor] = useState("");
+    const errorMsg = useSelector(state => state.product.errorMsg);
+    const editSuccess = useSelector(state => state.product.edit);
+    const editMsg = useSelector(state => state.product.editMsg);
+    const edit = useSelector(state => state.product.edit);
+    const deleteMsg = useSelector(state => state.product.deleteMsg);
+    const deleteSuccess = useSelector(state => state.product.deleted);
+
+    // eslint-disable-next-line
+    const [quantity, setQty] = useState(1);
+    const [color_id, setColorId] = useState(0);
+    const [image_id, setImageId] = useState(0);
+    const [open, setOpen] = useState(false);
+    const [openModal, setModalOpen] = useState(false);
+    const [success, setSuccess] = useState(false);
+    // eslint-disable-next-line
+    const [color, setColor] = useState("")
+
+    const col = "id"
+    const id = props.match.params.id;
+
+    console.log("color_id", color_id)
+    console.log("image_id", image_id)
+
+    const handleClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      setOpen(false);
+    };
+
+    const handleModalClose = (event, reason) => {
+      if (reason === 'clickaway') {
+        return;
+      }
+  
+      setModalOpen(false);
+    };
+
     useEffect(() => {
        
         const filter = id
             dispatch(getProductsBy(col, filter))
+            const deletedProduct = product.map((item) => {
+              setColorId(item.color_id)
+              setImageId(item.image_id)
+            })
       
         return () => {
             console.log("unsubscribe ");
           };
-    }, [dispatch]);
+    }, [dispatch, id]);
 
 
-    // const addToCart = () => {
-        
-    //     setSelected(true)
-    //     props.history.push(`/profile/${firebase_id}/cart`)
+    const openSnackBar = () => {
+      // dispatch(addToCart(id,  firebase_id, product.price, product.color_id, product.image_id))
+       setOpen(true)
+        // props.history.push(`/profile/${firebase_id}/cart`)
 
-    // };
+    };
 
     // const addToCart = (id, quantity, firebase_id) => {
     //     const products_id = id
     //     dispatch(addToCart( products_id, quantity, firebase_id))
 
     //   };
-    const handleChange = (event) => {
-        setQty(event.target.value);
-      };
-    // const products = product.slice(0, 1)
-    // const products = product.find( item  => { return id === `${item.id}`})
-    // console.log("product title", products)
 
+    const deleteAProduct = () => {
+        // eslint-disable-next-line
+      const deletedProduct = product.map((item) => {
+        setColorId(item.color_id)
+        setImageId(item.image_id)
+      })
+      setModalOpen(true)
+    };
+
+    const handleDelete = () => {
+      console.log("click")
+      dispatch(deleteProduct(id, color_id, image_id));
+      // setModalOpen(false);
+      props.history.push(`/products`)
+
+      
+    };
+
+    const close = () => {
+      setSuccess(false)
+    };
+   
+    const updateAProduct = () => {
+      dispatch(setUpdate())
+    
+        props.history.push(`/updateproduct/${id}`)
+      
+    };
+
+  // const snackBar = () => (
+  
+  //       <div className={editSuccess ? classes.snackbar : classes.hide}>
+       
+  // <Alert severity="success" onClose={close} className={classes.alert}>{editSuccess ? `${editMsg}` : `${deleteMsg}`}</Alert>
+    
+  //       </div>
+  //     );
+
+  // const errorSnackBar = () => (
+  //   <div className={error ? classes.snackbar : classes.hide}>
+    
+  //     <Alert severity="error" onClose={close} className={classes.alert}>{errorMsg}</Alert>
+
+  //   </div>
+  // );
+    // const snackBar = () => (
+  
+    //   <div>
+    //   <Snackbar
+    //     anchorOrigin={{
+    //       vertical: 'top', 
+    //       horizontal: 'center'
+    //     }}
+    //     open={open}
+    //     autoHideDuration={6000}
+    //     onClose={handleClose}
+    //     message="Product added to cart!"
+    //     action={
+    //       <React.Fragment>
+    //          <Link style={{border: "1px solid white"}} color="secondary" size="small" to="/products">
+    //           Continue shopping
+    //         </Link>
+    //         {/* <Button color="secondary" size="small" onClick={handleClose}>
+    //           Continue shopping
+    //         </Button> */}
+    //         or
+    //         <Button color="secondary" size="small" onClick={handleClose}>
+    //           Proceed to checkout
+    //         </Button>
+    //         <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+    //           <CloseOutlined fontSize="small" />
+    //         </IconButton>
+    //       </React.Fragment>
+    //     }
+    //   />
+    // </div>
+    // )
 
 
     return (
       <Grid className={classes.root}>
-         {loading || error ? <CircularProgress/> : 
+         {loading ? <CircularProgress/> : 
          <div>
           <div className={classes.wrapper}>
-                
-              <Grid className={classes.imageContainer}> 
-       
-        {/* <Typography className={classes.mobileTitle}>{product.title}</Typography> */}
-        
+            {/* <DeleteModal
+              openModal={openModal}
+              handleModalClose={handleModalClose}
+              handleDelete={handleDelete}
+            /> */}
+            {/* {snackBar()}
+            {errorSnackBar()} */}
+          <div>
+      <Snackbar
+        anchorOrigin={{
+          vertical: 'top', 
+          horizontal: 'center'
+        }}
+        open={open}
+        // autoHideDuration={6000}
+        onClose={handleClose}
+        message="Product added to cart!"
+        action={
+          <React.Fragment>
+            <Button style={{paddingTop: ".5rem"}} color="secondary" size="small" onClick={() => props.history.push('/products')}>
+              Continue shopping
+            </Button>
+            or
+            <Button style={{paddingTop: ".5rem"}} color="secondary" size="small" onClick={() => props.history.push(`/profile/${firebase_id}/cart`)}>
+              Proceed to checkout
+            </Button>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
+              <CloseOutlined fontSize="small" />
+            </IconButton>
+          </React.Fragment>
+        }
+      />
+    </div>
+               {product.map((product) => (
+              <Grid key={product.id} className={classes.imageContainer}>         
             <img className={classes.img} src={product.images} alt={product.title}/>
             <Typography className={classes.title} component="h3">{product.title}</Typography>
-
-            {/* { admin && loggedIn ?
+          
+            { admin && loggedIn ?
 
           <Grid className={classes.adminBtn}>
-            <IconButton aria-label="delete" > <Delete /> </IconButton>    
-            <IconButton aria-label="edit"> <Edit /> </IconButton>              
+            <IconButton aria-label="delete" onClick={handleDelete}> <Delete /> </IconButton>    
+            <IconButton aria-label="edit" onClick={updateAProduct}> <Edit /> </IconButton>              
           
           </Grid> 
         
-          : null } */}
+          : null }
           </Grid>
+            )) } 
           <Grid className={classes.container}>
               <Grid className={classes.content}>
                   {/*TODO: UNCOMMENT ID SO THAT ADMIN CAN SEE */}
@@ -414,28 +557,26 @@ const ProductDetail = (props) => {
 
                     {colors.map((color) => (
                       <div key={color.colors} className={classes.colorsContainer}>
-                        {/* <Tooltip title={`${color.colors}`} style={{border: "1px solid red"}} className={classes.color}>
-  <Button aria-label={color.colors} >
-  </Button>
-</Tooltip> */}
-  {/* <Tooltip className={classes.color} style={{ border: "1px solid black"}}  title={color.colors} placement="top-start"> */}
-            <Button className={classes.color} aria-label={color.colors} style={{backgroundColor: `${color.colors}`, border: "1px solid black"}} className={classes.color} onClick={() => setColor(`${color.colors}`)}></Button>
-          {/* </Tooltip> */}
+               
+            <Button key={color.id} className={classes.color} aria-label={color.colors} style={{backgroundColor: `${color.colors}`, border: "1px solid black"}} className={classes.color} onClick={() => setColor(`${color.colors}`)}></Button>
+            {/*eslint-disable-next-line */}
 <span className={classes.span}>{color.colors}</span>
-                        {/* <div className={classes.color} aria-label={color.colors} style={{backgroundColor: `${color.colors}`}}></div> */}
                       </div>))} 
                     </Grid>
-                    <Grid className={classes.priceTop}>
+                    {product.map((product) => (
+                    <Grid key={product.id} className={classes.priceTop}>
                       <Grid className={classes.priceText}>
-                          <Typography Typography className={classes.price}>${product.price}</Typography>
-                          <Link to="https://consumer.snapfinance.com/#/?mid=490237487" className={classes.financing}>Financing options available.</Link>
+                          <Typography className={classes.price}>${product.price}</Typography>
+                          <a aria-label="Apply Now" target="_blank" rel="noopener noreferrer" href="https://consumer.snapfinance.com/#/?mid=490237487" className={classes.financing}>Financing options available.</a>
                       </Grid>
                       <Grid className={classes.cartGrid}>
-                        <Button aria-label="add to cart" className={classes.btn} onClick={() => {dispatch(addToCart(id,  firebase_id, product.price, color)); props.history.push(`/cart/{firebase_id}`)}}>Add to cart</Button>
+                        <Button aria-label="add to cart" className={classes.btn} onClick={() => {
+                          dispatch(addToCart(id,  firebase_id, product.price, quantity,  product.color_id, product.image_id)); openSnackBar();
+                        }}>Add to cart</Button>
 
                       </Grid>
 
-                    </Grid>
+                    </Grid> ))}
                     {/* <Typography className={classes.title} component="h3">{product.title}</Typography> */}
                   </Grid>
                   {/* <Grid className={classes.description}>
@@ -466,11 +607,13 @@ const ProductDetail = (props) => {
 
           </div>
           <div className={classes.bottomWrapper} style={{marginTop: "2rem"}}>
-            <Grid className={classes.description}>
+            {product.map((product) => (
+            <Grid key={product.id} className={classes.description}>
                   <Typography className={classes.sectionHeader} component="h2">Product Description</Typography>
 
                       <Typography className={classes.paragraph} component="p">{product.description}</Typography>
                   </Grid>
+                  ))}
           </div>
           </div>
    }
@@ -485,68 +628,3 @@ const ProductDetail = (props) => {
 };
 
 export default withRouter(ProductDetail);
-
-
-
-
-
-
-
-// import React, {useEffect, useState} from "react";
-// import {withRouter} from "react-router-dom";
-// import {useDispatch, useSelector} from "react-redux";
-// import  queryString from "query-string";
-// import {getProductsBy} from "./../../Store/Actions/products";
-// import { makeStyles } from "@material-ui/core/styles";
-// import Grid from '@material-ui/core/Grid';
-
-// const useStyles = makeStyles(theme => ({
-//     root: {
-//       flexGrow: 1,
-//       display: "flex",
-//       flexDirection: "column",
-//       justifyContent: "center",
-//       alignItems: "center",
-//       border: "5px solid green",
-//       marginTop: "2rem",
-//       [theme.breakpoints.down('sm')]: {
-//         height: "70%",
-//       }
-//     },
-  
-//   }));
-// const ProductDetail = (props) => {
-//     console.log("props:", props)
-//     const dispatch = useDispatch();
-//     const product = useSelector(state => state.product.products)
-//     const parsed = queryString.parse(props.location.search)
-//     const col = "id"
-//     const filter = props.match.params.id;
-//     const classes = useStyles();
-   
-//     console.log("filter:", filter)
-
-//     useEffect(() => {
-//         dispatch(getProductsBy(col, filter))
-       
-//         return () => {
-//             console.log("unsubscribe ");
-//           };
-//     }, [dispatch]);
-
-//     console.log("product by", product)
-
-//     return (
-
-//         <Grid>
-// products 
-// name {product.title} 
-// desctiption {product.description}
-// price: {product.price}
-
-
-//         </Grid>
-//     )
-// };
-
-// export default withRouter(ProductDetail);

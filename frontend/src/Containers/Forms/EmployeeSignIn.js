@@ -123,7 +123,7 @@ const SignIn = (props) => {
         auth.signInWithEmailAndPassword(email, password).then(({user}) => {
           if (user) {
             dispatch(logIn(user))
-             props.history.push(`/storemanager/${user.uid}`) 
+             props.history.push(`/profile/${user.uid}/settings`) 
             
           } else {
             console.log("error no user")

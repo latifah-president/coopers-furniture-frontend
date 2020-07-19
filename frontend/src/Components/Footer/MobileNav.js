@@ -15,9 +15,10 @@ const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     width: '100%',
-    // backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper,
+    zIndex: 3,
     // position: "fixed",
-    border: "1px solid green",
+    // border: "1px solid green",
     bottom: 0,
     [theme.breakpoints.up("sm")]: {
         display: "none",
@@ -57,6 +58,7 @@ const firebase_id = useSelector(state => state.user.firebase_id);
 const admin= useSelector(state => state.user.admin);
 const agent = useSelector(state => state.user.agent);
 const cart = useSelector(state => state.user.cart);
+const loggedIn = useSelector(state => state.user.loggedIn);
 
  
 
@@ -71,22 +73,23 @@ const cart = useSelector(state => state.user.cart);
               <IconButton  aria-label="products" onClick={() => props.history.push('/products')}>
                   <Storefront className={classes.icon}/>
               </IconButton>
-              {admin || agent ? 
+              {/* {admin || agent ? 
             <IconButton  aria-label="store manager" onClick={() => props.history.push(`storemanager/${firebase_id}`)}>
             <Work className={classes.icon}/>
         </IconButton> : null  
-            }
-               <IconButton  aria-label="account" onClick={() => props.history.push(`profile/${firebase_id}`)}>
+            } */}
+               <IconButton  aria-label={loggedIn ? 'Account' : "Create Account"} onClick={() => loggedIn ? props.history.push(`/profile/${firebase_id}/settings`) : props.history.push(`/register`)}>
                   <AccountCircleOutlined className={classes.icon}/>
               </IconButton>
+              
               <Badge badgeContent={cart.length}>
-                <IconButton  aria-label="cart" onClick={() => props.history.push(`profile/${firebase_id}`)}>
+                <IconButton  aria-label={loggedIn ? 'cart' : "create Account to view cart "} onClick={() => loggedIn ? props.history.push(`/profile/${firebase_id}/cart`) : props.history.push(`/register`)}>
                     <ShoppingCart className={classes.icon}/>
                 </IconButton>
               </Badge>
-              {admin ? 
+              {admin && loggedIn ? 
               <Badge badgeContent={0}>
-                <IconButton  aria-label="orders" onClick={() => props.history.push(admin ? `storemanager/${firebase_id}` : `profile/${firebase_id}`)}>
+                <IconButton  aria-label="orders" onClick={() => props.history.push(`profile/${firebase_id}/orders`)}>
                     <LocalShippingOutlined className={classes.icon}/>
                 </IconButton>
               </Badge> : null

@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import { Route, Switch, NavLink} from 'react-router-dom';
+import { Route, Switch, NavLink, Redirect} from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
-// import ProfileNav from '../../Components/Nav/ProfileNav';
+import firebase from './../../firebaseConfig';
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { Grid, Typography, TextField, Snackbar, Button, Alert, IconButton } from '@material-ui/core';
+import { Grid, Typography, TextField, Snackbar, Button, Alert, IconButton, CircularProgress } from '@material-ui/core';
 import CustomersPage from "./../CustomersPage/Customers";
 import AddProductPage from "./../AddProductPage/AddProduct";
 import UnauthorizedPage from "./../ErrorPage/Unauthorized";
@@ -14,7 +14,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
-import { getById } from '../../Store/Actions/users';
+import { initAuth } from '../../Store/Actions/users';
 import {greenColor, fontColor} from "./../../GlobalStyles/styles";
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
@@ -23,7 +23,13 @@ import InputLabel from '@material-ui/core/InputLabel';
 import {auth} from "./../../firebaseConfig";
 import MuiAlert from '@material-ui/lab/Alert';
 import {Close} from '@material-ui/icons/';
-
+import SettingsPage from "./Settings";
+import Nav from "./../../Components/Nav/ProfileNav";
+import NewOrderPage from "./../StoreManagerPage/NewOrder";
+import CartPage from "./../Cart/Cart";
+import OrdersPage from "./../StoreManagerPage/AllOrders";
+import AgentsListPage from "./../StoreManagerPage/AllAgents";
+import OrderConfirmationPage from "./../Order/OrderConfirmation";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -151,7 +157,7 @@ const Profile = (props) => {
   const user_email = useSelector(state => state.user.email);
   const user_first_name = useSelector(state => state.user.first_name);
   const user_last_name = useSelector(state => state.user.last_name);
-
+  const loggedIn = useSelector(state => state.user.loggedIn);
   const [email, setEmail] = useState("" || user_email);
   const [password, setPassword] = useState("");
   const [first_name, setFirstName] = useState("" || user_first_name);
@@ -159,13 +165,14 @@ const Profile = (props) => {
   const [cash_app_name, setCashApp] = useState('')
 
 
-  const firebase_id = useSelector(state => state.user.firebase_id);
+  // const firebase_id = useSelector(state => state.user.firebase_id);
   const admin = useSelector(state => state.user.admin);
   const agent = useSelector(state => state.user.agent);
   const dispatch = useDispatch();
   const [value, setValue] = useState(0);
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(false);
+  const firebase_id = props.match.params.firebase_id
 console.log("open", open)
   const handleClick = () => {
     setOpen(true);
@@ -182,10 +189,30 @@ console.log("clicked")
 console.log("user email", user_email)
 console.log("email", email)
 
-  // useEffect(() => {
-  //   // dispatch(getById(firebase_id))
-  //   setEmail(user_email)
-  // }, [user_email])
+useEffect(() => {
+
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          console.log(user)
+          const { email, uid } = user;
+            firebase.auth()
+            .currentUser.getIdToken()
+            .then((idToken) => {
+              if(idToken) {
+                  dispatch(initAuth(email, uid, idToken));
+              } else {
+                props.history.push(`/singin`)
+              }
+            })
+            .catch((err) => {
+              console.log(err.message);
+            });
+        }
+      })
+  return () => {
+    console.log("unsubscribe ");
+  };
+}, []);
 
   const handleChange = (event, newValue) => {
    
@@ -230,177 +257,30 @@ console.log("email", email)
     </div>
   )
     return (
-      <Grid  container direction="column" justify="center" alignItems="center" className={classes.root}>
-          <Grid container direction="column" item className={classes.header}>
-              {/* <Typography component="h1" className={classes.heading}>Mangage Account</Typography> */}
-              <a href="https://drive.google.com/drive/folders/1jvPVkx-Gx7XYhskueYrSFC1D0_y0rfYx?usp=sharing">Information Portal</a>
-          </Grid>
-         
-        
-          {/* <Grid style> */}
-            <Grid className={classes.section}>
-              <Grid className={classes.sectionTop}>
-                <Typography className={classes.sectionHeader} component="h2">Profile</Typography>
-                <Typography className={classes.paragraph} component="p">Your email address is your identity on Coopers Home Furniture and is used to log in.</Typography>
-              </Grid>
-              <div>
-            {snackBar("Information updated!")}
-          </div>
-              <form className={classes.form} >
-                  {/* <FormControl> */}
-                    <Typography className={classes.label}  component="h4" >Email Address</Typography>
-                      <TextField
-                         htmlFor="email"
-                        //  fullWidth
-                         required
-                         className={classes.textFieldWide}
-                         id="email"
-                        //  label="Email"
-                         margin="dense"
-                         variant="outlined"
-                         type="email"
-                         value={email}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setEmail(e.target.value)}
-                      />
-              <Typography className={classes.label}  component="h4" >Name</Typography>
-                      <TextField
-                         htmlFor="first-name"
-                        //  fullWidth
-                         required
-                         className={classes.textFieldWide}
-                         id="first-name"
-                        label="First Name"
-                         margin="dense"
-                         variant="outlined"
-                         type="text"
-                         value={first_name}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setFirstName(e.target.value)}
-                      />
-                        <TextField
-                         htmlFor="last-name"
-                        //  fullWidth
-                         required
-                         className={classes.textFieldWide}
-                         id="last-name"
-                        label="Last Name"
-                         margin="dense"
-                         variant="outlined"
-                         type="text"
-                         value={last_name}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setLastName(e.target.value)}
-                      />
-                  {/* </FormControl> */}
-              </form>
-              <Grid className={classes.BtnGrid}>
-                <Button className={classes.btn} type="button" aria-label="save">Save</Button>  
-                <Button className={classes.btn, classes.saveBtn} type="button" aria-label="cancel">Cancel</Button>
-              </Grid>
+  
+                <div className={classes.root}>
+                  
+                  <Nav/>
+                  <Switch>
+              
+                   <Route path={`${props.match.path}/settings`} exact={true} component={SettingsPage} />
+                   <Route path={`${props.match.path}/bookorder`} exact={true} component={NewOrderPage} />
+                   <Route path={`${props.match.path}/cart`} exact={true} component={CartPage} />
+                   <Route path={`${props.match.path}/orders`} exact={true} component={OrdersPage} />
+                   <Route path={`${props.match.path}/confirmation`} exact={true} component={OrderConfirmationPage} />
+
+                   {/* ROUTES BELOW THIS LINE WILL BE ADMIN ONLY  */}
+                   <Route path={`${props.match.path}/addproduct`} exact={true} component={AddProductPage} />
+                   <Route path={`${props.match.path}/agents`} exact={true} component={AgentsListPage} />
+                   {/* <Route path={`${props.match.path}/update/:id`} exact={true} component={AddProductPage} /> */}
+
+
+                  </Switch> 
+                   
+                   
+                 </div>
+      
              
-
-            </Grid>
-
-            <Grid className={classes.section}>
-              <Grid className={classes.sectionTop}>
-                <Typography className={classes.sectionHeader} component="h2">Password</Typography>
-                {/* <Typography className={classes.paragraph} component="p">Your email address is your identity on Coopers Home Furniture and is used to log in.</Typography> */}
-              </Grid>
-              <form className={classes.form} >
-                  {/* <FormControl> */}
-                    <Typography className={classes.label}  component="h4" >Password</Typography>
-                      <TextField
-                         htmlFor="password"
-                        //  fullWidth
-                         required
-                         className={classes.textFieldWide}
-                         id="password"
-                        //  label="Email"
-                         margin="dense"
-                         variant="outlined"
-                         type="password"
-                         value={password}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setPassword(e.target.value)}
-                      />
-              {/* <Typography className={classes.label}  component="h4" >Name</Typography>
-                      <TextField
-                         htmlFor="first-name"
-                        //  fullWidth
-                         required
-                         className={classes.textFieldWide}
-                         id="first-name"
-                        label="First Name"
-                         margin="dense"
-                         variant="outlined"
-                         type="text"
-                         value={first_name}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setFirstName(e.target.value)}
-                      />
-                        <TextField
-                         htmlFor="last-name"
-                        //  fullWidth
-                         required
-                         className={classes.textFieldWide}
-                         id="last-name"
-                        label="Last Name"
-                         margin="dense"
-                         variant="outlined"
-                         type="text"
-                         value={last_name}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setLastName(e.target.value)}
-                      /> */}
-                  {/* </FormControl> */}
-              </form>
-              <Grid className={classes.BtnGrid}>
-                <Button className={classes.btn} type="button" aria-label="save">Save</Button>  
-                <Button className={classes.btn, classes.saveBtn} type="button" aria-label="cancel">Cancel</Button>
-              </Grid>
-            </Grid>
-          {/* </Grid> */}
-          
-          <Grid className={classes.section}>
-          <Grid className={classes.sectionTop}>
-                <Typography className={classes.sectionHeader} component="h2">Agent Information</Typography>
-                <Typography className={classes.paragraph} component="p">Payouts made every Saturday for the previous week's orders to the provided $Cashtag.</Typography>
-              </Grid>
-              <form className={classes.form} >
-                  {/* <FormControl> */}
-                    <Typography className={classes.label}  component="h4" >$Cashtag</Typography>
-                      <TextField
-                         htmlFor="cash_app_name"
-                        //  fullWidth
-                         required
-                         className={classes.textFieldWide}
-                         id="cash_app_name"
-                        //  label="Email"
-                         margin="dense"
-                         variant="outlined"
-                         type="cash_app_name"
-                         value={cash_app_name}
-                        //  defaultValue={user_email}
-                        //  helperText={errorMsg}
-                         onChange={e => setCashApp(e.target.value)}
-                      />
-                       <Grid className={classes.BtnGrid}>
-                <Button className={classes.btn} type="button" aria-label="save">Save</Button>  
-                <Button className={classes.btn, classes.saveBtn} type="button" aria-label="cancel">Cancel</Button>
-              </Grid>
-              <Typography className={classes.label} style={{marginTop: "2rem"}} component="h4" >Commision</Typography>
-                     <Typography>$0.00</Typography>
-                       
-              </form>
-          </Grid>
-      </Grid> 
     )
 };
 

@@ -124,7 +124,7 @@ const useStyles = makeStyles(theme => ({
                 };
                 // console.log("userObj", userObj)
                 dispatch(register(userObj))
-                  props.history.push(`/profile/${userObj.firebase_id}`)
+                  props.history.push(`/profile/${userObj.firebase_id}/settings`)
             }
           }
         })
@@ -142,7 +142,7 @@ const useStyles = makeStyles(theme => ({
           <form className={classes.form} >
             <FormControl className={classes.formControl}>
               <TextField
-                for="firstName"
+                htmlFor="firstName"
                 required
                 className={classes.textFieldWide}
                 id="firstName"
@@ -154,7 +154,7 @@ const useStyles = makeStyles(theme => ({
                 onChange={e => setFirstName(e.target.value)}
               />
                 <TextField
-                for="lastName"
+                htmlFor="lastName"
                 required
                 className={classes.textFieldWide}
                 id="lastName"
@@ -169,7 +169,7 @@ const useStyles = makeStyles(theme => ({
            
             <FormControl className={classes.formControl}>
               <TextField
-                  for="email"
+                  htmlFor="email"
                   fullWidth
                   required
                   className={classes.textFieldWide}
@@ -183,7 +183,7 @@ const useStyles = makeStyles(theme => ({
                   onChange={e => setEmail(e.target.value)}
                 />
               <TextField
-                for="password"
+                htmlFor="password"
                 required
                 className={classes.textFieldWide}
                 id="password"

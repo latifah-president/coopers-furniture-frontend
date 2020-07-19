@@ -143,6 +143,9 @@ const useStyles = makeStyles(theme => ({
       flexDirection: "column",
       justifyContent: "space-between",
       // minHeight: "100%",
+    },
+    imageGrid: {
+      width: "100%",
     }
 }));
 
@@ -166,6 +169,10 @@ const MobileImageUpload = (props) => {
                       value={props.title}
                       onChange={e => props.setTitle(e.target.value)}
                     />
+                    {props.edit ? null : 
+                     <Grid className={classes.imageGrid}>
+                    
+                     
                             <label htmlFor="image-upload" className={classes.label} id="buttonlabel">
                             {props.file === null ? null : <img className={classes.img} src={props.previewImg} alt={"image preview" || props.title}/>}
 
@@ -185,8 +192,10 @@ const MobileImageUpload = (props) => {
                         style={{display: "none"}}
                         /> 
                   
-                
-                        </Grid>
+               
+                </Grid> 
+                 }       
+                </Grid>
                      
 
                     {/* <div className={classes.formGrid}> */}

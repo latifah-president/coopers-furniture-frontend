@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {withRouter} from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
-import  queryString from "query-string";
-import {getProductsByCat} from "./../../Store/Actions/products";
-
+import {useSelector, useDispatch} from "react-redux";
 import { GridList, GridListTile, CircularProgress, GridListTileBar, } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
+import {getProducts} from "./../../Store/Actions/products";
+import InfoIcon from '@material-ui/icons/InfoRounded';
+import { Email } from "@material-ui/icons";
+import { getAgents } from "../../Store/Actions/admin";
 
 const useStyles = makeStyles((theme) => ({
     // root: {
@@ -114,32 +115,24 @@ const useStyles = makeStyles((theme) => ({
       textTransform: "uppercase",
     }
   }));
-const ProductBy = (props) => {
-    const dispatch = useDispatch();
-    const products = useSelector(state => state.product.products)
-    const parsed = queryString.parse(props.location.search)
-    const col = parsed.col
-    const filter = parsed.filter
-    const cat = props.match.params.cat;
 
-    const [home, setHome] = useState(null)
-  
-    console.log("products:", products)
-    const images = useSelector(state => state.product.images);
+const ProducstList = (props) => {
+    const dispatch = useDispatch();
+    const agents = useSelector(state => state.admin.agents);
 
     const classes = useStyles();
-    const loading = useSelector(state => state.product.loading);
-    const error = useSelector(state => state.product.error);
+    const loading = useSelector(state => state.admin.loading);
+    const error = useSelector(state => state.admin.error);
+
     useEffect(() => {
-        dispatch(getProductsByCat(cat))
+      
+      dispatch(getAgents())
+      
+      return () => {
+          console.log("unsubscribe ");
+        };
+  }, [dispatch]);
 
-       
-        return () => {
-            console.log("unsubscribe ");
-          };
-    }, [cat]);
-
-    // console.log("product by", product)
     const getGridListCols = () => {
         if (isWidthUp("xl", props.width)) {
           return 5;
@@ -158,32 +151,33 @@ const ProductBy = (props) => {
         return 1;
       };
     return (
-        <div className={classes.root}>
-        <GridList cols={getGridListCols()} cellHeight={380} className={classes.gridList} >
-          {products.map((product) => (
-            console.log("product cat",product),
-            <GridListTile className={classes.tile} key={product.id} onClick={() => props.history.push(`/product/${product.id}`)}>
-              <img src={product.images} alt={product.title} />
+
+    <div className={classes.root}>
+      <GridList cols={getGridListCols()} cellHeight={380} className={classes.gridList} >
+        {loading ? <CircularProgress/> : agents.map((agent) => (
+          <GridListTile className={classes.tile} key={agent.agent_id}>
+           <div>
+           Agent ID: {agent.agent_id}
+             Agent Name: {agent.first_name} {agent.last_name}
+             Agent Email: {agent.email}
+             Agent $Cashtag: {agent.cash_app_name}
+             Agent Phone: {agent.phone}
+             Agent Address: {agent.address}
+             Agent City: {agent.city}
+             Agent State: {agent.state}
+             Agent Zip: {agent.zip}
+           </div>
             
-              <GridListTileBar
-                title={product.title}
-                subtitle={<span>${product.price}</span>}
-                className={classes.tileBar}
-                style={{ textTransform: "uppercase", fontSize: ".5rem"}}
-              />
-            </GridListTile>
-          ))}
-        </GridList>
-      </div>
-//         <div>
-// products 
-// name {product.title} 
-// desctiption {product.description}
-// price: {product.price}
+          </GridListTile>
+        ))}
+      </GridList>
+    </div>
+  );
 
 
-//         </div>
-    )
+    
+    
 };
 
-export default withRouter(ProductBy);
+export default withRouter(withWidth()(ProducstList));
+

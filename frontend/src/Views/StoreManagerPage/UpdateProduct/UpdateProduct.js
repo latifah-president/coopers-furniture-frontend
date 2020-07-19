@@ -1,12 +1,11 @@
 import React from 'react';
 import {withRouter} from "react-router-dom";
-import AddProductForm from "./../../Containers/Forms/StoreForms/AddProduct";
-import Error from "./../../Components/Error/Error";
+import AddProductForm from "./../../../Containers/Forms/StoreForms/AddProduct";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import {iconColor,  greenColor} from "./../../GlobalStyles/styles";
-import MultiStepForm from '../../Containers/Forms/StoreForms/MobileForm/AddProduct/MultiStepForm';
-
+import {iconColor,  greenColor} from "./../../../GlobalStyles/styles";
+import MultiStepForm from '../../../Containers/Forms/StoreForms/MobileForm/AddProduct/MultiStepForm';
+import UpdateProductPage from "./../../AddProductPage/AddProduct";
 const useStyles = makeStyles(theme => ({
     root: {
         display: "flex",
@@ -19,6 +18,10 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.up("md")]: {
             marginTop: "2rem"
         }
+    },
+    wrapper: {
+        width: "95%",
+        margin: "0 auto",
     },
     mobileForm: {
         display: "none",
@@ -77,12 +80,15 @@ const classes = useStyles();
 
     return (
         <Grid className={classes.root} >
-            <div className={classes.mobileForm}>
+            <Grid className={classes.wrapper}>
+                <UpdateProductPage/>
+            </Grid>
+            {/* <div className={classes.mobileForm}>
               <MultiStepForm
                 handleChange={props.handleChange}
               />          
             </div>      
-            <div className={classes.deskTopForm}><AddProductForm/></div>
+            <div className={classes.deskTopForm}><AddProductForm/></div> */}
         </Grid>
     )
 };

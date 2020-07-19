@@ -6,10 +6,9 @@ import FormControl from "@material-ui/core/FormControl";
 import Grid from '@material-ui/core/Grid';
 import TextField from "@material-ui/core/TextField";
 import {useDispatch} from 'react-redux';
-import { registerAdmin } from "../../../Store/Actions/admin";
-import { registerAgent } from "../../../Store/Actions/agent";
 import {iconColor, greenColor} from "./../../../GlobalStyles/styles"
 import { Typography } from '@material-ui/core';
+
 const useStyles = makeStyles(theme => ({
   wrapper: {
     flexGrow: 1,
@@ -130,7 +129,7 @@ const useStyles = makeStyles(theme => ({
                   }
                    
                   
-                  props.history.push(`/storemanager/${userObj.firebase_id}/bookorder`)
+                  props.history.push(`/profile/${userObj.firebase_id}/bookorder`)
               }
             }
           })
@@ -208,19 +207,3 @@ const useStyles = makeStyles(theme => ({
     )
   }
   export default Form;
-
-  {/* 
-           <FormControl className={classes.formControl}>
-        <TextField
-                required
-                className={classes.textFieldWide}
-                id="confirm password"
-                label="Confirm Password"
-                type="password"
-                margin="dense"
-                variant="outlined"
-                value={password2}
-                helperText={errorMsg}
-                onChange={e => setPassword2(e.target.value)}
-              /> 
-           </FormControl> */}

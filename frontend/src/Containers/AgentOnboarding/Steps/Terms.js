@@ -29,9 +29,7 @@ export default function CustomizedDialogs() {
 
   return (
     <div className={classes.root}>
-      
       <Typography className={classes.sectionHeader} component="h2">Terms of agreement.</Typography>
-
         <hr/>
           <Typography gutterBottom>
           By clicking the continue button below you understand 

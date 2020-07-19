@@ -18,8 +18,10 @@ const initialState = {
     loading: false,
     loggedIn: false,
     error: false,
+    errorMsg: null,
     authenticated: false,
     deleted: false,
+    prodAdded: false,
 };
 
 export default (state = initialState, actions) => {
@@ -54,7 +56,8 @@ export default (state = initialState, actions) => {
                 return {
                     ...state,
                     loading: false,
-                    error: actions.payload
+                    error: true,
+                    errorMsg: actions.payload
                 }
         case authTypes.LOGOUT_START:
                 return {
@@ -64,6 +67,19 @@ export default (state = initialState, actions) => {
         case authTypes.LOGOUT_SUCCESS:
                 return {
                     ...state,
+                    firebase_id: null,
+                    email: null,
+                    first_name: null,
+                    last_name: null,
+                    address: null,
+                    city: null, 
+                    state: null,
+                    zip: null,
+                    phone: null,
+                    admin: false,
+                    agent: false,
+                    cart: [],
+                    total: 0.00,
                     loading: false,
                     loggedIn: false,
                 }
@@ -71,7 +87,8 @@ export default (state = initialState, actions) => {
                 return {
                     ...state,
                     loading: false,
-                    error: actions.payload
+                    error: true,
+                    errorMsg: actions.payload
                 }
         case authTypes.LOGIN_START:
             return {
@@ -88,7 +105,8 @@ export default (state = initialState, actions) => {
             return {
                 ...state,
                 loading: false,
-                error: actions.payload
+                error: true,
+                errorMsg: actions.payload
             }
         case userTypes.GET_USER_START:
             return {
@@ -118,7 +136,8 @@ export default (state = initialState, actions) => {
             return {
                 ...state,
                 loading: false,
-                error: actions.payload
+                error: true,
+                errorMsg: actions.payload
             }
         case userTypes.ADD_TO_CART_START:
             return {
@@ -133,12 +152,14 @@ export default (state = initialState, actions) => {
                 cart: state.cart.map(item =>
                     item.id === actions.payload ? {...item, quantity: item.quantity + 1} : item,
                     ),
+                prodAdded: true,
             }
         case userTypes.ADD_TO_CART_FAIL:
             return {
                 ...state,
                 loading: false,
-                error: actions.payload
+                error: true,
+                errorMsg: actions.payload
             }
         case userTypes.GET_CART_START:
             return {
@@ -156,7 +177,8 @@ export default (state = initialState, actions) => {
             return {
                     ...state,
                     loading: false,
-                    error: actions.payload
+                    error: true,
+                    errorMsg: actions.payload
                 }
         case userTypes.REMOVE_FROM_CART_START:
             return {
@@ -174,7 +196,8 @@ export default (state = initialState, actions) => {
             return {
                 ...state,
                 loading: false,
-                error: actions.payload
+                error: true,
+                errorMsg: actions.payload
             }
         default:
         return state;

@@ -122,7 +122,7 @@ export default function TransferList(props) {
   const rightChecked = intersection(checked, right);
   const [add, setAdd] = React.useState([]);
 console.log("colors to add", right)
-console.log("left list", left)
+console.log("left list add color", left)
 // console.log("colors from backedn", colors)
 console.log("props.color", props.color)
 console.log("TRYING", right.map(item => item))
@@ -245,26 +245,27 @@ useEffect(() => {
   console.log("new color", props.newColor)
 
   const customList = (title, items) => (
+    console.log("items", items),
     <Paper className={classes.paper}>
       <Typography className={classes.sectionHeader} component="h2">{title}</Typography>
-
-      {/* <Typography>{title}</Typography> */}
       <List dense component="div" role="list">
-        {items.map((value) => {
-          const labelId = `transfer-list-item-${value}-label`;
+        {items.map((value, i) => {
+           console.log("value", value.colors);
+          const labelId = `transfer-list-item-${value.colors}-label`;
+         
 
           return (
-            <ListItem key={value} role="listitem" button onClick={handleToggle(value)}>
+            <ListItem key={i} role="listitem" button onClick={handleToggle(value.colors)}>
               <ListItemIcon>
                 <Checkbox
-                  checked={checked.indexOf(value) !== -1}
+                  checked={checked.indexOf(value.colors) !== -1}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}
                   className={classes.checked}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={value} />
+              <ListItemText id={labelId} primary={value.colors} />
             </ListItem>
           );
         })}
@@ -275,27 +276,19 @@ useEffect(() => {
 
   return (
     <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
-      <Grid className={classes.mobileList}>
+   
+   <Grid className={classes.mobileList}>
         <Grid item >{customList("Colors", left)}</Grid>
 
 
-        <Grid item  lassName={classes.mobilePapaer} style={{color: "orange"}}>{customList("Selected Colors", right)}</Grid>
+        <Grid item  className={classes.mobilePapaer} style={{color: "orange"}}>{customList("Selected Colors", right)}</Grid>
       </Grid>
 
       <Grid item className={classes.desktop}>{customList("Colors", left)}</Grid>
 
       <Grid item className={classes.desktop}>
         <Grid container direction="column" alignItems="center">
-          {/* <Button
-            variant="outlined"
-            size="small"
-            className={classes.button}
-            onClick={handleAllRight}
-            disabled={left.length === 0}
-            aria-label="move all right"
-          >
-            ≫
-          </Button> */}
+        
           <Button
             variant="outlined"
             size="small"
@@ -345,8 +338,7 @@ useEffect(() => {
 
 
       <Grid item style={{color: "orange"}} className={classes.desktop}>{customList("Selected Colors", right)}</Grid>
-      {/* <button onClick={() => props.saveColor(right)}>add colors</button> */}
-      {/* <div> */}
+      
         <Grid className={classes.addColor}>
       <form className={classes.form}>
            <TextField
@@ -365,6 +357,9 @@ useEffect(() => {
              <IconButton type="button" onClick={addColor}> <Add/>  </IconButton>
       </form>
       </Grid>
+
+
+
       <Grid item className={classes.mobile}>
         <Grid className={classes.mobileBtn} container direction="row" alignItems="center">
          
@@ -416,7 +411,6 @@ useEffect(() => {
           </Button>
         </Grid>
       </Grid>
-      {/* </div> */}
     </Grid>
   );
 }

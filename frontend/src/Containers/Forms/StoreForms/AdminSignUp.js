@@ -132,7 +132,7 @@ const useStyles = makeStyles(theme => ({
                   // }
                    
                   
-                  props.history.push(`/storemanager/${userObj.firebase_id}`)
+                  props.history.push(`/profile/${userObj.firebase_id}/settings`)
               }
             }
           })

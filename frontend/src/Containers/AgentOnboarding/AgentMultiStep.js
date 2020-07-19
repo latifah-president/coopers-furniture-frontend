@@ -9,7 +9,7 @@ import {withRouter} from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import { Typography, Button } from '@material-ui/core';
-import {useDispatch} from "react-redux"
+import {useDispatch, useSelector} from "react-redux"
 import { iconColor, greenColor, offWhiteColor} from "./../../GlobalStyles/styles";
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -79,7 +79,8 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: "space-around",
       display: "flex",
       [theme.breakpoints.down('xs')]: { 
-        
+        margin: "0 auto 10rem auto",
+
         flexDirection: "column",
         alignItems: "center",
         width: "90%"
@@ -93,8 +94,8 @@ const MultiStepForm = (props) => {
         return ['Details', 'How It Works', 'Payment', 'Terms of Agreement', 'Welcome Video'];
       }
       
-
-    const classes = useStyles();
+      const dispatch = useDispatch();
+      const classes = useStyles();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [first_name, setFirstName] = useState('');
@@ -103,7 +104,7 @@ const MultiStepForm = (props) => {
     const [city, setCity] = useState('');
     const [state, setState] = useState('');
     const [zip, setZip] = useState('');
-    const dispatch = useDispatch();
+   
     const [phone, setPhone] = useState('(  )    -    ')
     const [cash_app_name, setCashApp] = useState('')
     const [activeStep, setActiveStep] = useState(0);
@@ -152,7 +153,7 @@ const MultiStepForm = (props) => {
                   
                      
                     dispatch(registerAgent(userObj))
-                    props.history.push(`/storemanager/${userObj.firebase_id}`)
+                    props.history.push(`/profile/${userObj.firebase_id}/settings`)
                 }
               }
             })
@@ -268,9 +269,9 @@ const MultiStepForm = (props) => {
              
             <div className={classes.instructions}>{getStepContent(activeStep)}</div>
             <div className={classes.btnGrid}>
-            <Button className={classes.backButton}  variant="contained" onClick={activeStep === steps.length - 1 ? signUpWithEmailAndPassword : handleNext}  >
-            {/* <Button className={classes.btn}  variant="contained" disabled={first_name.length===0 || last_name.length===0 || email.length===0 || password.length===0 || address.length===0 || city.length===0 || state.length===0 || zip.length===0 || phone.length===0 || cash_app_name.length===0 ? true : false}
-  onClick={activeStep === steps.length - 1 ? signUpWithEmailAndPassword : handleNext} > */}
+            {/* <Button className={classes.backButton}  variant="contained" onClick={activeStep === steps.length - 1 ? signUpWithEmailAndPassword : handleNext}  > */}
+            <Button className={classes.btn}  variant="contained" disabled={first_name.length===0 || last_name.length===0 || email.length===0 || password.length===0 || address.length===0 || city.length===0 || state.length===0 || zip.length===0 || phone.length===0 || cash_app_name.length===0 ? true : false}
+  onClick={activeStep === steps.length - 1 ? signUpWithEmailAndPassword : handleNext} >
                 {activeStep === steps.length - 1 ? 'Agree and Submit' : 'Agree and Continue'}
               </Button>
               <Button

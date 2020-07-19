@@ -3,10 +3,6 @@ import {useSelector} from "react-redux";
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
-import ToolBar from '@material-ui/core/Toolbar';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import AddProductPage from "./../AddProductPage/AddProduct";
@@ -24,7 +20,7 @@ import {AddCircleOutline, Edit, Group, AccountCircleOutlined, BusinessCenterOutl
 // import ThumbUp from '@material-ui/icons/ThumbUp';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
-import { CircularProgress, Toolbar } from '@material-ui/core';
+import { CircularProgress } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,15 +60,6 @@ const useStyles = makeStyles((theme) => ({
       padding: "0",
       // border: "1px solid red",
     }
-  },
-  btn: {
-    display: "flex",
-    flexDirection: "column",
-    minHeight: 72,
-    paddingTop: 9,
-    fontSize: ".875rem",
-    maxWidth: 246,
-    minWidth: 72
   }
 }));
 
@@ -87,8 +74,9 @@ export default function ScrollableTabsButtonForce() {
   const [value, setValue] = React.useState(0);
 const admin= useSelector(state => state.user.admin);
 const loading= useSelector(state => state.user.loading);
+const loggedIn = useSelector(state => state.user.loggedIn);
 const error = useSelector(state => state.user.error);
-
+console.log("value", value)
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -125,21 +113,23 @@ const error = useSelector(state => state.user.error);
     };
   }
   return (
+
     <div className={classes.root}>
-      <AppBar position="static" className={classes.appBar}  >
+    {loggedIn ? <div>
+        <AppBar position="static" className={classes.appBar}  >
       {loading || error ? <CircularProgress/> : 
-        <Toolbar
-          // value={value}
-          // onChange={handleChange}
-          // variant="scrollable"
-          // scrollButtons="on"
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          variant="scrollable"
+          scrollButtons="on"
           indicatorColor="primary"
           textColor="primary"
           aria-label="store-manager"
           className={classes.tabs}
           style={{display: "flex", justifyContent: "center", alignItems: "center"}} 
         >
-                      {/* <Tab className={admin ? null : classes.hide} label="Add Product" icon={<AddCircleOutline />} {...a11yProps(0)} />
+                      <Tab className={admin ? null : classes.hide} label="Add Product" icon={<AddCircleOutline />} {...a11yProps(0)} />
                       <Tab label="Profile &amp;  Tools" icon={<AccountCircleOutlined />} {...a11yProps(1)} />
 
           <Tab label="Book Order" icon={<Edit/>} {...a11yProps(2)} />
@@ -147,21 +137,11 @@ const error = useSelector(state => state.user.error);
 
             <Tab className={admin ? null : classes.hide}  label="All Orders" icon={<AssignmentOutlined />} {...a11yProps(4)} />
             <Tab className={admin ? null : classes.hide}  label="Customers" icon={<Group />} {...a11yProps(5)} />
-            <Tab className={admin ? null : classes.hide}  label="View Agents" icon={<BusinessCenterOutlined />} {...a11yProps(6)} />   */}
+            <Tab className={admin ? null : classes.hide}  label="View Agents" icon={<BusinessCenterOutlined />} {...a11yProps(6)} />  
         
-       <Grid>
-       <Button
-        variant="contained"
-        color="secondary"
-        className={classes.btn}
-      >
-        <AccountCircleOutlined/>
-        Delete
-      </Button>
-
-       </Grid>
+       
           
-        </Toolbar>
+        </Tabs>
         }
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -173,8 +153,9 @@ const error = useSelector(state => state.user.error);
 
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <CartPage/>
+      <BookOrderPage/>
       </TabPanel>
+
       <TabPanel value={value} index={3}>
           <BookOrderPage/>
       </TabPanel>
@@ -187,8 +168,13 @@ const error = useSelector(state => state.user.error);
       <TabPanel value={value} index={6}>
         Item Seven
       </TabPanel>
+      
+    </div> : null}
+   
+     
     
     </div>
+   
   );
 }
 

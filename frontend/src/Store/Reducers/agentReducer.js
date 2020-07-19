@@ -1,27 +1,18 @@
 import { agentTypes } from "./../Actions/ActionTypes";
 
 const initialState = {
-    user: [],
-    firebase_id: null,
-    email: null,
-    first_name: null,
-    last_name: null,
-    // address: null,
-    // city: null, 
-    // state: null,
-    // zip: null,
-    // phone: null,
+    cash_app_name: null,
+    commision: 0,
     agent: null,
-    // cart: [],
-    // total: 0.00,
     loading: false,
     loggedIn: false,
-    error: null
+    error: null,
+    agent_id: null
 };
 
-export default (state = initialState, actions) => {
+export default (state = initialState, action) => {
 
-    switch (actions.type) {
+    switch (action.type) {
         case agentTypes.ADD_AGENT_START:
             return {
                 ...state,
@@ -32,10 +23,10 @@ export default (state = initialState, actions) => {
                 ...state,
                 loading: false,
                 loggedIn: true,
-                firebase_id: actions.payload.firebase_id,
-                email: actions.payload.email,
-                first_name: actions.payload.first_name,
-                last_name: actions.payload.last_name,
+                agent_id: action.payload.firebase_id,
+                email: action.payload.email,
+                first_name: action.payload.first_name,
+                last_name: action.payload.last_name,
                 // address: actions.payload[0].address,
                 // city: actions.payload[0].city, 
                 // state: actions.payload[0].state,
@@ -46,8 +37,27 @@ export default (state = initialState, actions) => {
                 return {
                     ...state,
                     loading: false,
-                    error: actions.payload
+                    error: action.payload
                 }
+                case agentTypes.GET_AGENT_BY_ID_START:
+                    return {
+                        ...state,
+                        loading: true
+                    }
+                case agentTypes.GET_AGENT_BY_ID_SUCCESS:
+                    return {
+                        ...state,
+                        loading: false,
+                        commision: action.payload.commision,
+                        cash_app_name: action.payload.cash_app_name,
+                        agent_id: action.payload.agent_id,
+                    }
+                case agentTypes.GET_AGENT_BY_ID_FAIL:
+                    return {
+                        ...state,
+                        loading: false,
+                        error: action.payload
+                    }
             default:
             return state;
     };

@@ -1,4 +1,4 @@
-import React, {useState, createRef} from "react";
+import React, {useState, createRef, useEffect} from "react";
 import Details from "./Details";
 import MobileImageUpload from "./ImageUpload";
 import Price from "./Price";
@@ -9,12 +9,14 @@ import Grid from "@material-ui/core/Grid";
 import { Typography, Button } from '@material-ui/core';
 import {useDispatch, useSelector} from "react-redux"
 import {storage} from "./../../../../../firebaseConfig";
-import {addProduct} from "./../../../../../Store/Actions/products";
+import {addProduct, getProductsBy, updateProduct} from "./../../../../../Store/Actions/products";
 import { iconColor, greenColor} from "./../../../../../GlobalStyles/styles";
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Error from "./../../../../../Components/Error/Error";
+import Progress from "./../../../../../Components/Progress";
+
 const useStyles = makeStyles((theme) => ({
 
     root: {
@@ -86,11 +88,54 @@ const MultiStepForm = (props) => {
     const [newColor, setNewColor] = useState([])
     const [imageSuccess, setSuccess] = useState(false);
     const [right, setRight] = useState([]);
-
+    const [color_id, setColorId] = useState(0);
+    const [image_id, setImageId] = useState(0);
+    const [out_of_stock, setOutOfStock] = useState(false);
+    const [back_in_stock, setBackInStock] = useState("");
     const dispatch = useDispatch();
-    const firebase_id = useSelector(state => state.user.firebase_id)
     const [activeStep, setActiveStep] = useState(0);
+    const [upload, setUpload] = useState(0);
+    const [progress, setProgress] = useState(0);
     const steps = getSteps();
+
+    const firebase_id = useSelector(state => state.user.firebase_id);
+    const edit = useSelector(state => state.product.edit);
+    const product = useSelector(state => state.product.products);
+
+    const id = props.match.params.id;
+    const col = "id"
+    useEffect(() => {
+       
+      const filter = id
+          dispatch(getProductsBy(col, filter))
+    
+          if (edit) {
+         const prodDesc = product.map((item) => {
+           
+             setTitle(item.title)
+             setPrice(item.price)
+             setDescription(item.description)
+             setCategory(item.category)
+            setQuantity(item.quantity)
+            setItemNumber(item.item_number)
+            setItemName(item.item_name)
+            setItemPrice(item.item_price)
+            setSupplier(item.supplier)
+            setImageId(item.image_id)
+            setColorId(item.color_id)
+            setOutOfStock(item.out_of_stock)
+            setBackInStock(item.back_in_stock)
+           setColor(item.colors)
+           setImageUrl(item.image_url)
+         })
+        }
+    // console.log("DESCRIPTION", prodDesc)
+      return () => {
+          console.log("unsubscribe ");
+        };
+    }, [dispatch, id, edit]);
+
+    
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
       };
@@ -118,6 +163,30 @@ const MultiStepForm = (props) => {
       const addColor = (color) => {
         setNewColor(newColor.concat(color))
       }
+      const productObj = {
+        title: title,
+        description: description,
+        price: price,
+        image_url: image_url,
+        category: category,
+        quantity: quantity,
+        item_number: item_number,
+        item_name: item_name,
+        supplier: supplier,
+        color: color,
+        color_id: color_id,
+        image_id: image_id,
+        out_of_stock: out_of_stock,
+        back_in_stock: back_in_stock
+      }
+     console.log("productObj", productObj)
+
+      const handleUpdate = () => {
+        dispatch(updateProduct(id, productObj));
+       
+          props.history.push(`/products`)
+        
+      };
 
       function getStepContent(stepIndex) {
         switch (stepIndex) {
@@ -134,6 +203,8 @@ const MultiStepForm = (props) => {
                     step={activeStep}
                     imageSuccess={imageSuccess}
                     setTitle={setTitle}
+                    edit={edit}
+                    
                 />
             );
           case 1:
@@ -208,6 +279,7 @@ const MultiStepForm = (props) => {
 
     const uploadImage = event => {
         event.preventDefault();
+        setUpload(true)
         let currentProductName = "product-image-" + Date.now();
         let metaData = {contentType: "image/jpeg"}
         let uploadImage = storage.ref(`images/${currentProductName}`).put(file, metaData);
@@ -216,6 +288,7 @@ const MultiStepForm = (props) => {
           (snapshot) => {
             let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             console.log(`Upload is ${progress}% done`);
+            setProgress(progress)
           },
           error => {
             alert(error.message);
@@ -235,13 +308,15 @@ const MultiStepForm = (props) => {
                   quantity: quantity,
                   item_number: item_number,
                   item_name: item_name,
+                  item_price: item_price,
                   supplier: supplier,
                   color: newColor,
 
                 };
                 dispatch(addProduct(productObj));
+                // handleReset()
                 // props.handleChange(3)
-                props.history.push(`/storemanager/${firebase_id}`)
+                props.history.push(`/profile/${firebase_id}/settings`)
               });
           }
         );
@@ -259,7 +334,7 @@ const MultiStepForm = (props) => {
 
     return (
         <Grid className={classes.root} >
-       
+       <Progress progress={progress} setUpload={upload}/>
       <div>
         {activeStep === steps.length ? (
           <div>
@@ -270,8 +345,25 @@ const MultiStepForm = (props) => {
           <div>
              
             <div className={classes.instructions}>{getStepContent(activeStep)}</div>
+            {edit ? <div className={classes.btnGrid}>
+             
+             <Button className={classes.btn}  variant="contained"  onClick={activeStep === steps.length - 1 ? handleUpdate : handleNext} >
+ 
+             {/* <Button className={classes.btn}  variant="contained"  onClick={activeStep === steps.length - 1 ? uploadImage : handleNext} disabled={file && title ? false : true} > */}
+                 {activeStep === steps.length - 1 ? 'Update Product' : 'Next'}
+               </Button>
+               <Button
+                 disabled={activeStep === 0}
+                 onClick={handleBack}
+                 className={activeStep === 0 ? classes.hide : classes.btn}
+               >
+                 Back
+               </Button>
+ 
+             </div> : 
             <div className={classes.btnGrid}>
-            <Button className={classes.btn}  variant="contained"  onClick={activeStep === steps.length - 1 ? uploadImage : handleNext} >
+             
+            <Button className={classes.btn}  variant="contained"  onClick={activeStep === steps.length - 1 ?  uploadImage: handleNext} >
 
             {/* <Button className={classes.btn}  variant="contained"  onClick={activeStep === steps.length - 1 ? uploadImage : handleNext} disabled={file && title ? false : true} > */}
                 {activeStep === steps.length - 1 ? 'Add Product' : 'Next'}
@@ -283,8 +375,9 @@ const MultiStepForm = (props) => {
               >
                 Back
               </Button>
-              
+
             </div>
+              }
           </div>
         )}
       </div>

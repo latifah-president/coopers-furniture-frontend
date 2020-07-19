@@ -77,9 +77,9 @@ const dispatch = useDispatch();
         link: "/products",
     },
     {
-        label: loggedIn ? 'Account' : "Creat an account",
+        label: loggedIn ? 'Account' : "Create an Account",
         icon: <AccountCircle/>,
-        link: loggedIn ? `${`/profile/${firebase_id}`}` : '/register'
+        link: loggedIn ? `${`/profile/${firebase_id}`}/settings` : '/register'
     },
     // {
     //     label: loggedIn ? 'Logout' : "Login",
@@ -103,7 +103,6 @@ const dispatch = useDispatch();
 
   return (
     <div className={classes.drawer}>
-      
         <div >
           <Button aria-label="menu" onClick={toggleDrawer(true)}><Menu /></Button>
           <Drawer  open={state} onClose={toggleDrawer( false)} >
@@ -145,14 +144,10 @@ const dispatch = useDispatch();
         {/* <Divider /> */}
         {/* <List component="div" disablePadding> */}
         {categories.map((category, index) => (
-          <ListItem className={classes.listItem} component={ Link }  key={category}  to={`/product/?col=category&filter=${category}`}>
+          <ListItem className={classes.listItem} component={ Link }  key={category}  to={`/product/category/${category}`}>
             <ListItemText className={classes.listItemText} inset primary={category} />
           </ListItem>
         ))}
-        
-      
-        {/* </List> */}
-      {/* </Collapse> */}
     </List>
     </div>
           </Drawer>

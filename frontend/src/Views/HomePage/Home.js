@@ -6,6 +6,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import Carousel from "./../../Components/Home/Carousel";
 import { getProducts } from "./../../Store/Actions/products";
 import {greenColor, fontColor} from "./../../GlobalStyles/styles";
+import livrm from "./../../Assets/images/living_room.jpg";
+import diningrm from "./../../Assets/images/dining_room.jpg";
+import bedrm from "./../../Assets/images/khloe-arledge-QDMmnuvKGGU-unsplash.jpg";
+import bnkbed from "./../../Assets/images/bunk_bed.jpg";
+import mattress from "./../../Assets/images/mattress.jpeg";
+import recliners from "./../../Assets/images/recliners.jpeg";
 
 // Material UI breakpoints
 // value         |0px     600px    960px    1280px   1920px
@@ -147,7 +153,11 @@ section: {
 },
 hotItem: {
   // border: "1px solid purple",
-  width: "25%",
+  maxWidth: "20.25rem",
+  maxHeight: "17.5rem",
+  // overflow: "hidden",
+  margin: "0 1rem 1rem",
+  // width: "25%",
   height: "auto",
   // maxWidth: "25%",
   display: "flex",
@@ -157,17 +167,14 @@ hotItem: {
     width: "100%"
   },
 },
-image: {
-  width: "50%",
-  // border: "1px solid yellow",
 
-},
 hotItemSection: {
   // border: "1px solid orange",
   display: "flex",
   width: "100%",
   justifyContent: "space-around",
   margin: "2rem 0",
+  flexWrap: "wrap",
   [theme.breakpoints.down('sm')]: {
     flexDirection: "column",
     justifyContent: "center",
@@ -183,6 +190,7 @@ link: {
 },
 hotItemTitle: {
   paddingLeft: "1rem",
+  textDecoration: "none",
   [theme.breakpoints.down('sm')]: {
     alignSelf: "center"
   },
@@ -198,7 +206,29 @@ centerSection: {
   flexDirection: "column",
   paddingTop: "2rem",
   // border: "1px solid red"
-}
+},
+imageGrid: {
+  // border: "1px solid orange",
+  borderRadius: "50%",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  margin: "0 auto",
+  width: "70%",
+    height: 160,
+    minHeight: 160,
+    maxWidth: "70%"
+    // backgroundColor: "#EFEFEF"
+},
+image: {
+  width: "80%",
+  borderRadius: "50%",
+    height: 180,
+    boxShadow: "0 2px 5px rgba(0,0,0,.2)",
+
+  // border: "1px solid yellow",
+
+},
 }));
 const Home = (props) => {
   const classes = useStyles();
@@ -217,14 +247,40 @@ console.log("products", products)
   //   }
   // },[dispatch]);
 
+  const cat = [
+    {
+      name: "Living Room",
+      image: livrm,
+    },
+    {
+      name: "Dining Room",
+      image: diningrm,
+    },
+    {
+      name: "Bedrooms",
+      image: bedrm,
+    },
+    {
+      name: "Bunkbeds",
+      image: bnkbed,
+    },
+    {
+      name: "Mattresses",
+      image: mattress,
+    },
+    {
+      name: "Recliners",
+      image: recliners,
+    },
+  ]
     return (
         <Grid className={classes.root}>
           <Carousel/>
           <Grid container className={classes.main}>
             <Typography className={classes.heading} component="h1" variant="h1">Welcome to Cooper's Home Furniture</Typography>
             <Typography className={classes.paragraph} component="p" variant="body1">
-              We pride ourselves on  providing fast, affordable and reliable furniture across Central Texas.
-              We believe that leasing furniture should be a thing of the past. Our financing option are hassle free, and owning your furniture outright is easy with us, <Link className={classes.link} to="https://consumer.snapfinance.com/#/?mid=490237487">sign up here to begin financing option</Link>.  
+            We pride ourselves on providing fast, affordable and reliable furniture across Central Texas. We believe that leasing furniture should be a thing of the past. Our financing option is hassle free. 
+             Owning your furniture outright is easy with us. <a aria-label="Apply Now" target="_blank" rel="noopener noreferrer" className={classes.link} href="https://consumer.snapfinance.com/#/?mid=490237487">Apply Now.</a> 
               Currently we service the following areas, the Greater Austin area, Houston, Kileen, and Waco with plans to expand into more cities in the up coming months. 
 
               We also offer an exciting freelance opportunity to make some extra money online as a Cooper’s Home Furniture sales agent. 
@@ -271,12 +327,14 @@ console.log("products", products)
             </Grid>
 
             <Grid item className={classes.section}>
-              <Typography className={classes.hotItemTitle} component="h2" variant="h2">hot deals</Typography>
+              <Typography className={classes.hotItemTitle} component="h2" variant="h2">Shop By Category</Typography>
               <Grid className={classes.hotItemSection}>
-                {error || loading ? <CircularProgress/>  : products.slice(0, 3).map((product, key) => (
+                {error || loading ? <CircularProgress/>  : cat.map((item, key) => (
                     <Grid className={classes.hotItem} key={key}>
-                      <img className={classes.image} src={product.images} alt={product.title}/>
-                     <Link className={classes.link} to={`/product/${product.id}`}> <Typography variant="button" display="block" className={classes.title}>{product.title}</Typography>  </Link> 
+                      <Grid className={classes.imageGrid}>                      
+                        <img className={classes.image} src={item.image} alt={item.name}/>
+                      </Grid>
+                     <Link className={classes.link} to={`/product/category/${item.name}`}> <Typography variant="button" display="block" className={classes.title}>{item.name}</Typography>  </Link> 
                     </Grid>
                
                 ))}
