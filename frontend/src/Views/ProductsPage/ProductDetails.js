@@ -120,6 +120,7 @@ const useStyles = makeStyles(theme => ({
         [theme.breakpoints.down('xs')]: {
           fontSize: "1.3rem",
           width: "95%",
+          textAlign: "center",
           // border: `1.5px solid yellow`,
           fontWeight: 700,
           
@@ -517,7 +518,7 @@ const ProductDetail = (props) => {
               Continue shopping
             </Button>
             or
-            <Button style={{paddingTop: ".5rem"}} color="secondary" size="small" onClick={() => props.history.push(`/profile/${firebase_id}/cart`)}>
+            <Button style={{paddingTop: ".5rem"}} color="secondary" size="small" onClick={() => {loggedIn ? props.history.push(`/profile/${firebase_id}/cart`) : props.history.push(`/signin`)}}>
               Proceed to checkout
             </Button>
             <IconButton size="small" aria-label="close" color="inherit" onClick={handleClose}>
@@ -531,7 +532,8 @@ const ProductDetail = (props) => {
               <Grid key={product.id} className={classes.imageContainer}>         
             <img className={classes.img} src={product.images} alt={product.title}/>
             <Typography className={classes.title} component="h3">{product.title}</Typography>
-          
+            { product.out_of_stock ? <Typography className={classes.financing} component="h3">Out of Stock</Typography> : null}
+
             { admin && loggedIn ?
 
           <Grid className={classes.adminBtn}>

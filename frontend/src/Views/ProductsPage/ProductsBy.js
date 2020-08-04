@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {withRouter} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import  queryString from "query-string";
-import {getProductsByCat} from "./../../Store/Actions/products";
+import {getProductsBy} from "./../../Store/Actions/products";
 
 import { GridList, GridListTile, CircularProgress, GridListTileBar, } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -131,13 +131,13 @@ const ProductBy = (props) => {
     const loading = useSelector(state => state.product.loading);
     const error = useSelector(state => state.product.error);
     useEffect(() => {
-        dispatch(getProductsByCat(cat))
+        dispatch(getProductsBy(col, filter))
 
        
         return () => {
             console.log("unsubscribe ");
           };
-    }, [cat]);
+    }, [col, filter]);
 
     // console.log("product by", product)
     const getGridListCols = () => {

@@ -281,7 +281,7 @@ console.log("products", products)
             <Typography className={classes.paragraph} component="p" variant="body1">
             We pride ourselves on providing fast, affordable and reliable furniture across Central Texas. We believe that leasing furniture should be a thing of the past. Our financing option is hassle free. 
              Owning your furniture outright is easy with us. <a aria-label="Apply Now" target="_blank" rel="noopener noreferrer" className={classes.link} href="https://consumer.snapfinance.com/#/?mid=490237487">Apply Now.</a> 
-              Currently we service the following areas, the Greater Austin area, Houston, Kileen, and Waco with plans to expand into more cities in the up coming months. 
+              Currently we service the following areas, the Greater Austin area, Houston, Kileen, Dallas, and Waco with plans to expand into more cities in the up coming months. 
 
               We also offer an exciting freelance opportunity to make some extra money online as a Cooper’s Home Furniture sales agent. 
               These freelance positions can be done from home anywhere in the United States. 

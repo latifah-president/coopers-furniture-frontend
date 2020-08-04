@@ -171,7 +171,8 @@ export default (state = initialState, actions) => {
                     ...state,
                     loading: false,
                     cart: actions.payload.cartItem,
-                    total: actions.payload.total
+                    total: actions.payload.total,
+                    deleted: false
                 }
         case userTypes.GET_CART_FAIL:
             return {

@@ -1,28 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import { Route, Switch, NavLink} from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
-// import ProfileNav from '../../Components/Nav/ProfileNav';
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { Grid, Typography, TextField, Snackbar, Button, Alert, IconButton } from '@material-ui/core';
-import CustomersPage from "./../CustomersPage/Customers";
-import AddProductPage from "./../AddProductPage/AddProduct";
-import UnauthorizedPage from "./../ErrorPage/Unauthorized";
-import Settings from "./Settings";
-import StoreManagerPage from "./../StoreManagerPage/AdminConsole";
+import { makeStyles } from "@material-ui/core/styles";
+import { Grid, Typography, TextField, Snackbar, Button, Alert} from '@material-ui/core';
 import {useSelector, useDispatch} from "react-redux";
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
 import { getById } from '../../Store/Actions/users';
-import {greenColor, fontColor} from "./../../GlobalStyles/styles";
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Input from '@material-ui/core/Input';
-import InputLabel from '@material-ui/core/InputLabel';
+import {greenColor, fontColor, iconColor} from "./../../GlobalStyles/styles";
 import {auth} from "./../../firebaseConfig";
 import MuiAlert from '@material-ui/lab/Alert';
-import {Close} from '@material-ui/icons/';
 import { getAgentById } from '../../Store/Actions/agent';
 
 
@@ -149,6 +133,10 @@ const useStyles = makeStyles(theme => ({
    color: "white",
    width: "40%",
    height: 33,
+   "&:hover": {
+    backgroundColor: `${iconColor}`,
+    color: "white",
+   }
  },
  saveBtn: {
   backgroundColor: "white",
@@ -161,8 +149,9 @@ const useStyles = makeStyles(theme => ({
 
 const Profile = (props) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  //DATA FROM REDUX STATE
   const loggedIn = useSelector(state => state.user.loggedIn);
-
   const user_email = useSelector(state => state.user.email);
   const user_first_name = useSelector(state => state.user.first_name);
   const user_last_name = useSelector(state => state.user.last_name);
@@ -171,32 +160,40 @@ const Profile = (props) => {
   const user_state = useSelector(state => state.user.state);
   const user_zip = useSelector(state => state.user.zip);
   const user_phone = useSelector(state => state.user.phone);
-const user_cash_app = useSelector(state => state.agent.cash_app_name)
-  const [email, setEmail] = useState(user_email);
+  const user_cash_app = useSelector(state => state.agent.cash_app_name);
+
+  // const [email, setEmail] = useState(user_email);
+  // const [password, setPassword] = useState("");
+  // const [first_name, setFirstName] = useState("" || user_first_name);
+  // const [last_name, setLastName] = useState("" || user_last_name);
+  // const [address, setAddress] = useState("" || user_address);
+  // const [city, setCity] = useState("" || user_city);
+  // const [state, setState] = useState("" || user_state);
+  // const [zip, setZip] = useState("" || user_zip);
+  // const [phone, setPhone] = useState("" || user_phone);
+
+  // const [cash_app_name, setCashApp] = useState('' || user_cash_app)
+
+  //COMPONENT STATE
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [first_name, setFirstName] = useState("" || user_first_name);
-  const [last_name, setLastName] = useState("" || user_last_name);
-  const [address, setAddress] = useState("" || user_address);
-  const [city, setCity] = useState("" || user_city);
-  const [state, setState] = useState("" || user_state);
-  const [zip, setZip] = useState("" || user_zip);
-  const [phone, setPhone] = useState("" || user_phone);
-
+  const [first_name, setFirstName] = useState("" );
+  const [last_name, setLastName] = useState("" );
+  const [address, setAddress] = useState("" );
+  const [city, setCity] = useState("" );
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
+  const [phone, setPhone] = useState("");
   const [cash_app_name, setCashApp] = useState('' || user_cash_app)
-
 
   const firebase_id = useSelector(state => state.user.firebase_id);
   const admin = useSelector(state => state.user.admin);
   const agent = useSelector(state => state.user.agent);
-  const dispatch = useDispatch();
-  const [value, setValue] = useState(0);
+  
   const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(false);
   const id = props.match.params.firebase_id
-console.log("open", open)
-  const handleClick = () => {
-    setOpen(true);
-  };
+ 
 
   const handleClose = (event, reason) => {
     // if (reason === 'clickaway') {
@@ -206,26 +203,26 @@ console.log("clicked")
     setOpen(false);
   };
 
-console.log("user email", user_email)
+console.log("email", email)
 console.log("id", id)
 
-const setFormValues = () => {
-  setFirstName(user_first_name);
-setLastName(user_last_name);
-setEmail(user_email );
-};
+
 
   useEffect(() => {
-  //  setFormValues()
     if(agent === true) {
       dispatch(getAgentById(firebase_id))
     }
     dispatch(getById(id))
-   
-  }, )
-
- 
-  
+    setFirstName(user_first_name);
+    setLastName(user_last_name);
+    setEmail(user_email );
+    setAddress(user_address);
+    setAddress(user_city);
+    setAddress(user_state);
+    setAddress(user_zip);
+    setAddress(user_phone);
+    // eslint-disable-next-line 
+  }, [dispatch, loggedIn])
 
 
   function Alert(props) {
@@ -336,7 +333,7 @@ setEmail(user_email );
               </form>
               <Grid className={classes.BtnGrid}>
                 <Button className={classes.btn} type="button" aria-label="save">Save</Button>  
-                <Button className={classes.btn, classes.saveBtn} type="button" aria-label="cancel">Cancel</Button>
+                <Button className={`${classes.btn} ${classes.saveBtn}`} type="button" aria-label="cancel">Cancel</Button>
               </Grid>
              
 
@@ -400,7 +397,7 @@ setEmail(user_email );
               </form>
               <Grid className={classes.BtnGrid}>
                 <Button className={classes.btn} type="button" aria-label="save">Save</Button>  
-                <Button className={classes.btn, classes.saveBtn} type="button" aria-label="cancel">Cancel</Button>
+                <Button className={`${classes.btn} ${classes.saveBtn}`} type="button" aria-label="cancel">Cancel</Button>
               </Grid>
             </Grid>
           {/* </Grid> */}
@@ -497,7 +494,7 @@ setEmail(user_email );
 />
                        <Grid className={classes.BtnGrid}>
                 <Button className={classes.btn} type="button" aria-label="save">Save</Button>  
-                <Button className={classes.btn, classes.saveBtn} type="button" aria-label="cancel">Cancel</Button>
+                <Button className={`${classes.btn} ${classes.saveBtn}`} type="button" aria-label="cancel">Cancel</Button>
               </Grid>
             
                        
@@ -533,7 +530,7 @@ setEmail(user_email );
                       />
                        <Grid className={classes.BtnGrid}>
                 <Button className={classes.btn} type="button" aria-label="save">Save</Button>  
-                <Button className={classes.btn, classes.saveBtn} type="button" aria-label="cancel">Cancel</Button>
+                <Button className={`${classes.btn} ${classes.saveBtn}`} type="button" aria-label="cancel">Cancel</Button>
               </Grid>
               {/* <Typography className={classes.label} style={{marginTop: "2rem"}} component="h4" >Commision</Typography>
                      <Typography>$0.00</Typography> */}

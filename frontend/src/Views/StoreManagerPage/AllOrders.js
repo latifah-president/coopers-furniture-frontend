@@ -167,11 +167,13 @@ const ProducstList = (props) => {
           <Grid className={classes.tile} key={order.id}>
               <Typography>Order Number: {order.id}</Typography>
 
-              <Typography>Customer Name: {order.customer_first_name} {order.customer_first_name}</Typography>
+              <Typography>Customer Name: {order.customer_first_name} {order.customer_last_name}</Typography>
               <Typography>Customer Email: {order.customer_email}</Typography>
               <Typography>Customer Address: {order.customer_address} {order.customer_city} {order.customer_state} {order.customer_zip}</Typography>
-              <Typography>Order Details: {order.title} {order.price}  </Typography>
+              <Typography>Order Details: {order.title} </Typography>
               <Typography>Order Total: {order.order_total}</Typography>
+              <Typography>Order Status: {order.status}</Typography>
+
 <Grid className={classes.agentInfo}>
         <Typography>Agent Name: {order.first_name} {order.first_name}</Typography>
         <Typography>Agent Email: {order.email} </Typography>

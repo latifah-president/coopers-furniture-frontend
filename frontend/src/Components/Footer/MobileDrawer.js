@@ -12,7 +12,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import Menu from '@material-ui/icons/Menu';
-import { AccountCircle, ExitToApp, LockOpen, WorkOutlineOutlined, Storefront, Home, Phone } from '@material-ui/icons';
+import { AccountCircle, ExitToApp, LockOpen, Storefront, Home, Phone, HelpOutline } from '@material-ui/icons';
 import {categories, iconColor, } from "./../../GlobalStyles/styles";
 
 const useStyles = makeStyles({
@@ -87,9 +87,9 @@ const dispatch = useDispatch();
     //     link: loggedIn ? logout : "/signin",
     // },
     {
-        label: "Associate Login",
-        icon:  <WorkOutlineOutlined/>,
-        link: "/portal/signin",
+        label: "Frequently Asked Questions",
+        icon:  <HelpOutline/>,
+        link: "/faq",
     },
     {
         label: "Contact Us",
@@ -144,7 +144,7 @@ const dispatch = useDispatch();
         {/* <Divider /> */}
         {/* <List component="div" disablePadding> */}
         {categories.map((category, index) => (
-          <ListItem className={classes.listItem} component={ Link }  key={category}  to={`/product/category/${category}`}>
+          <ListItem className={classes.listItem} component={ Link }  key={category}  to={`/product/?col=category&filter=${category}`}>
             <ListItemText className={classes.listItemText} inset primary={category} />
           </ListItem>
         ))}

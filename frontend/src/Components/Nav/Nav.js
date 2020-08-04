@@ -406,7 +406,7 @@ const NavBar = (props) => {
   <div className={classes.root}>
         <Grid className={classes.topNav}>
           <Grid className={classes.delivery}>
-          <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, WACO, AND HOUSTON</Typography>
+          <Typography className={classes.deliveryCaption} variant="caption">WE DELIVER TO THE GREATER AUSTIN AREA, KILLEEN, WACO, DALLAS, AND HOUSTON</Typography>
           <LocalShipping className={classes.deliveryIcon}/>
           </Grid>
 

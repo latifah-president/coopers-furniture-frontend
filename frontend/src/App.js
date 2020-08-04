@@ -14,7 +14,7 @@ import ProductsBy from "./Views/ProductsPage/ProductsBy";
 import ProductDetailsPage from "./Views/ProductsPage/ProductDetails";
 import StoreManagerPage from "./Views/StoreManagerPage/AdminConsole";
 import AgentPage from "./Views/AgentPage/AgentPage";
-import CartPage from "./Views/Cart/Cart";
+import FAQPage from "./Views/FAQ/FAQPage";
 import AgentSignUp from "./Containers/AgentOnboarding/AgentMultiStep";
 import {initAuth} from "./Store/Actions/users";
 import {getProducts} from "./Store/Actions/products";
@@ -95,9 +95,9 @@ const ProtectedRoutes = (
 
         <Route exact path='/product/:id' component={ProductDetailsPage} />
         <Route exact path='/admin/register' component={AdminSignUpPage}/>
-        {/* <Route exact path='/bookorder' component={NewOrderPage}/> */}
+        <Route exact path='/faq' component={FAQPage}/>
 
-          <Route exact path="/product/category/:cat" component={ProductsBy}/>
+          <Route exact path="/product/" component={ProductsBy}/>
           <Route exact path='/register' component={Form}/>
           {/* <Route  exact path='/profile/:firebase_id' component={AccountPage} /> */}
           {/* <Route   path='/profile/:firebase_id' component={ProfilePage} /> */}

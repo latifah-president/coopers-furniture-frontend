@@ -7,7 +7,7 @@ import { iconColor, greenColor} from "./../../../../../GlobalStyles/styles";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { OutlinedInput } from '@material-ui/core';
+import { OutlinedInput, FormControlLabel, Checkbox } from '@material-ui/core';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -184,52 +184,49 @@ const useStyles = makeStyles(theme => ({
       display: "flex",
     //   border: "1px solid black",
       width: "100%"
-    }
+    },
+    hide: {
+      display: "none"
+    },
 }));
 
-const AddProduct = props => {
-    const classes = useStyles();
-    
 
+const AddProduct = (props) => {
+    const classes = useStyles();
+  console.log("props from price". props)
+console.log("PROPS", props)
     return (
         <Grid className={classes.root}>
           <Grid className={classes.formGrid}>
             <form className={classes.form}>
            
-{/* 
+
                   <div className={classes.formGroup}>
+                    
+                  <FormControlLabel
+        control={<Checkbox checked={props.checked} onChange={props.handleChange} name="out_of_stock" />}
+        label="out of stock"
+      />
 
-<FormControl className={classes.textFieldWide} variant="outlined" style={{margin: "8px 0px 8px 8px"}}>
-          <InputLabel htmlFor="price">Price</InputLabel>
-          <OutlinedInput
-            id="price"
-            value={props.price}
-            type="number"
-            onChange={e => props.setPrice(e.target.value)}
-            startAdornment={<InputAdornment position="start">$</InputAdornment>}
-            
-            label="Price"
-            style={{height: 41}}
-          />
-        </FormControl>
+{props.checked ? 
+                  <TextField
+        id="Date Back In Stock"
+        label="Date Back In Stock"
+        type="date"
+        value={props.back_in_stock}
+        // defaultValue={props.today}
+        onChange={(event) => props.handleDateChange(event)}
+        className={classes.textField}
+        InputLabelProps={{
+          shrink: true,
+        }}
+      /> : null }
 
-           <TextField
-                    textFieldWide
-                    className={classes.textFieldWide}
-                    id="quantity"
-                    type="text"
-                    label="Quantity"
-                    margin="dense"
-                    variant="outlined"
-                    value={props.quantity}
-                    onChange={e => props.setQuantity(e.target.value)}
-                />
-                </div> */}
+                </div>
 
                 <div className={classes.formGroup}>
 
                   <TextField
-                  textFieldWide
                     className={classes.textFieldWide}
                     id="supplier"
                     type="text"
@@ -257,7 +254,7 @@ const AddProduct = props => {
         </FormControl>
                  <div className={classes.formGroup}>
                  <TextField
-                 textFieldWide
+                
                     className={classes.textFieldWide}
                     id="itemNumber"
                     type="text"
@@ -268,7 +265,6 @@ const AddProduct = props => {
                     onChange={e => props.setItemNumber(e.target.value)}
                 /> 
                    <TextField
-                   textFieldWide
                     className={classes.textFieldWide}
                     id="itemName"
                     type="text"

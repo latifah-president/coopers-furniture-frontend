@@ -32,7 +32,7 @@ export const getProducts = () => (dispatch) => {
     dispatch ({
         type: productsTypes.GET_PRODUCT_START,
     })
-    axios.get("/").then(res => {
+    axios.get(`/`).then(res => {
         console.log("TOP prodObj", res)
         if (res.status === 404) {
             dispatch ({

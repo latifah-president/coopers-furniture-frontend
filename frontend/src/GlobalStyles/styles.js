@@ -4,14 +4,15 @@ const goldColor = '#F4D212';
 const purpleColor = '#AA65FF';
 const whiteColor = '#FFFF';
 const fontColor = '#465465';
+const greenColor = "#366F82";
+const yellowColor = "#F2CC7E";
 // const fontColor = '#0C1D33';
 const lightyellowColor = '#FEFCEE';
 const lightGrayColor = '#999';
 const secondaryBtnColor  = "#80D0C7";
 const mainBtnColor = "#35ACDA";
 const GreenRadient = "#80D0C7";
-const greenColor = "#366F82";
-const yellowColor = "#F2CC7E";
+
 const iconColor = "#374F70";
 const offWhiteColor = "#F7F7F7"
 const smrtphn = '370px'; 

@@ -7,7 +7,6 @@ import { Grid, Typography, TextField, Snackbar, Button, Alert, IconButton, Circu
 import CustomersPage from "./../CustomersPage/Customers";
 import AddProductPage from "./../AddProductPage/AddProduct";
 import UnauthorizedPage from "./../ErrorPage/Unauthorized";
-import Settings from "./Settings";
 import StoreManagerPage from "./../StoreManagerPage/AdminConsole";
 import {useSelector, useDispatch} from "react-redux";
 import AppBar from '@material-ui/core/AppBar';
@@ -30,6 +29,7 @@ import CartPage from "./../Cart/Cart";
 import OrdersPage from "./../StoreManagerPage/AllOrders";
 import AgentsListPage from "./../StoreManagerPage/AllAgents";
 import OrderConfirmationPage from "./../Order/OrderConfirmation";
+import SignIn from './../../Containers/Forms/SignIn';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -256,27 +256,34 @@ useEffect(() => {
             </IconButton> */}
     </div>
   )
+
+  const ProtectedRoutes = (
+   
+    <Switch>
+              
+    <Route path={`${props.match.path}/settings`} exact={true} component={SettingsPage} />
+    <Route path={`${props.match.path}/bookorder`} exact={true} component={NewOrderPage} />
+    <Route path={`${props.match.path}/cart`} exact={true} component={CartPage} />
+    <Route path={`${props.match.path}/orders`} exact={true} component={OrdersPage} />
+    <Route path={`${props.match.path}/confirmation`} exact={true} component={OrderConfirmationPage} />
+
+    {/* ROUTES BELOW THIS LINE WILL BE ADMIN ONLY  */}
+    <Route path={`${props.match.path}/addproduct`} exact={true} component={AddProductPage} />
+    <Route path={`${props.match.path}/agents`} exact={true} component={AgentsListPage} />
+    {/* <Route path={`${props.match.path}/update/:id`} exact={true} component={AddProductPage} /> */}
+
+
+   </Switch>   
+
+  )
     return (
   
                 <div className={classes.root}>
                   
                   <Nav/>
-                  <Switch>
-              
-                   <Route path={`${props.match.path}/settings`} exact={true} component={SettingsPage} />
-                   <Route path={`${props.match.path}/bookorder`} exact={true} component={NewOrderPage} />
-                   <Route path={`${props.match.path}/cart`} exact={true} component={CartPage} />
-                   <Route path={`${props.match.path}/orders`} exact={true} component={OrdersPage} />
-                   <Route path={`${props.match.path}/confirmation`} exact={true} component={OrderConfirmationPage} />
+            
+                  {loggedIn ? ProtectedRoutes :  <Route exact path="/signin" component={SignIn}/>}
 
-                   {/* ROUTES BELOW THIS LINE WILL BE ADMIN ONLY  */}
-                   <Route path={`${props.match.path}/addproduct`} exact={true} component={AddProductPage} />
-                   <Route path={`${props.match.path}/agents`} exact={true} component={AgentsListPage} />
-                   {/* <Route path={`${props.match.path}/update/:id`} exact={true} component={AddProductPage} /> */}
-
-
-                  </Switch> 
-                   
                    
                  </div>
       

@@ -7,7 +7,6 @@ import Grid from '@material-ui/core/Grid';
 import TextField from "@material-ui/core/TextField";
 import {useDispatch} from 'react-redux';
 import { registerAdmin } from "../../../Store/Actions/admin";
-import { registerAgent } from "../../../Store/Actions/agent";
 import {iconColor, greenColor} from "./../../../GlobalStyles/styles"
 import { Typography } from '@material-ui/core';
 const useStyles = makeStyles(theme => ({
@@ -95,15 +94,15 @@ const useStyles = makeStyles(theme => ({
   
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    // eslint-disable-next-line
     const [password2, setPassword2] = useState('');
     const [first_name, setFirstName] = useState('');
     const [last_name, setLastName] = useState('');
+    // eslint-disable-next-line
     const [error, setError] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const classes = useStyles();
     const dispatch = useDispatch();
-    // console.log(props.match.path === "/admin/register" ? "admin reg page" : "nope");
-    // console.log("path", props );
 
     const signUpWithEmailAndPassword = () => {
       if (!email || !password) {
@@ -150,7 +149,7 @@ const useStyles = makeStyles(theme => ({
           <form className={classes.form} >
             <FormControl className={classes.formControl}>
               <TextField
-                for="firstName"
+                htmlFor="firstName"
                 required
                 className={classes.textFieldWide}
                 id="firstName"
@@ -162,7 +161,7 @@ const useStyles = makeStyles(theme => ({
                 onChange={e => setFirstName(e.target.value)}
               />
                 <TextField
-                for="lastName"
+                htmlFor="lastName"
                 required
                 className={classes.textFieldWide}
                 id="lastName"
@@ -177,7 +176,7 @@ const useStyles = makeStyles(theme => ({
            
             <FormControl className={classes.formControl}>
               <TextField
-                  for="email"
+                  htmlFor="email"
                   fullWidth
                   required
                   className={classes.textFieldWide}
@@ -191,7 +190,7 @@ const useStyles = makeStyles(theme => ({
                   onChange={e => setEmail(e.target.value)}
                 />
               <TextField
-                for="password"
+                htmlFor="password"
                 required
                 className={classes.textFieldWide}
                 id="password"
@@ -210,19 +209,3 @@ const useStyles = makeStyles(theme => ({
     )
   }
   export default Form;
-
-  {/* 
-           <FormControl className={classes.formControl}>
-        <TextField
-                required
-                className={classes.textFieldWide}
-                id="confirm password"
-                label="Confirm Password"
-                type="password"
-                margin="dense"
-                variant="outlined"
-                value={password2}
-                helperText={errorMsg}
-                onChange={e => setPassword2(e.target.value)}
-              /> 
-           </FormControl> */}

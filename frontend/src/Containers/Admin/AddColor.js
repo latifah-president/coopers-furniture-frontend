@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -12,6 +12,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import {Button, IconButton, TextField} from '@material-ui/core';
 import Paper from '@material-ui/core/Paper';
 import {greenColor, iconColor} from "./../../GlobalStyles/styles";
+import {getProducts} from "./../../Store/Actions/products";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -100,6 +101,9 @@ const useStyles = makeStyles((theme) => ({
   },
   textFieldWide: {
     textTransform: "capitalize",
+  },
+  listItemText: {
+    textTransform: "capitalize",
   }
 }));
 
@@ -112,7 +116,9 @@ function intersection(a, b) {
 }
 
 export default function TransferList(props) {
+  const dispatch = useDispatch()
   const colors = useSelector(state => state.product.colors);
+  const edit = useSelector(state => state.product.edit);
 
   const classes = useStyles();
   const [checked, setChecked] = React.useState([]);
@@ -121,11 +127,10 @@ export default function TransferList(props) {
   const leftChecked = intersection(checked, left);
   const rightChecked = intersection(checked, right);
   const [add, setAdd] = React.useState([]);
-console.log("colors to add", right)
+console.log("right list add color", right)
 console.log("left list add color", left)
-// console.log("colors from backedn", colors)
-console.log("props.color", props.color)
-console.log("TRYING", right.map(item => item))
+console.log("colors from backend", colors)
+console.log("props.activeStep", props.activeStep)
 
 let addedColors = []
 
@@ -152,23 +157,28 @@ const getColors = () => {
     return inputArray.indexOf(item) == index;
 });
     // let dbColors = colors.map(element => {
-    //     console.log("mapped element ", element)
+    //     console.log("mapped element ", element
     //     return element
     //     // return left.concat(element)
 
-    // });
+    // }
     setLeft(left.concat(dbColors))
     console.log("db colors ", dbColors)
 
 }
+console.log("active step", props.activeStep)
 
 useEffect(() => {
-      getColors()
-    
+  if(!edit) {
+  dispatch(getProducts())
+    getColors()
+  } 
+    // setLeft(left.concat(colors))
+console.log("in useEffect")
     return () => {
-        console.log("unsubscribe ");
+        console.log("unsubscribe from add colors");
       };
-}, []  );
+},[]);
 
 
   const handleToggle = (value) => () => {
@@ -222,7 +232,7 @@ useEffect(() => {
     })
   }
 
-  console.log("let added colors ", addedColors)
+  console.log("left added colors ", addedColors)
   const handleCheckedLeft = () => {
     setLeft(left.concat(rightChecked));
     setRight(not(right, rightChecked));
@@ -250,22 +260,21 @@ useEffect(() => {
       <Typography className={classes.sectionHeader} component="h2">{title}</Typography>
       <List dense component="div" role="list">
         {items.map((value, i) => {
-           console.log("value", value.colors);
-          const labelId = `transfer-list-item-${value.colors}-label`;
+          const labelId = edit ? `transfer-list-item-${value.colors}-label` : `transfer-list-item-${value}-label`
          
 
           return (
-            <ListItem key={i} role="listitem" button onClick={handleToggle(value.colors)}>
+            <ListItem key={i} role="listitem" button onClick={edit ? handleToggle(value.colors) : handleToggle(value)}>
               <ListItemIcon>
                 <Checkbox
-                  checked={checked.indexOf(value.colors) !== -1}
+                  checked={checked.indexOf(edit ? value.colors : value) !== -1}
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}
                   className={classes.checked}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={value.colors} />
+              <ListItemText className={classes.listItemText} id={labelId} primary={edit ? value.colors : value} />
             </ListItem>
           );
         })}
@@ -275,6 +284,8 @@ useEffect(() => {
   );
 
   return (
+    <Grid>
+      {!edit ? 
     <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
    
    <Grid className={classes.mobileList}>
@@ -411,6 +422,28 @@ useEffect(() => {
           </Button>
         </Grid>
       </Grid>
+    </Grid>
+    : 
+
+    <Grid className={classes.addColor}>
+    <form className={classes.form}>
+         <TextField
+          fullWidth
+          className={classes.textFieldWide}
+          id="color"
+          type="text"
+          label="Color"
+          margin="dense"
+          variant="outlined"
+          value={props.color}
+          onChange={e => props.setColor(e.target.value)}
+          helperText="Update color."
+          style={{width: "80%", textTransform: "capitalize"}}
+          />
+           {/* <IconButton type="button" onClick={addColor}> <Add/>  </IconButton> */}
+    </form>
+    </Grid>
+    }
     </Grid>
   );
 }

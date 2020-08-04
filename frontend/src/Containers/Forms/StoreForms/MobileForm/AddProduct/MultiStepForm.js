@@ -11,11 +11,9 @@ import {useDispatch, useSelector} from "react-redux"
 import {storage} from "./../../../../../firebaseConfig";
 import {addProduct, getProductsBy, updateProduct} from "./../../../../../Store/Actions/products";
 import { iconColor, greenColor} from "./../../../../../GlobalStyles/styles";
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
 import Error from "./../../../../../Components/Error/Error";
 import Progress from "./../../../../../Components/Progress";
+import { StarTwoTone } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
 
@@ -87,7 +85,6 @@ const MultiStepForm = (props) => {
     const [color, setColor] = useState("");
     const [newColor, setNewColor] = useState([])
     const [imageSuccess, setSuccess] = useState(false);
-    const [right, setRight] = useState([]);
     const [color_id, setColorId] = useState(0);
     const [image_id, setImageId] = useState(0);
     const [out_of_stock, setOutOfStock] = useState(false);
@@ -96,6 +93,10 @@ const MultiStepForm = (props) => {
     const [activeStep, setActiveStep] = useState(0);
     const [upload, setUpload] = useState(0);
     const [progress, setProgress] = useState(0);
+    // const [checked, setChecked] = useState(false);
+    const [state, setState] = useState({
+      out_of_stock: false,
+    });
     const steps = getSteps();
 
     const firebase_id = useSelector(state => state.user.firebase_id);
@@ -104,31 +105,31 @@ const MultiStepForm = (props) => {
 
     const id = props.match.params.id;
     const col = "id"
+    let today = new Date().toISOString().slice(0, 10);
+
     useEffect(() => {
-       
       const filter = id
-          dispatch(getProductsBy(col, filter))
-    
-          if (edit) {
-         const prodDesc = product.map((item) => {
-           
-             setTitle(item.title)
-             setPrice(item.price)
-             setDescription(item.description)
-             setCategory(item.category)
-            setQuantity(item.quantity)
-            setItemNumber(item.item_number)
-            setItemName(item.item_name)
-            setItemPrice(item.item_price)
-            setSupplier(item.supplier)
-            setImageId(item.image_id)
-            setColorId(item.color_id)
-            setOutOfStock(item.out_of_stock)
-            setBackInStock(item.back_in_stock)
-           setColor(item.colors)
-           setImageUrl(item.image_url)
-         })
-        }
+      if (edit) {
+        dispatch(getProductsBy(col, filter))
+        // eslint-disable-next-line 
+        product.map((item) => {
+          setTitle(item.title)
+          setPrice(item.price)
+          setDescription(item.description)
+          setCategory(item.category)
+          setQuantity(item.quantity)
+          setItemNumber(item.item_number)
+          setItemName(item.item_name)
+          setItemPrice(item.item_price)
+          setSupplier(item.supplier)
+          setImageId(item.image_id)
+          setColorId(item.color_id)
+          setOutOfStock(item.out_of_stock)
+          setBackInStock(item.back_in_stock)
+          setColor(item.colors)
+          setImageUrl(item.image_url)
+      });
+    }
     // console.log("DESCRIPTION", prodDesc)
       return () => {
           console.log("unsubscribe ");
@@ -176,7 +177,7 @@ const MultiStepForm = (props) => {
         color: color,
         color_id: color_id,
         image_id: image_id,
-        out_of_stock: out_of_stock,
+        out_of_stock: state.out_of_stock,
         back_in_stock: back_in_stock
       }
      console.log("productObj", productObj)
@@ -186,6 +187,18 @@ const MultiStepForm = (props) => {
        
           props.history.push(`/products`)
         
+      };
+      console.log("state.checked", state.out_of_stock)
+      
+      const handleChange = (event) => {
+        setState({ ...state, [event.target.name]: event.target.checked });
+        setOutOfStock(state.out_of_stock)
+      };
+
+      const handleDateChange = (event) => {
+        console.log("EVENT", event)
+
+        setBackInStock(event.target.value)
       };
 
       function getStepContent(stepIndex) {
@@ -232,21 +245,19 @@ const MultiStepForm = (props) => {
             case 2:
               return (
                   <Colors
-                      next={handleNext} 
-                      prev={handleBack}
-                      right={right}
-                      saveColor={addToState}
-                      item_name={item_name}
-                      setItemName={setItemName}
-
-                      item_number={item_number}
-                      setItemNumber={setItemNumber}
-
-                      supplier={supplier}
-                      setSupplier={setSupplier}
-                      color={color}
-                      setColor={setColor}
-                      newColor={newColor}
+                    next={handleNext} 
+                    prev={handleBack}
+                    saveColor={addToState}
+                    item_name={item_name}
+                    setItemName={setItemName}
+                    activeStep={activeStep}
+                    item_number={item_number}
+                    setItemNumber={setItemNumber}
+                    supplier={supplier}
+                    setSupplier={setSupplier}
+                    color={color}
+                    setColor={setColor}
+                    newColor={newColor}
                   />
               );
           case 3:
@@ -266,6 +277,19 @@ const MultiStepForm = (props) => {
 
                     supplier={supplier}
                     setSupplier={setSupplier}
+
+                    checked={state.out_of_stock}
+
+                    today={today}
+
+                    out_of_stock={out_of_stock}
+                    setOutOfStock={setOutOfStock}
+
+                    back_in_stock={back_in_stock}
+                    setBackInStock={setBackInStock}
+
+                    handleChange={handleChange}
+                    handleDateChange={handleDateChange}
                 />
             );
             default:

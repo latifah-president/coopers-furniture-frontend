@@ -265,22 +265,27 @@ function intersection(a, b) {
 const AddProduct = props => {
     const classes = useStyles();
     const dispatch = useDispatch();
+    const colors = useSelector(state => state.product.colors);
+    const edit = useSelector(state => state.product.edit);
+    const editSuccess = useSelector(state => state.product.editSuccess)
+    const product = useSelector(state => state.product.products);
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
-    const [price, setPrice] = useState(null);
+    const [price, setPrice] = useState(0);
     // eslint-disable-next-line
     const [image_url, setImageUrl] = useState([]);
     const [category, setCategory] = useState("");
     const [quantity, setQuantity] = useState(1);
     const [item_number, setItemNumber] = useState("");
     const [item_name, setItemName] = useState("");
-    const [item_price, setItemPrice] = useState(null);
+    const [item_price, setItemPrice] = useState(0);
     const [supplier, setSupplier] = useState("");
     const [out_of_stock, setOutOfStock] = useState(false);
     const [back_in_stock, setBackInStock] = useState("");
     const [color, setColor] = useState("");
-    const [file, setFile] = useState(null);
+    const [file, setFile] = useState([]);
+    // const [file, setFile] = useState(null);
     const [previewImg, setPreviewImg] = useState("");
     const [color_id, setColorId] = useState(0);
     const [image_id, setImageId] = useState(0);
@@ -292,17 +297,15 @@ const AddProduct = props => {
     const [right, setRight] = useState([]);
     const leftChecked = intersection(checked, left);
     const rightChecked = intersection(checked, right);
-    const [open, setOpen] = React.useState(false);
-
-    const colors = useSelector(state => state.product.colors);
-    const edit = useSelector(state => state.product.edit);
-    const editSuccess = useSelector(state => state.product.editSuccess)
-    const product = useSelector(state => state.product.products);
+    const [open, setOpen] = useState(false);
+    const [progress, setProgress] = useState(0);
+   
 
 
 
    
-
+const url = props.match
+console.log("url", url)
     const id = props.match.params.id;
     const col = "id"
 
@@ -312,7 +315,7 @@ const AddProduct = props => {
   
 
   console.log("right list", right)
-
+  console.log("progress", progress)
 
 
     const CHAR_LIMIT = 800;
@@ -334,50 +337,36 @@ const AddProduct = props => {
 
 // }
 
-useEffect(() => {
+// useEffect(() => {
        
-  const filter = id
-      dispatch(getProductsBy(col, filter))
+//   const filter = id
+      
 
-      if (edit) {
-     const prodDesc = product.map((item) => {
+//       // if (edit) {
+//         // dispatch(getProductsBy(col, filter))
+//     //  const prodDesc = product.map((item) => {
        
-         setTitle(item.title)
-         setPrice(item.price)
-         setDescription(item.description)
-         setCategory(item.category)
-        setQuantity(item.quantity)
-        setItemNumber(item.item_number)
-        setItemName(item.item_name)
-        setItemPrice(item.item_price)
-        setSupplier(item.supplier)
-        setImageId(item.image_id)
-        setColorId(item.color_id)
-        setOutOfStock(item.out_of_stock)
-        setBackInStock(item.back_in_stock)
-       setColor(item.colors)
-      //  setState({
-      //    title: item.title,
-      //    price: item.price,
-      //    description: item.description,
-      //    category: item.category,
-      //   quantity: item.quantity,
-      //   item_number:  item.item_number,
-      //   item_name:  item.item_name,
-      //   item_price: item.item_price,
-      //   supplier: item.supplier,
-      //   image_id: item.image_id,
-      //   color_id: item.color_id,
-      //   out_of_stock: item.out_of_stock,
-      //   back_in_stock: item.back_in_stock
-      //  })
-     })
-    }
-// console.log("DESCRIPTION", prodDesc)
-  return () => {
-      console.log("unsubscribe ");
-    };
-}, [dispatch, id, edit]);
+//     //      setTitle(item.title)
+//     //      setPrice(item.price)
+//     //      setDescription(item.description)
+//     //      setCategory(item.category)
+//     //     setQuantity(item.quantity)
+//     //     setItemNumber(item.item_number)
+//     //     setItemName(item.item_name)
+//     //     setItemPrice(item.item_price)
+//     //     setSupplier(item.supplier)
+//     //     setImageId(item.image_id)
+//     //     setColorId(item.color_id)
+//     //     setOutOfStock(item.out_of_stock)
+//     //     setBackInStock(item.back_in_stock)
+//     //    setColor(item.colors)
+//     //  })
+//     // }
+// // console.log("DESCRIPTION", prodDesc)
+//   return () => {
+//       console.log("unsubscribe ");
+//     };
+// }, [dispatch]);
 
 const handleToggle = (value) => () => {
   const currentIndex = checked.indexOf(value);
@@ -471,46 +460,96 @@ const addimage = (url) => {
      setOpen(false);
    };
 
-    const uploadImage = event => {
-  event.preventDefault();
-  let currentProductName = "product-image-" + Date.now();
-  let metaData = {contentType: "image/jpeg"}
-  let uploadImage = storage.ref(`images/${currentProductName}`).put(file, metaData);
-  uploadImage.on(
-    "state_changed",
-    (snapshot) => {
-      let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-      console.log(`Upload is ${progress}% done`);
-    },
-    error => {
-      alert(error.message);
-    },
-    () => {
-      storage
-        .ref("images")
-        .child(currentProductName)
-        .getDownloadURL()
-        .then(url => {
-          const productObj = {
-            title: title,
-            description: description,
-            price: price,
-            image_url:[url],
-            category: category,
-            quantity: quantity,
-            item_number: item_number,
-            item_name: item_name,
-            item_price: item_price,
-            supplier: supplier,
-            color: newColor,
+  //  const storageRef = storage().ref();
 
+   const uploadImage = event => {
+    event.preventDefault();
+    let files;
+    let refURL;
+    let updatedURL = [];
+    let currentProductName = "product-image-" + Date.now();
+    let metaData = {contentType: "image/jpeg"}
+    const test1 = Object.keys(file).map((key) => {
+      files = file[key];
+      let newPicKey = Math.floor(Math.random() * 10000000);
+      let newRef = storage().ref().child(currentProductName).put(files, metaData).then((snapshot) => {
+        let currentProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+         console.log(`Upload is ${currentProgress}% done`);
+         setProgress(currentProgress)
+        snapshot.ref.getDownloadURL().then((downloadURL) => {
+          let testURL = {
+            [newPicKey]: downloadURL
           };
-          dispatch(addProduct(productObj));
-          // props.history.push(`/storemanager/${firebase_id}/admin/addproduct`)
-        });
-    }
-  );
-};
+          refURL = {
+            ...refURL,
+            [key]: testURL,
+            key: key
+          };
+          updatedURL.push(testURL)
+        })
+      })
+    })
+    console.log("updateURL", updatedURL)
+    console.log("files", files)
+    console.log("FILE", file)
+    console.log("currentProductName", currentProductName)
+    const productObj = {
+                  title: title,
+                  description: description,
+                  price: price,
+                  image_url:[updatedURL],
+                  category: category,
+                  quantity: quantity,
+                  item_number: item_number,
+                  item_name: item_name,
+                  item_price: item_price,
+                  supplier: supplier,
+                  color: newColor,
+      
+                };
+                dispatch(addProduct(productObj));
+  };
+
+//     const uploadImage = event => {
+//   event.preventDefault();
+//   let currentProductName = "product-image-" + Date.now();
+//   let metaData = {contentType: "image/jpeg"}
+//   let uploadImage = storage.ref(`images/${currentProductName}`).put(file, metaData);
+//   uploadImage.on(
+//     "state_changed",
+//     (snapshot) => {
+//       let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+//       console.log(`Upload is ${progress}% done`);
+//     },
+//     error => {
+//       alert(error.message);
+//     },
+//     () => {
+//       storage
+//         .ref("images")
+//         .child(currentProductName)
+//         .getDownloadURL()
+//         .then(url => {
+//           const productObj = {
+//             title: title,
+//             description: description,
+//             price: price,
+//             image_url:[url],
+//             category: category,
+//             quantity: quantity,
+//             item_number: item_number,
+//             item_name: item_name,
+//             item_price: item_price,
+//             supplier: supplier,
+//             color: newColor,
+
+//           };
+//           dispatch(addProduct(productObj));
+//           // props.history.push(`/storemanager/${firebase_id}/admin/addproduct`)
+//         });
+//     }
+//   );
+// };
 
     const productObj = {
       title: title,
@@ -531,11 +570,24 @@ const addimage = (url) => {
    console.log("productObj", productObj)
   
   const fileHandler = e => {
+    console.log("event", e)
+    console.log("even.target.files", e.target.files)
+let fileData = e.target.files
     e.persist();
-    if (e.target.files[0]) {
-      setFile(() => e.target.files[0]);
-      setPreviewImg(URL.createObjectURL(e.target.files[0]));
+    // setFile(e.target.files)
+    for (let i = 0; i < fileData.length; i++) {
+
+      console.log('Data to be sent', {
+          name: fileData[i].name,
+          fileSize: fileData[i].size,
+          fileContentType: fileData[i].type,
+          // file: reader.result
+      });
     }
+    // if (e.target.files[0]) {
+    //   setFile(() => e.target.files[0]);
+    //   setPreviewImg(URL.createObjectURL(e.target.files[0]));
+    // }
 };
 
 const addToState = (arr) => {
@@ -559,14 +611,14 @@ const handleUpdate = () => {
     return (
         <Grid className={classes.root}>
 <Grid className={classes.imagePreview}>
-                        <Grid className={edit ? classes.hide : classes.image}>
+                        <Grid style={{border: "1px solid red"}} className={edit ? classes.hide : classes.image}>
                         {file === null ? <PublishIcon className={classes.icon}/> : <img className={classes.img} src={previewImg} alt={"image preview" || title}/>}
 {/* 
                             <label htmlFor="image-upload" className={classes.label}>
     <Typography variant="p" component="p" className={ previewImg ? `${classes.hide}` :  `${classes.text} ${classes.btn}`}>{previewImg ? null : "Upload your image"}</Typography>
                         </label> */}
                         </Grid>
-                        <Input
+                        <input
                         className={edit ? classes.hide : classes.fileInput}
                         id="image-upload"
                         accept="image/*"
@@ -574,10 +626,10 @@ const handleUpdate = () => {
                         type="file"
                         onChange={e => fileHandler(e)}
                         value=""
-                        margin="dense"
-                        ref={photoInp}
-                        label="Image Upload"
-                        // multiple
+                        // margin="dense"
+                        // ref={photoInp}
+                        // label="Image Upload"
+                        multiple
                         //style={{display: "none"}}
                         /> 
                         <Grid className={classes.colorGrid}>
@@ -606,7 +658,6 @@ const handleUpdate = () => {
           {/*BEGIN FORM */}
           <Grid className={classes.formGrid}>
           <form className={classes.form}>
-            {edit ? `UPDATING` :  `NOT UPDATING`}
               <div className={classes.formGroup}>
                   <TextField
                     className={classes.textFieldWide}

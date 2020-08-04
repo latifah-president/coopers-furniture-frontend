@@ -217,7 +217,7 @@ const SignIn = (props) => {
                         <Typography variant="p" gutterBottom style={{fontSize: ".9rem"}}>Don't have a?</Typography>
                       </Button> */}
                       <Button aria-label="forgot password" type="button" onClick={handleClickOpen} className={classes.pwrdbtn}>
-                        <Typography variant="p" gutterBottom style={{fontSize: ".9rem"}}>Forgot your password?</Typography>
+                        <Typography component="p" variant="body1" gutterBottom style={{fontSize: ".9rem"}}>Forgot your password?</Typography>
                       </Button>
                       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="Reset password">Rest Password</DialogTitle>
