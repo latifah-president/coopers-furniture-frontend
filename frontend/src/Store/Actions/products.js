@@ -28,12 +28,12 @@ export const addProduct = (productObj) => (dispatch) => {
     }) 
 };
 
-export const getProducts = () => (dispatch) => {
+export const getProducts = (page) => (dispatch) => {
     dispatch ({
         type: productsTypes.GET_PRODUCT_START,
     })
-    axios.get(`/`).then(res => {
-        console.log("TOP prodObj", res)
+    axios.get(`/?page=${page}`).then(res => {
+        console.log("TOP prodObj", res.data)
         if (res.status === 404) {
             dispatch ({
                 type: productsTypes.GET_PRODUCT_FAIL,

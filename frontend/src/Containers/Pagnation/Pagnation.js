@@ -15,13 +15,13 @@ export default function BasicPagination(props) {
   const classes = useStyles();
   const products = useSelector(state => state.product.products);
 
-  console.log("PAGE", props.currPage)
+  console.log("PAGE", props)
 
  
 
   return (
     <div className={classes.root}>
-      <Pagination onChange={props.handleChange} count={props.count} page={props.currPage} />
+      <Pagination onChange={props.handleChange} count={10} page={props.currPage} />
   
     </div>
   );

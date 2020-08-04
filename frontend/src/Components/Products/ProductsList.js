@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {withRouter} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
 import { GridList, GridListTile, CircularProgress, GridListTileBar, } from "@material-ui/core";
@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
 import {getProducts} from "./../../Store/Actions/products";
 import InfoIcon from '@material-ui/icons/InfoRounded';
+import Pagination from "./../../Containers/Pagnation/Pagnation";
 
 const useStyles = makeStyles((theme) => ({
     // root: {
@@ -122,16 +123,27 @@ const ProducstList = (props) => {
     const classes = useStyles();
     const loading = useSelector(state => state.product.loading);
     const error = useSelector(state => state.product.error);
+    const [page, setPage] = useState(1);
+    const [count, setCount] = useState(10)
   console.log("products", products)
 
+  const setQuery = () => {
+    props.history.push(`/products?page=${page}`)
+  };
     useEffect(() => {
       
-      dispatch(getProducts())
-      
+      dispatch(getProducts(page))
+      setQuery()
       return () => {
           console.log("unsubscribe ");
         };
-  }, [dispatch]);
+  }, [dispatch,  count, page]);
+
+
+
+  const handleChange = (event, value) => {
+    setPage(value)
+  };
 
     const getGridListCols = () => {
         if (isWidthUp("xl", props.width)) {
@@ -170,6 +182,8 @@ const ProducstList = (props) => {
           </GridListTile>
         ))}
       </GridList>
+      <Pagination currPage={page} count={10} handleChange={handleChange}/>
+
     </div>
   );
 

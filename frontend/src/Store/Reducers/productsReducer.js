@@ -43,7 +43,7 @@ export default (state = initialState, actions) => {
             return {
                 ...state,
                 loading: false,
-                products: actions.payload.products,
+                products: actions.payload.products.data,
                 colors: actions.payload.colors,
                 images: actions.payload.images,
             }

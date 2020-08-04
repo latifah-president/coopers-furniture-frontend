@@ -44,8 +44,8 @@ const Home = (props) => {
   };
 
   useEffect(() => {
-    dispatch(getProducts());
-    // setQuery()
+    dispatch(getProducts(page));
+    setQuery()
   // getCount()
     return () => {
         console.log("unsubscribe ");
