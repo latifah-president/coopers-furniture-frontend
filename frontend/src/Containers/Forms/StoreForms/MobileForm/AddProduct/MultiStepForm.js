@@ -128,6 +128,9 @@ const MultiStepForm = (props) => {
           setBackInStock(item.back_in_stock)
           setColor(item.colors)
           setImageUrl(item.image_url)
+          setState({
+            out_of_stock: item.out_of_stock
+          })
       });
     }
     // console.log("DESCRIPTION", prodDesc)

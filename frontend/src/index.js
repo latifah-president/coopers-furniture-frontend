@@ -13,8 +13,8 @@ import RootReducer from './Store/Reducers/index';
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 //UNCOMMENT WHEN IN DEVELOPMENT
-const store = createStore(RootReducer, composeEnhancers(applyMiddleware(thunk, logger)));
-// const store = createStore(RootReducer, composeEnhancers(applyMiddleware(thunk)));
+// const store = createStore(RootReducer, composeEnhancers(applyMiddleware(thunk, logger)));
+const store = createStore(RootReducer, composeEnhancers(applyMiddleware(thunk)));
 
 
 
