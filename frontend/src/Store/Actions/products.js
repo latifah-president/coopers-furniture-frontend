@@ -28,12 +28,13 @@ export const addProduct = (productObj) => (dispatch) => {
     }) 
 };
 
-export const getProducts = () => (dispatch) => {
+export const getProducts = (page) => (dispatch) => {
+    console.log("page", page)
     dispatch ({
         type: productsTypes.GET_PRODUCT_START,
     })
-    axios.get(`/`).then(res => {
-        console.log("TOP prodObj", res)
+    axios.get(`/?page=${page}`).then(res => {
+        console.log("TOP prodObj GET PRODUCT", res)
         if (res.status === 404) {
             dispatch ({
                 type: productsTypes.GET_PRODUCT_FAIL,
@@ -110,7 +111,7 @@ export const getProductsBy = (col, filter) => (dispatch) => {
         type: productsTypes.GET_PRODUCT_BY_START,
     })
     axios.get(`/product/?col=${col}&filter=${filter}`).then(res => {
-        console.log("product by res", res)
+        console.log("product by ", res.data)
         if (res.status === 404) {
             dispatch ({
                 type: productsTypes.GET_PRODUCT_BY_FAIL,

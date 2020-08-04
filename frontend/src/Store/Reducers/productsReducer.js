@@ -12,7 +12,8 @@ const initialState = {
     edit: false,
     editMsg: null,
     editSuccess: false,
-    deleteSucces: false
+    deleteSucces: false,
+    count: 0
 }
 
 export default (state = initialState, actions) => {
@@ -46,6 +47,7 @@ export default (state = initialState, actions) => {
                 products: actions.payload.products,
                 colors: actions.payload.colors,
                 images: actions.payload.images,
+                count: actions.payload.count
             }
         case productsTypes.GET_PRODUCT_FAIL:
             return {
@@ -68,7 +70,8 @@ export default (state = initialState, actions) => {
                     colors: actions.payload[1],
                     images: actions.payload[2],
                     edit: state.edit,
-                    deleted: false
+                    deleted: false,
+                    count: actions.payload.count,
                 }
         case productsTypes.GET_PRODUCT_BY_FAIL:
                 return {

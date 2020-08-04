@@ -1,11 +1,13 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {withRouter} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
+import  queryString from "query-string";
 import { GridList, GridListTile, CircularProgress, GridListTileBar, } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
-import {getProducts} from "./../../Store/Actions/products";
+import {getProducts, getProductsBy} from "./../../Store/Actions/products";
 import InfoIcon from '@material-ui/icons/InfoRounded';
+import Pagination from "../../Containers/Pagination/Pagination";
 
 const useStyles = makeStyles((theme) => ({
     // root: {
@@ -122,16 +124,34 @@ const ProducstList = (props) => {
     const classes = useStyles();
     const loading = useSelector(state => state.product.loading);
     const error = useSelector(state => state.product.error);
-  console.log("products", products)
+    const [page, setPage] = useState(1);
+    // const [count, setCount] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(4);
+    const count = useSelector(state => state.product.count);
 
+  console.log("COUNT", count)
+
+
+//   const col = queryString.parse(props.location.search)
+//   const col = parsed.col
+// console.log("CATEGORY", col)
+  const setQuery = () => {
+    props.history.push(`/products/?page=${page}`)
+  };
     useEffect(() => {
-      
-      dispatch(getProducts())
-      
+      // if (col === "category")
+      dispatch(getProducts(page))
+      setQuery()
       return () => {
           console.log("unsubscribe ");
         };
-  }, [dispatch]);
+  }, [dispatch, page]);
+
+
+
+  const handleChange = (event, value) => {
+    setPage(value)
+  };
 
     const getGridListCols = () => {
         if (isWidthUp("xl", props.width)) {
@@ -157,10 +177,7 @@ const ProducstList = (props) => {
         {loading ? <CircularProgress/> : products.map((product) => (
           <GridListTile className={classes.tile} key={product.id} onClick={() => props.history.push(`/product/${product.id}`)}>
             <img src={product.images} alt={product.title} />
-            {/* {images.map((image) => (
-               
-
-            ))} */}
+           
             <GridListTileBar
               title={product.title}
               subtitle={<span>${product.price}</span>}
@@ -170,6 +187,8 @@ const ProducstList = (props) => {
           </GridListTile>
         ))}
       </GridList>
+      <Pagination currPage={page} count={10} handleChange={handleChange}/>
+
     </div>
   );
 
