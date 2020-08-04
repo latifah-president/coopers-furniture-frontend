@@ -105,7 +105,7 @@ const CategoryNav = (props) => {
             <div className={classes.dropdown}>
               <nav  aria-label="Departments Menu">
               {categories.map((category, key) => (
-                <ul  className={classes.listItem} key={key} button onClick={() => props.history.push(`/product/category/${category}`)}>
+                <ul  className={classes.listItem} key={key} button onClick={() => props.history.push(`/product/?col=category&filter=${category}`)}>
                   <li className={classes.listItemText}><Typography >{category}</Typography></li>
                   <Divider  className={classes.divider}/>
                 </ul>

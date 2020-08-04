@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {withRouter} from "react-router-dom";
 import {useSelector, useDispatch} from "react-redux";
+import  queryString from "query-string";
 import { GridList, GridListTile, CircularProgress, GridListTileBar, } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import withWidth, { isWidthUp } from "@material-ui/core/withWidth";
-import {getProducts} from "./../../Store/Actions/products";
+import {getProducts, getProductsBy} from "./../../Store/Actions/products";
 import InfoIcon from '@material-ui/icons/InfoRounded';
-import Pagination from "./../../Containers/Pagnation/Pagnation";
+import Pagination from "../../Containers/Pagination/Pagination";
 
 const useStyles = makeStyles((theme) => ({
     // root: {
@@ -124,20 +125,27 @@ const ProducstList = (props) => {
     const loading = useSelector(state => state.product.loading);
     const error = useSelector(state => state.product.error);
     const [page, setPage] = useState(1);
-    const [count, setCount] = useState(10)
-  console.log("products", products)
+    // const [count, setCount] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(4);
+    const count = useSelector(state => state.product.count);
 
+  console.log("COUNT", count)
+
+
+//   const col = queryString.parse(props.location.search)
+//   const col = parsed.col
+// console.log("CATEGORY", col)
   const setQuery = () => {
-    props.history.push(`/products?page=${page}`)
+    props.history.push(`/products/?page=${page}`)
   };
     useEffect(() => {
-      
+      // if (col === "category")
       dispatch(getProducts(page))
       setQuery()
       return () => {
           console.log("unsubscribe ");
         };
-  }, [dispatch,  count, page]);
+  }, [dispatch, page]);
 
 
 
@@ -169,10 +177,7 @@ const ProducstList = (props) => {
         {loading ? <CircularProgress/> : products.map((product) => (
           <GridListTile className={classes.tile} key={product.id} onClick={() => props.history.push(`/product/${product.id}`)}>
             <img src={product.images} alt={product.title} />
-            {/* {images.map((image) => (
-               
-
-            ))} */}
+           
             <GridListTileBar
               title={product.title}
               subtitle={<span>${product.price}</span>}

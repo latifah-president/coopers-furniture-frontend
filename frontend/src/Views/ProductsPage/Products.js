@@ -5,7 +5,7 @@ import ProducstList from "../../Components/Products/ProductsList";
 import { Grid } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { getProducts } from "../../Store/Actions/products";
-import Pagination from "./../../Containers/Pagnation/Pagnation";
+import Pagination from "../../Containers/Pagination/Pagination";
 
 // Material UI breakpoints
 // value         |0px     600px    960px    1280px   1920px
@@ -43,14 +43,14 @@ const Home = (props) => {
     props.history.push(`/products?page=${page}`)
   };
 
-  useEffect(() => {
-    dispatch(getProducts(page));
-    setQuery()
-  // getCount()
-    return () => {
-        console.log("unsubscribe ");
-      };
-}, [dispatch, ]);
+//   useEffect(() => {
+//     dispatch(getProducts());
+//     // setQuery()
+//   // getCount()
+//     return () => {
+//         console.log("unsubscribe ");
+//       };
+// }, [dispatch, ]);
 
 
 

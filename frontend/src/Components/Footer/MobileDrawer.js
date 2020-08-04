@@ -74,7 +74,7 @@ const dispatch = useDispatch();
     {
         label: "Shop all products",
         icon:  <Storefront/>,
-        link: "/products",
+        link: '/products',
     },
     {
         label: loggedIn ? 'Account' : "Create an Account",
